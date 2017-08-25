@@ -1,4 +1,9 @@
 
-.vs/
-OneBullet/bin/
-OneBullet/obj/
+OneBullet/.vs/
+OneBullet/OneBullet/bin/
+OneBullet/OneBullet/obj/
+OneBullet/OneBullet/x64/
+OneBullet/OneBullet/x86/
+OneBullet/OneBullet/Properties/
+OneBullet/OneBullet/Content/bin/
+OneBullet/OneBullet/Content/obj/
