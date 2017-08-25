@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Sean Boland/Documents/GitHub/One_Bullet/OneBullet/OneBullet/Content/mm9-mega-man-sprite1.gif</SourceFile>
-  <SourceTime>2017-08-25T16:15:57.899258-06:00</SourceTime>
-  <DestFile>C:/Users/Sean Boland/Documents/GitHub/One_Bullet/OneBullet/OneBullet/Content/bin/DesktopGL/mm9-mega-man-sprite1.xnb</DestFile>
-  <DestTime>2017-08-25T16:48:00.2430239-06:00</DestTime>
+  <SourceFile>c:/users/u1164194/documents/visual studio 2017/Projects/OneBullet/OneBullet/Content/mm9-mega-man-sprite1.gif</SourceFile>
+  <SourceTime>2017-08-24T10:52:57.6488037-06:00</SourceTime>
+  <DestFile>c:/users/u1164194/documents/visual studio 2017/Projects/OneBullet/OneBullet/Content/bin/DesktopGL/mm9-mega-man-sprite1.xnb</DestFile>
+  <DestTime>2017-08-24T10:58:58.1882364-06:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T08:05:36-07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
