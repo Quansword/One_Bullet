@@ -298,5 +298,5 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-obj/
-bin/
+obj/*
+bin/*
