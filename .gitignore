@@ -2,7 +2,6 @@
 OneBullet/.vs/
 *.cache
 OneBullet/OneBullet/obj/Debug/
-OneBullet/OneBullet/Properties/
 OneBullet/OneBullet/bin/
 OneBullet/OneBullet/x64/
 OneBullet/OneBullet/x86/
