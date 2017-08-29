@@ -25,6 +25,7 @@ namespace OneBullet
         public int high = 3;
         public static int currentLevel = 2;
         KeyboardState oldState;
+        private SpriteFont font;
 
 
         private Texture2D bulletTexture;
@@ -158,8 +159,8 @@ namespace OneBullet
                 yAxis = yAxisMax;
             }
 
-            base.Update(gameTime);
             oldState = currentState;
+            base.Update(gameTime);
 
         }
 
@@ -172,7 +173,6 @@ namespace OneBullet
             spriteBatch.Draw(gunLeft, new Rectangle(20, yAxis, 100, 148), null, Color.White, 0, new Vector2(50,50), s, 0f);
             spriteBatch.Draw(gunRight, new Rectangle(700, 20, 100, 148), null, Color.White);
             spriteBatch.Draw(bullet, new Rectangle(bulletX, yAxis, 100, 148), null, Color.White, 0, new Vector2(50, 50), s, 0f);
-
 
             spriteBatch.End();
 
