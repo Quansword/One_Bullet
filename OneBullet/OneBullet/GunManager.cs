@@ -17,6 +17,9 @@ namespace OneBullet
         Texture2D p1GunL;
         Texture2D p1GunSprite;
         Texture2D p1Sprite;
+        Texture2D bullet;
+
+        Rectangle bulletPosition;
         Rectangle p1Position;
         Rectangle p1GunPosition;
         Vector2 p1Velocity;
@@ -85,6 +88,7 @@ namespace OneBullet
             megaManXL = Content.Load<Texture2D>("MegaManXL");
             p1GunR = Content.Load<Texture2D>("gunR");
             p1GunL = Content.Load<Texture2D>("gunL");
+            bullet = Content.Load<Texture2D>("shot_poulpi");
             p1GunSprite = p1GunR;
             p1Sprite = megaManXR;
         }
@@ -170,6 +174,12 @@ namespace OneBullet
                 }
             }
 
+            if (kState.IsKeyDown(Keys.F)) // Change gun level
+            {
+                bulletPosition.X += p1GunPosition.X;
+                bulletPosition.Y += p1GunPosition.Y;
+            }
+
             oldKState = kState;
 
             // ------------------------------------------ Falling parameters
@@ -211,6 +221,8 @@ namespace OneBullet
             spriteBatch.Begin();
             spriteBatch.Draw(p1Sprite, p1Position, Color.White);
             spriteBatch.Draw(p1GunSprite, p1GunPosition, Color.White);
+            spriteBatch.Draw(bullet, p1GunPosition, Color.White);
+
             spriteBatch.End();
 
             base.Draw(gameTime);
