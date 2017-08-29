@@ -81,10 +81,10 @@ namespace OneBullet
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            megaManXR = Content.Load<Texture2D>("MegaManX_Right");
-            megaManXL = Content.Load<Texture2D>("MegaManX_Left");
-            p1GunR = Content.Load<Texture2D>("gun_right");
-            p1GunL = Content.Load<Texture2D>("gun_left");
+            megaManXR = Content.Load<Texture2D>("MegaManXR");
+            megaManXL = Content.Load<Texture2D>("MegaManXL");
+            p1GunR = Content.Load<Texture2D>("gunR");
+            p1GunL = Content.Load<Texture2D>("gunL");
             p1GunSprite = p1GunR;
             p1Sprite = megaManXR;
         }
