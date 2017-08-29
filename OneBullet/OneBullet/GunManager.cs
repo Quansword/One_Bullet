@@ -18,12 +18,14 @@ namespace OneBullet
         int bulletX;
         int yAxis;
         int yAxisMax = 0;
-        int yAxisMin = 50;
-        int yAxisMid = 20;
-        int low = 1;
-        int mid = 2;
-        int high = 3;
-        int currentLevel = 2;
+        int yAxisMin = 100;
+        int yAxisMid = 50;
+        public int low = 1;
+        public int mid = 2;
+        public int high = 3;
+        public static int currentLevel = 2;
+        KeyboardState oldState;
+
 
         private Texture2D bulletTexture;
         private Vector2 bulletTarget;
@@ -50,6 +52,7 @@ namespace OneBullet
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            oldState = Keyboard.GetState();
 
             base.Initialize();
         }
@@ -78,22 +81,20 @@ namespace OneBullet
         protected override void Update(GameTime gameTime)
         {
 
-
-
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
             // TODO: Add your update logic here
-            KeyboardState state = Keyboard.GetState();
+            KeyboardState currentState = Keyboard.GetState();
+            KeyboardState bulletState = Keyboard.GetState();
+
 
             // If they hit esc, exit
-            if (state.IsKeyDown(Keys.Escape))
+            if (currentState.IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (state.IsKeyDown(Keys.F))
+            if (bulletState.IsKeyDown(Keys.F))
             {
                 isBulletActive = true;
-
             }
 
             if(isBulletActive == true)
@@ -104,38 +105,38 @@ namespace OneBullet
 
             // Move our sprite based on arrow keys being pressed:
             //move gun up unless it has reached maxium height
-            if (state.IsKeyDown(Keys.Up))
+            if (currentState.IsKeyDown(Keys.Up) && !oldState.IsKeyUp(Keys.Up))
             {
                 if(currentLevel == low)
                 {
                     currentLevel = mid;
                 }
 
-                if(currentLevel == mid)
+                else if(currentLevel == mid)
                 {
                     currentLevel = high;
                 }
 
-                if (currentLevel == high)
+                else if (currentLevel == high)
                 {
                     currentLevel = high;
                 }
             }
 
             //move gun down unless it has reached minimum height
-            if (state.IsKeyDown(Keys.Down))
+            if (currentState.IsKeyDown(Keys.Down) && !oldState.IsKeyUp(Keys.Down))
             {
                 if (currentLevel == high)
                 {
                     currentLevel = mid;
                 }
 
-                if (currentLevel == mid)
+               else if (currentLevel == mid)
                 {
                     currentLevel = low;
                 }
 
-                if (currentLevel == low)
+                else if (currentLevel == low)
                 {
                     currentLevel = low;
                 }
@@ -158,12 +159,11 @@ namespace OneBullet
             }
 
             base.Update(gameTime);
+            oldState = currentState;
 
-            //previousState = state;
-       
         }
 
-    
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
