@@ -13,18 +13,42 @@ namespace OneBullet
 		SpriteBatch spriteBatch;
 		Texture2D megaManXR;
 		Texture2D megaManXL;
+		Texture2D p1GunR;
+		Texture2D p1GunL;
+		Texture2D p1GunSprite;
 		Texture2D p1Sprite;
 		Rectangle p1Position;
+		Rectangle p1GunPosition;
 		Vector2 p1Velocity;
+		int p1LevelOffset;
 		const int p1Acceleration = 3;
 		bool onGround, jumping;
+		double charSize;
 		KeyboardState kState;
 		private KeyboardState oldKState;
+
+		enum GunLevel
+		{
+			High,
+			Mid,
+			Low
+		};
+
+		GunLevel level = GunLevel.Mid;
 
 		public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
+
+			//graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+			//graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+			graphics.PreferredBackBufferWidth = 1280;
+			graphics.PreferredBackBufferHeight = 720;
+			graphics.IsFullScreen = false;
+			graphics.ApplyChanges();
+
+			charSize = GraphicsDevice.Viewport.Height / 7;
 		}
 
 		/// <summary>
@@ -38,10 +62,13 @@ namespace OneBullet
 			// TODO: Add your initialization logic here
 
 			base.Initialize();
-			p1Position = new Rectangle(200, 200, 260, 250);
+			p1Position = new Rectangle(GraphicsDevice.Viewport.Width/2, GraphicsDevice.Viewport.Height - (int)charSize, (int)(charSize * 1.04), (int)charSize);
+			p1GunPosition = p1Position;
+			p1GunPosition.X += (int)charSize/2;
 			p1Velocity = new Vector2(0, 0);
 			onGround = true;
 			jumping = false;
+			p1LevelOffset = 0;
 		}
 
 		/// <summary>
@@ -56,6 +83,9 @@ namespace OneBullet
 			// TODO: use this.Content to load your game content here
 			megaManXR = Content.Load<Texture2D>("MegaManX_Right");
 			megaManXL = Content.Load<Texture2D>("MegaManX_Left");
+			p1GunR = Content.Load<Texture2D>("gun_right");
+			p1GunL = Content.Load<Texture2D>("gun_left");
+			p1GunSprite = p1GunR;
 			p1Sprite = megaManXR;
 		}
 
@@ -83,17 +113,21 @@ namespace OneBullet
 			// ------------------------------------------ Keyboard inputs
 			kState = Keyboard.GetState();
 
-			if (kState.IsKeyDown(Keys.A))
+			if (kState.IsKeyDown(Keys.A)) // Move left
 			{
 				p1Velocity.X -= 10;
 				p1Sprite = megaManXL;
+				p1GunSprite = p1GunL;
+				p1GunPosition.X = p1Position.X - (int)charSize/2;
 			}
-			if (kState.IsKeyDown(Keys.D))
+			if (kState.IsKeyDown(Keys.D)) // Move right
 			{
 				p1Velocity.X += 10;
 				p1Sprite = megaManXR;
+				p1GunSprite = p1GunR;
+				p1GunPosition.X = p1Position.X + (int)charSize/2;
 			}
-			if (kState.IsKeyDown(Keys.G))
+			if (kState.IsKeyDown(Keys.G)) // Jump
 			{
 				if (onGround && !jumping)
 				{
@@ -109,11 +143,37 @@ namespace OneBullet
 			{
 				jumping = false;
 			}
+			if (kState.IsKeyDown(Keys.W) && oldKState.IsKeyUp(Keys.W)) // Change gun level
+			{
+				if (level == GunLevel.Low)
+				{
+					level = GunLevel.Mid;
+					p1LevelOffset = 0;
+				}
+				else if (level == GunLevel.Mid)
+				{
+					level = GunLevel.High;
+					p1LevelOffset = -((int)charSize / 3);
+				}
+			}
+			if (kState.IsKeyDown(Keys.S) && oldKState.IsKeyUp(Keys.S)) // Change gun level
+			{
+				if (level == GunLevel.High)
+				{
+					level = GunLevel.Mid;
+					p1LevelOffset = 0;
+				}
+				else if (level == GunLevel.Mid)
+				{
+					level = GunLevel.Low;
+					p1LevelOffset = (int)charSize / 3;
+				}
+			}
 
 			oldKState = kState;
 
 			// ------------------------------------------ Falling parameters
-			if (p1Position.Y < 200)
+			if (p1Position.Y < GraphicsDevice.Viewport.Height - charSize)
 			{
 				onGround = false;
 				p1Velocity.Y += p1Acceleration;
@@ -127,8 +187,11 @@ namespace OneBullet
 			// ------------------------------------------ Calculating velocity
 			p1Position.X += (int)p1Velocity.X;
 			p1Position.Y += (int)p1Velocity.Y;
-			if (p1Position.Y > 200)
-				p1Position.Y = 200;
+			if (p1Position.Y > GraphicsDevice.Viewport.Height - (int)charSize)
+				p1Position.Y = GraphicsDevice.Viewport.Height - (int)charSize;
+
+			p1GunPosition.X += (int)p1Velocity.X;
+			p1GunPosition.Y = p1Position.Y + p1LevelOffset;
 
 			// ------------------------------------------ Resetting values
 			p1Velocity.X = 0;
@@ -147,6 +210,7 @@ namespace OneBullet
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
 			spriteBatch.Draw(p1Sprite, p1Position, Color.White);
+			spriteBatch.Draw(p1GunSprite, p1GunPosition, Color.White);
 			spriteBatch.End();
 
 			base.Draw(gameTime);
