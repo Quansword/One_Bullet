@@ -49,8 +49,3 @@
 /processorParam:TextureFormat=Color
 /build:shot_poulpi.png
 
-#begin 28_days_later.zip
-/importer:
-/processor:
-/build:28_days_later.zip
-

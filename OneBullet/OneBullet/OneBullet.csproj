@@ -43,7 +43,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
-    <Compile Include="GunManager.cs" />
+    <Compile Include="GunManager.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -13,7 +13,6 @@ namespace OneBullet
         [STAThread]
         static void Main()
         {
-            GunManager CL = new GunManager();
 
             using (var game = new GunManager())
                 game.Run();
