@@ -153,7 +153,7 @@ namespace OneBullet
 				else if (level == GunLevel.Mid)
 				{
 					level = GunLevel.High;
-					p1LevelOffset = -((int)charSize / 3);
+					p1LevelOffset = -((int)charSize / 4);
 				}
 			}
 			if (kState.IsKeyDown(Keys.S) && oldKState.IsKeyUp(Keys.S)) // Change gun level
@@ -166,7 +166,7 @@ namespace OneBullet
 				else if (level == GunLevel.Mid)
 				{
 					level = GunLevel.Low;
-					p1LevelOffset = (int)charSize / 3;
+					p1LevelOffset = (int)charSize / 4;
 				}
 			}
 
