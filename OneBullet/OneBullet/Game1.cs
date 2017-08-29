@@ -186,6 +186,14 @@ namespace OneBullet
 
 			// ------------------------------------------ Calculating velocity
 			p1Position.X += (int)p1Velocity.X;
+			if (p1Position.X > GraphicsDevice.Viewport.Width - (int)charSize)
+			{
+				p1Position.X = GraphicsDevice.Viewport.Width - (int)charSize;
+			}
+			else if (p1Position.X < 0)
+			{
+				p1Position.X = 0;
+			}
 			p1Position.Y += (int)p1Velocity.Y;
 			if (p1Position.Y > GraphicsDevice.Viewport.Height - (int)charSize)
 				p1Position.Y = GraphicsDevice.Viewport.Height - (int)charSize;
