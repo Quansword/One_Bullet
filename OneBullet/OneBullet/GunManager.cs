@@ -15,20 +15,23 @@ namespace OneBullet
         Texture2D p1GunL;
         Texture2D p1GunSprite;
         Texture2D p1Sprite;
+        Texture2D p1TempDirection;
         Texture2D bullet;
 
         Rectangle bulletPosition;
         Rectangle p1Position;
         Rectangle p1GunPosition;
-        Rectangle p1TempGunPosition;
-
         Vector2 p1Velocity;
 
         int p1LevelOffset;
+        int bulletSpeed = 20;
         const int p1Acceleration = 3;
         bool onGround, jumping;
         double charSize;
-        public bool bulletMoving;
+        bool p1BulletMoving;
+        bool p1HasBullet;
+        bool p2BulletMoving;
+        bool p2HasBullet;
 
         KeyboardState kState;
         private KeyboardState oldKState;
@@ -45,14 +48,23 @@ namespace OneBullet
         public void bulletMovement()
         {
 
-            if(bulletMoving == true)
-            {
 
-                bulletPosition.X += 20;
+
+            if(p1BulletMoving == true && p1TempDirection == megaManXR)
+            {
+                p1HasBullet = false;
+                bulletPosition.X += bulletSpeed;
             }
 
-            else if(bulletMoving == false)
+            else if(p1BulletMoving == true && p1TempDirection == megaManXL)
             {
+                p1HasBullet = false;
+                bulletPosition.X -= bulletSpeed;
+            }
+
+            else if(p1BulletMoving == false)
+            {
+                p1HasBullet = true;
                 bulletPosition = p1GunPosition;
 
             }
@@ -112,9 +124,10 @@ namespace OneBullet
         protected override void Update(GameTime gameTime)
         {
 
-            if (kState.IsKeyDown(Keys.F)) // move bullet
+            if (kState.IsKeyDown(Keys.F) && p1HasBullet == true) // move bullet
             {
-                bulletMoving = true;
+                p1BulletMoving = true;
+                p1TempDirection = p1Sprite;
             }
 
             bulletMovement();
@@ -205,6 +218,14 @@ namespace OneBullet
 
             // ------------------------------------------ Calculating velocity
             p1Position.X += (int)p1Velocity.X;
+            if (p1Position.X > GraphicsDevice.Viewport.Width - (int)charSize)
+            {
+                p1Position.X = GraphicsDevice.Viewport.Width - (int)charSize;
+            }
+            else if (p1Position.X < 0)
+            {
+                p1Position.X = 0;
+            }
             p1Position.Y += (int)p1Velocity.Y;
             if (p1Position.Y > GraphicsDevice.Viewport.Height - (int)charSize)
                 p1Position.Y = GraphicsDevice.Viewport.Height - (int)charSize;
