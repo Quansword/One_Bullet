@@ -4,9 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace OneBullet
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+
     public class GunManager : Game
     {
         GraphicsDeviceManager graphics;
@@ -22,11 +20,16 @@ namespace OneBullet
         Rectangle bulletPosition;
         Rectangle p1Position;
         Rectangle p1GunPosition;
+        Rectangle p1TempGunPosition;
+
         Vector2 p1Velocity;
+
         int p1LevelOffset;
         const int p1Acceleration = 3;
         bool onGround, jumping;
         double charSize;
+        public bool bulletMoving;
+
         KeyboardState kState;
         private KeyboardState oldKState;
 
@@ -39,13 +42,29 @@ namespace OneBullet
 
         GunLevel level = GunLevel.Mid;
 
+        public void bulletMovement()
+        {
+
+            if(bulletMoving == true)
+            {
+
+                bulletPosition.X += 20;
+            }
+
+            else if(bulletMoving == false)
+            {
+                bulletPosition = p1GunPosition;
+
+            }
+
+        }
+
         public GunManager()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             graphics.IsFullScreen = false;
@@ -54,12 +73,6 @@ namespace OneBullet
             charSize = GraphicsDevice.Viewport.Height / 7;
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -74,10 +87,6 @@ namespace OneBullet
             p1LevelOffset = 0;
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -93,22 +102,28 @@ namespace OneBullet
             p1Sprite = megaManXR;
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
+
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
         protected override void Update(GameTime gameTime)
         {
+
+            if (kState.IsKeyDown(Keys.F)) // move bullet
+            {
+                bulletMoving = true;
+            }
+
+            bulletMovement();
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////
+
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -174,13 +189,7 @@ namespace OneBullet
                 }
             }
 
-            if (kState.IsKeyDown(Keys.F)) // Change gun level
-            {
-                bulletPosition.X += p1GunPosition.X;
-                bulletPosition.Y += p1GunPosition.Y;
-            }
-
-            oldKState = kState;
+                oldKState = kState;
 
             // ------------------------------------------ Falling parameters
             if (p1Position.Y < GraphicsDevice.Viewport.Height - charSize)
@@ -209,10 +218,7 @@ namespace OneBullet
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -221,7 +227,7 @@ namespace OneBullet
             spriteBatch.Begin();
             spriteBatch.Draw(p1Sprite, p1Position, Color.White);
             spriteBatch.Draw(p1GunSprite, p1GunPosition, Color.White);
-            spriteBatch.Draw(bullet, p1GunPosition, Color.White);
+            spriteBatch.Draw(bullet, bulletPosition, Color.White);
 
             spriteBatch.End();
 
