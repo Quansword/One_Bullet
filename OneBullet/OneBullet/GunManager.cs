@@ -28,7 +28,7 @@ namespace OneBullet
         int p1LevelOffset;
         int bulletSpeed = 20;
         const int p1Acceleration = 3;
-        bool onGround, jumping;
+        bool onGround, jumping, onPlatform;
         double charSize;
         bool p1BulletMoving;
         bool p1HasBullet;
@@ -76,6 +76,7 @@ namespace OneBullet
         {
             if (platformPosition.Contains(p1Position))
             {
+                
                 p1Position.Y = platformPosition.Y;
                 p1Velocity.Y = 0;
                 
@@ -103,7 +104,7 @@ namespace OneBullet
 
             base.Initialize();
             p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height - (int)charSize, (int)(charSize * 1.04), (int)charSize);
-            platformPosition = new Rectangle(400, 480,600,256);
+            platformPosition = new Rectangle(400, 380,600,256);
             p1GunPosition = p1Position;
             p1GunPosition.X += (int)charSize / 2;
             p1Velocity = new Vector2(0, 0);
@@ -177,7 +178,7 @@ namespace OneBullet
             }
             if (kState.IsKeyDown(Keys.G)) // Jump
             {
-                if (onGround && !jumping)
+                if (onGround || onPlatform && !jumping)
                 {
                     p1Velocity.Y -= 30;
                     jumping = true;
@@ -221,14 +222,16 @@ namespace OneBullet
                 oldKState = kState;
 
             // ------------------------------------------ Falling parameters
-            if (p1Position.Y < GraphicsDevice.Viewport.Height - charSize)
+            if (p1Position.Y < GraphicsDevice.Viewport.Height - charSize || p1Position.Y < platformPosition.Height)
             {
                 onGround = false;
+                onPlatform = false;
                 p1Velocity.Y += p1Acceleration;
             }
-            else if (!onGround)
+            else if (!onGround || !onPlatform)
             {
                 onGround = true;
+                onPlatform = true;
                 p1Velocity.Y = 0;
             }
 
@@ -269,6 +272,7 @@ namespace OneBullet
 
 
             spriteBatch.End();
+            
 
             base.Draw(gameTime);
         }

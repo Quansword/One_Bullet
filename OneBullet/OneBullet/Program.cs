@@ -15,7 +15,11 @@ namespace OneBullet
         {
 
             using (var game = new GunManager())
+            {
                 game.Run();
+
+            }
+
         }
     }
 }
