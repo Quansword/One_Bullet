@@ -397,8 +397,8 @@ namespace OneBullet
 
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
-			spriteBatch.Draw(background, new Vector2(0, 0), Color.White);
-			spriteBatch.Draw(backgroundElements, new Vector2(0, 0), Color.White);
+			spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+			spriteBatch.Draw(backgroundElements, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 			player1.Draw(spriteBatch);
 			player2.Draw(spriteBatch);
 			bullet1.Draw(spriteBatch);
