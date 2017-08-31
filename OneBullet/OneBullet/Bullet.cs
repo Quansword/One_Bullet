@@ -39,7 +39,7 @@ namespace OneBullet
 					bPosition.X -= bSpeed;
 				}
 			}
-			else if (!bMoving && !bOnGround && !bIsLoaded && !bKill)
+			else if (!bMoving && !bOnGround && !bIsLoaded && !bKill) // not moving, bullet is falling after hitting platform or wall
 			{
 				if (bDirRight)
 				{
@@ -66,7 +66,7 @@ namespace OneBullet
 				bFallVelocity += bAcceleration;
 				bPosition.Y += bFallVelocity;
 			}
-			else if (!bMoving && !bOnGround && !bIsLoaded && bKill)
+			else if (!bMoving && !bOnGround && !bIsLoaded && bKill) // if hit player
 			{
 				if (bDirRight)
 				{
@@ -82,7 +82,7 @@ namespace OneBullet
 				bPosition.Y += bFallVelocity;
 			}
 
-			if (bPosition.X > graphics.Viewport.Width - bulletSize)
+			if (bPosition.X > graphics.Viewport.Width - bulletSize) // hits edge of screen
 			{
 				bPosition.X = graphics.Viewport.Width - bulletSize;
 				Wall();
@@ -93,7 +93,7 @@ namespace OneBullet
 				Wall();
 			}
 
-			if (bPosition.Y > graphics.Viewport.Height - bulletSize)
+			if (bPosition.Y > graphics.Viewport.Height - bulletSize) // drops to floor
 			{
 				bPosition.Y = graphics.Viewport.Height - bulletSize;
 				bOnGround = true;
@@ -156,19 +156,21 @@ namespace OneBullet
 			// change texture to opposite direction texture
 		}
 
-		public void Dead(Texture2D texture, bool dirRight, Rectangle position)
+		public void Dead(Texture2D texture, bool dirRight, Rectangle position) // almost same as fire()
 		{
 			bTexture = texture;
 			bDirRight = dirRight;
 			if (bDirRight)
 			{
 				bPosition.X = position.X + 100;
-			}
-			else
+
+            }
+            else
 			{
 				bPosition.X = position.X - 70;
-			}
-			bPosition.Y = position.Y - 10;
+
+            }
+            bPosition.Y = position.Y - 10;
 			bIsLoaded = false;
 			bMoving = false;
 		}
