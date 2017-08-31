@@ -143,6 +143,7 @@ namespace OneBullet
 		public void Wall()
 		{
 			bMoving = false;
+			bHasRicocheted = false;
 		}
 
 		public void Catch()
@@ -153,9 +154,16 @@ namespace OneBullet
 
 		public void Ricochet(Texture2D texture)
 		{
-			// When the bullet ricochets
-			// if bHasRicocheted is false
-			// change texture to opposite direction texture
+			if (!bHasRicocheted)
+			{
+				bHasRicocheted = true;
+				bDirRight = !bDirRight;
+				// change texture to opposite direction texture
+			}
+			else
+			{
+				Wall();
+			}
 		}
 
 		public void Dead(Texture2D texture, bool dirRight, Rectangle position) // almost same as fire()
