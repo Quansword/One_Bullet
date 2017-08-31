@@ -198,7 +198,7 @@ namespace OneBullet
 
 		public void Fire()
 		{
-			if (pBullet != null && !dead)
+			if (pBullet != null)
 			{
 				pBullet = null;
 				loaded = false;

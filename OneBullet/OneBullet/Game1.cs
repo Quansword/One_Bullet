@@ -122,8 +122,10 @@ namespace OneBullet
 
 			// ------------------------------------------ Updates
 
-			player1.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight, bullet, megaManXR, megaManXL, gunR, gunL);
-			player2.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight, bullet, zeroR, zeroL, gunR, gunL);
+			if (!player1.dead)
+				player1.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight, bullet, megaManXR, megaManXL, gunR, gunL);
+			if (!player2.dead)
+				player2.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight, bullet, zeroR, zeroL, gunR, gunL);
 			bullet1.Update(GraphicsDevice, (int)(charHeight / 3));
 			bullet2.Update(GraphicsDevice, (int)(charHeight / 3));
 
@@ -135,10 +137,12 @@ namespace OneBullet
 				if (player1.pTexture == megaManXR)
 				{
 					player1.pBullet.Dead(bullet, true, player1.pGunPosition);
+					player1.Fire();
 				}
 				else
 				{
 					player1.pBullet.Dead(bullet, false, player1.pGunPosition);
+					player1.Fire();
 				}
 			}
 			if (player2.dead && player2.loaded)
@@ -146,10 +150,12 @@ namespace OneBullet
 				if (player2.pTexture == zeroR)
 				{
 					player2.pBullet.Dead(bullet, true, player2.pGunPosition);
+					player2.Fire();
 				}
 				else
 				{
 					player2.pBullet.Dead(bullet, false, player2.pGunPosition);
+					player2.Fire();
 				}
 			}
 
@@ -186,66 +192,78 @@ namespace OneBullet
 			// ------------------------------------------ Checking for pickup
 			if (!bullet1.bMoving && !bullet1.bIsLoaded)
 			{
-				if (!player1.loaded && !player1.dead)
+				if (!player1.dead)
 				{
-					if (player1.pPosition.Intersects(bullet1.bPosition))
+					if (!player1.loaded)
 					{
-						player1.Pickup(bullet1);
-						bullet1.Pickup();
+						if (player1.pPosition.Intersects(bullet1.bPosition))
+						{
+							player1.Pickup(bullet1);
+							bullet1.Pickup();
+						}
 					}
 				}
-				if (!player2.loaded && !player2.dead)
+				if (!player2.dead)
 				{
-					if (player2.pPosition.Intersects(bullet1.bPosition))
+					if (!player2.loaded)
 					{
-						player2.Pickup(bullet1);
-						bullet1.Pickup();
+						if (player2.pPosition.Intersects(bullet1.bPosition))
+						{
+							player2.Pickup(bullet1);
+							bullet1.Pickup();
+						}
 					}
 				}
 			}
 			// ------------------------------------------ Checking for hit or catch
 			else if (bullet1.bMoving && !bullet1.bIsLoaded)
 			{
-				if (player1.loaded && !player1.dead)
+				if (!player1.dead)
 				{
-					if (player1.pPosition.Intersects(bullet1.bPosition)) // Hit
+					if (player1.loaded)
 					{
-						player1.Hit();
-						bullet1.Hit();
+						if (player1.pPosition.Intersects(bullet1.bPosition)) // Hit
+						{
+							player1.Hit();
+							bullet1.Hit();
+						}
+					}
+					else
+					{
+						if (p1CatchPosition.Intersects(bullet1.bPosition)) // Catch
+						{
+							player1.Catch(bullet1);
+							bullet1.Catch();
+						}
+						else if (player1.pPosition.Intersects(bullet1.bPosition)) // Hit
+						{
+							player1.Hit();
+							bullet1.Hit();
+						}
 					}
 				}
-				else if (!player1.loaded)
+				if (!player2.dead)
 				{
-					if (p1CatchPosition.Intersects(bullet1.bPosition)) // Catch
+					if (player2.loaded)
 					{
-						player1.Catch(bullet1);
-						bullet1.Catch();
+						if (player2.pPosition.Intersects(bullet1.bPosition)) // Hit
+						{
+							player2.Hit();
+							bullet1.Hit();
+						}
 					}
-					else if (player1.pPosition.Intersects(bullet1.bPosition)) // Hit
+					else
 					{
-						player1.Hit();
-						bullet1.Hit();
-					}
-				}
-				if (player2.loaded && !player2.dead)
-				{
-					if (player2.pPosition.Intersects(bullet1.bPosition)) // Hit
-					{
-						player2.Hit();
-						bullet1.Hit();
-					}
-				}
-				else if (!player2.loaded)
-				{
-					if (p2CatchPosition.Intersects(bullet1.bPosition)) // Catch
-					{
-						player2.Catch(bullet1);
-						bullet1.Catch();
-					}
-					else if (player2.pPosition.Intersects(bullet1.bPosition)) // Hit
-					{
-						player2.Hit();
-						bullet1.Hit();
+						if (p2CatchPosition.Intersects(bullet1.bPosition)) // Catch
+						{
+							player2.Catch(bullet1);
+							bullet1.Catch();
+						}
+						else if (player2.pPosition.Intersects(bullet1.bPosition)) // Hit
+						{
+							player2.Hit();
+							bullet1.Hit();
+						}
 					}
 				}
 			}
@@ -253,66 +271,78 @@ namespace OneBullet
 			// ------------------------------------------ Checking for pickup
 			if (!bullet2.bMoving && !bullet2.bIsLoaded)
 			{
-				if (!player1.loaded && !player1.dead)
+				if (!player1.dead)
 				{
-					if (player1.pPosition.Intersects(bullet2.bPosition))
+					if (!player1.loaded)
 					{
-						player1.Pickup(bullet2);
-						bullet2.Pickup();
+						if (player1.pPosition.Intersects(bullet2.bPosition))
+						{
+							player1.Pickup(bullet2);
+							bullet2.Pickup();
+						}
 					}
 				}
-				if (!player2.loaded && !player2.dead)
+				if (!player2.dead)
 				{
-					if (player2.pPosition.Intersects(bullet2.bPosition))
+					if (!player2.loaded)
 					{
-						player2.Pickup(bullet2);
-						bullet2.Pickup();
+						if (player2.pPosition.Intersects(bullet2.bPosition))
+						{
+							player2.Pickup(bullet2);
+							bullet2.Pickup();
+						}
 					}
 				}
 			}
 			// ------------------------------------------ Checking for hit or catch
 			else if (bullet2.bMoving && !bullet2.bIsLoaded)
 			{
-				if (player1.loaded && !player1.dead)
+				if (!player1.dead)
 				{
-					if (player1.pPosition.Intersects(bullet2.bPosition)) // Hit
+					if (player1.loaded)
 					{
-						player1.Hit();
-						bullet2.Hit();
+						if (player1.pPosition.Intersects(bullet2.bPosition)) // Hit
+						{
+							player1.Hit();
+							bullet2.Hit();
+						}
+					}
+					else
+					{
+						if (p1CatchPosition.Intersects(bullet2.bPosition)) // Catch
+						{
+							player1.Catch(bullet2);
+							bullet2.Catch();
+						}
+						else if (player1.pPosition.Intersects(bullet2.bPosition)) // Hit
+						{
+							player1.Hit();
+							bullet2.Hit();
+						}
 					}
 				}
-				else if (!player1.loaded)
+				if (!player2.dead)
 				{
-					if (p1CatchPosition.Intersects(bullet2.bPosition)) // Catch
+					if (player2.loaded)
 					{
-						player1.Catch(bullet2);
-						bullet2.Catch();
+						if (player2.pPosition.Intersects(bullet2.bPosition)) // Hit
+						{
+							player2.Hit();
+							bullet2.Hit();
+						}
 					}
-					else if (player1.pPosition.Intersects(bullet2.bPosition)) // Hit
+					else
 					{
-						player1.Hit();
-						bullet2.Hit();
-					}
-				}
-				if (player2.loaded && !player2.dead)
-				{
-					if (player2.pPosition.Intersects(bullet2.bPosition)) // Hit
-					{
-						player2.Hit();
-						bullet2.Hit();
-					}
-				}
-				else if (!player2.loaded)
-				{
-					if (p2CatchPosition.Intersects(bullet2.bPosition)) // Catch
-					{
-						player2.Catch(bullet2);
-						bullet2.Catch();
-					}
-					else if (player2.pPosition.Intersects(bullet2.bPosition)) // Hit
-					{
-						player2.Hit();
-						bullet2.Hit();
+						if (p2CatchPosition.Intersects(bullet2.bPosition)) // Catch
+						{
+							player2.Catch(bullet2);
+							bullet2.Catch();
+						}
+						else if (player2.pPosition.Intersects(bullet2.bPosition)) // Hit
+						{
+							player2.Hit();
+							bullet2.Hit();
+						}
 					}
 				}
 			}
