@@ -13,6 +13,7 @@ namespace OneBullet
 		SpriteBatch spriteBatch;
 		Player player1, player2;
 		Bullet bullet1, bullet2;
+		Texture2D background, backgroundElements;
 		Texture2D megaManXR, megaManXL;
 		Texture2D zeroR, zeroL;
 		Texture2D gunR, gunL;
@@ -78,6 +79,8 @@ namespace OneBullet
 			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 			Rectangle b2Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 
+			background = Content.Load<Texture2D>("background1");
+			backgroundElements = Content.Load<Texture2D>("background1Elements");
 			megaManXR = Content.Load<Texture2D>("MegaManX_Right");
 			megaManXL = Content.Load<Texture2D>("MegaManX_Left");
 			zeroR = Content.Load<Texture2D>("Zero_Right");
@@ -213,25 +216,6 @@ namespace OneBullet
 			oldKState = kState;
 
 			base.Update(gameTime);
-		}
-
-		/// <summary>
-		/// This is called when the game should draw itself.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-		protected override void Draw(GameTime gameTime)
-		{
-			GraphicsDevice.Clear(Color.CornflowerBlue);
-
-			// TODO: Add your drawing code here
-			spriteBatch.Begin();
-			player1.Draw(spriteBatch);
-			player2.Draw(spriteBatch);
-			bullet1.Draw(spriteBatch);
-			bullet2.Draw(spriteBatch);
-			spriteBatch.End();
-
-			base.Draw(gameTime);
 		}
 
 		void BulletChecks()
@@ -401,6 +385,27 @@ namespace OneBullet
 					bullet2.Wall();
 				}
 			}
+		}
+
+		/// <summary>
+		/// This is called when the game should draw itself.
+		/// </summary>
+		/// <param name="gameTime">Provides a snapshot of timing values.</param>
+		protected override void Draw(GameTime gameTime)
+		{
+			GraphicsDevice.Clear(Color.CornflowerBlue);
+
+			// TODO: Add your drawing code here
+			spriteBatch.Begin();
+			spriteBatch.Draw(background, new Vector2(0, 0), Color.White);
+			spriteBatch.Draw(backgroundElements, new Vector2(0, 0), Color.White);
+			player1.Draw(spriteBatch);
+			player2.Draw(spriteBatch);
+			bullet1.Draw(spriteBatch);
+			bullet2.Draw(spriteBatch);
+			spriteBatch.End();
+
+			base.Draw(gameTime);
 		}
 	}
 }
