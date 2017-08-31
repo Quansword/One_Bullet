@@ -28,7 +28,7 @@ namespace OneBullet
         int p1LevelOffset;
         int bulletSpeed = 20;
         const int p1Acceleration = 3;
-        bool onGround, jumping, onPlatform;
+        bool onGround, jumping;
         double charSize;
         bool p1BulletMoving;
         bool p1HasBullet;
@@ -178,11 +178,18 @@ namespace OneBullet
             }
             if (kState.IsKeyDown(Keys.G)) // Jump
             {
-                if (onGround || onPlatform && !jumping)
+                if (onGround && !jumping)
                 {
                     p1Velocity.Y -= 30;
                     jumping = true;
                 }
+
+                if (platformPosition.Contains(p1Position) && !jumping)
+                {
+                    p1Velocity.Y -= 30;
+                    jumping = true;
+                }
+
                 else if (!onGround && jumping && p1Velocity.Y < 0)
                 {
                     p1Velocity.Y -= 1;
@@ -225,13 +232,11 @@ namespace OneBullet
             if (p1Position.Y < GraphicsDevice.Viewport.Height - charSize || p1Position.Y < platformPosition.Height)
             {
                 onGround = false;
-                onPlatform = false;
                 p1Velocity.Y += p1Acceleration;
             }
-            else if (!onGround || !onPlatform)
+            else if (!onGround)
             {
                 onGround = true;
-                onPlatform = true;
                 p1Velocity.Y = 0;
             }
 
