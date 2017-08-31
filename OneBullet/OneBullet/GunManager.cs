@@ -16,14 +16,20 @@ namespace OneBullet
         Texture2D p1GunSprite;
         Texture2D p1Sprite;
         Texture2D p1TempDirection;
+        Texture2D bulletL;
+        Texture2D bulletR;
         Texture2D bullet;
         Texture2D platform;
+        Texture2D background;
+        Texture2D backgroundElements;
 
         Rectangle bulletPosition;
         Rectangle p1Position;
         Rectangle p1GunPosition;
         Rectangle platformPosition;
         Vector2 p1Velocity;
+
+        Color bulletColor;
 
         int p1LevelOffset;
         int bulletSpeed = 20;
@@ -54,12 +60,15 @@ namespace OneBullet
             {
                 p1HasBullet = false;
                 bulletPosition.X += bulletSpeed;
+                bullet = bulletR;
+
             }
 
             else if(p1BulletMoving == true && p1TempDirection == megaManXL)
             {
                 p1HasBullet = false;
-                bulletPosition.X -= bulletSpeed;
+                bulletPosition.X += -bulletSpeed;
+                bullet = bulletL;
             }
 
             else if(p1BulletMoving == false)
@@ -111,6 +120,8 @@ namespace OneBullet
             onGround = true;
             jumping = false;
             p1LevelOffset = 0;
+            bulletColor = Color.Transparent;
+
         }
 
         protected override void LoadContent()
@@ -123,8 +134,13 @@ namespace OneBullet
             megaManXL = Content.Load<Texture2D>("MegaManXL");
             p1GunR = Content.Load<Texture2D>("gunR");
             p1GunL = Content.Load<Texture2D>("gunL");
+            bulletL = Content.Load<Texture2D>("bulletR");
+            bulletR = Content.Load<Texture2D>("bulletL");
             bullet = Content.Load<Texture2D>("shot_poulpi");
             platform = Content.Load<Texture2D>("square");
+            background = Content.Load<Texture2D>("background1");
+            backgroundElements = Content.Load<Texture2D>("background1Elements");
+
             p1GunSprite = p1GunR;
             p1Sprite = megaManXR;
         }
@@ -144,6 +160,7 @@ namespace OneBullet
             {
                 p1BulletMoving = true;
                 p1TempDirection = p1Sprite;
+                bulletColor = Color.White;
             }
 
             bulletMovement();
@@ -270,10 +287,12 @@ namespace OneBullet
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+            spriteBatch.Draw(background, new Rectangle(0, 0, 1280, 720), Color.White);
+            spriteBatch.Draw(backgroundElements, new Rectangle(0, 0, 1280, 720), Color.White);
             spriteBatch.Draw(platform, platformPosition, Color.White);
             spriteBatch.Draw(p1Sprite, p1Position, Color.White);
             spriteBatch.Draw(p1GunSprite, p1GunPosition, Color.White);
-            spriteBatch.Draw(bullet, bulletPosition, Color.White);
+            spriteBatch.Draw(bullet, bulletPosition, bulletColor);
 
 
             spriteBatch.End();
