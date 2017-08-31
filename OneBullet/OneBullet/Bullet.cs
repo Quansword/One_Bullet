@@ -8,8 +8,10 @@ namespace OneBullet
 	{
 		Texture2D bTexture;
 		public Rectangle bPosition;
-		public const int bSpeed = 15;
-		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted;
+		const int bSpeed = 15;
+		const int bAcceleration = 2;
+		int bFallVelocity;
+		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround;
 
 		public void Initialize(Texture2D texture, Rectangle position)
 		{
@@ -19,9 +21,11 @@ namespace OneBullet
 			bMoving = false;
 			bIsLoaded = true;
 			bHasRicocheted = false;
+			bOnGround = false;
+			bFallVelocity = 0;
 		}
 
-		public void Update()
+		public void Update(GraphicsDevice graphics, int bulletSize)
 		{
 			if (bMoving)
 			{
@@ -33,6 +37,50 @@ namespace OneBullet
 				{
 					bPosition.X -= bSpeed;
 				}
+			}
+			else if (!bMoving && !bOnGround && !bIsLoaded)
+			{
+				if (bDirRight)
+				{
+					if (bFallVelocity < 6)
+					{
+						bPosition.X -= 10;
+					}
+					else
+					{
+						bPosition.X -= 7;
+					}
+				}
+				else
+				{
+					if (bFallVelocity < 6)
+					{
+						bPosition.X += 10;
+					}
+					else
+					{
+						bPosition.X += 7;
+					}
+				}
+				bFallVelocity += bAcceleration;
+				bPosition.Y += bFallVelocity;
+			}
+
+			if (bPosition.X > graphics.Viewport.Width - bulletSize)
+			{
+				bPosition.X = graphics.Viewport.Width - bulletSize;
+				Wall();
+			}
+			else if (bPosition.X < 0)
+			{
+				bPosition.X = 0;
+				Wall();
+			}
+
+			if (bPosition.Y > graphics.Viewport.Height - bulletSize)
+			{
+				bPosition.Y = graphics.Viewport.Height - bulletSize;
+				bOnGround = true;
 			}
 		}
 
@@ -61,10 +109,16 @@ namespace OneBullet
 			// bIsLoaded = true;
 		}
 
+		public void Pickup()
+		{
+			bIsLoaded = true;
+			bOnGround = false;
+			bFallVelocity = 0;
+		}
+
 		public void Wall()
 		{
-			// When the bullet hits a wall
-			// bMoving = false;
+			bMoving = false;
 		}
 
 		public void Catch()

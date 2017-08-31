@@ -136,6 +136,24 @@ namespace OneBullet
 			pGunOffset = gunOffset;
 		}
 
+		public void Fire()
+		{
+			if (pBullet != null)
+			{
+				pBullet = null;
+				loaded = false;
+			}
+		}
+
+		public void Pickup(Bullet bullet)
+		{
+			if (!loaded)
+			{
+				pBullet = bullet;
+				loaded = true;
+			}
+		}
+
 		public void Hit()
 		{
 			// When a bullet hits the player

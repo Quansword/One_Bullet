@@ -105,7 +105,6 @@ namespace OneBullet
 
 			if (kState.IsKeyDown(Keys.F) && player1.loaded) // Shoot bullet
 			{
-				player1.loaded = false;
 				if (player1.pTexture == megaManXR)
 				{
 					player1.pBullet.Fire(bullet, true, player1.pGunPosition);
@@ -114,6 +113,7 @@ namespace OneBullet
 				{
 					player1.pBullet.Fire(bullet, false, player1.pGunPosition);
 				}
+				player1.Fire();
 			}
 			if (kState.IsKeyDown(Keys.A)) // Move left
 			{
@@ -133,7 +133,24 @@ namespace OneBullet
 			}
 
 			player1.Update(kState, oldKState, GraphicsDevice, charSize);
-			bullet1.Update();
+			bullet1.Update(GraphicsDevice, (int)(charSize / 3));
+
+			if (!bullet1.bMoving && !bullet1.bIsLoaded)
+			{
+				if (player1.pPosition.Intersects(bullet1.bPosition))
+				{
+					player1.Pickup(bullet1);
+					bullet1.Pickup();
+				}
+			}
+			else if (bullet1.bMoving && !bullet1.bIsLoaded)
+			{
+				if (player1.pPosition.Intersects(bullet1.bPosition))
+				{
+					player1.Hit();
+					bullet1.Hit();
+				}
+			}
 
 			oldKState = kState;
 
