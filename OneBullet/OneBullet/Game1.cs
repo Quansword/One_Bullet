@@ -69,11 +69,11 @@ namespace OneBullet
 
 			// TODO: use this.Content to load your game content here
 			Rectangle p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height - (int)charHeight, (int)charWidth, (int)charHeight);
-			Rectangle p1GunPos = new Rectangle(p1Position.X, p1Position.Y - (int)(charHeight / 3), (int)(charWidth * 0.75), (int)(charHeight / 3));
+			Rectangle p1GunPos = new Rectangle(p1Position.X, p1Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
 			int p1GunOffset = (int)charWidth / 2;
 
 			Rectangle p2Position = new Rectangle((3 * (GraphicsDevice.Viewport.Width / 4)), GraphicsDevice.Viewport.Height - (int)charHeight, (int)charWidth, (int)charHeight);
-			Rectangle p2GunPos = new Rectangle(p2Position.X, p2Position.Y + (int)(charHeight / 3), (int)(charWidth * 0.75), (int)(charHeight / 3));
+			Rectangle p2GunPos = new Rectangle(p2Position.X, p2Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
 			int p2GunOffset = -(int)charWidth / 2;
 
 			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));

@@ -142,7 +142,7 @@ namespace OneBullet
 				}
 
 				// ------------------------------------------ Falling parameters
-				if (pPosition.Y < graphics.Viewport.Height - charHeight)
+				if (pPosition.Y < graphics.Viewport.Height - (charHeight / 2))
 				{
 					onGround = false;
 					pVelocity.Y += pAcceleration;
@@ -157,20 +157,20 @@ namespace OneBullet
 				pGunPosition.X = pPosition.X + pGunOffset;
 
 				pPosition.X += (int)pVelocity.X;
-				if (pPosition.X > graphics.Viewport.Width - (int)charWidth)
+				if (pPosition.X > graphics.Viewport.Width - (int)(charWidth / 2))
 				{
-					pPosition.X = graphics.Viewport.Width - (int)charWidth;
+					pPosition.X = graphics.Viewport.Width - (int)(charWidth / 2);
 				}
-				else if (pPosition.X < 0)
+				else if (pPosition.X < (charWidth / 2))
 				{
-					pPosition.X = 0;
+					pPosition.X = (int)(charWidth / 2);
 				}
 				pPosition.Y += (int)pVelocity.Y;
-				if (pPosition.Y > graphics.Viewport.Height - (int)charHeight)
-					pPosition.Y = graphics.Viewport.Height - (int)charHeight;
+				if (pPosition.Y > graphics.Viewport.Height - (int)(charHeight / 2))
+					pPosition.Y = graphics.Viewport.Height - (int)(charHeight / 2);
 
 				pGunPosition.X += (int)pVelocity.X;
-				pGunPosition.Y = (pPosition.Y + (int)(charHeight / 3) + pLevelOffset);
+				pGunPosition.Y = (pPosition.Y + pLevelOffset);
 
 				// ------------------------------------------ Resetting values
 				pVelocity.X = 0;
@@ -181,8 +181,9 @@ namespace OneBullet
 		{
 			if (!dead)
 			{
-				spriteBatch.Draw(pTexture, pPosition, Color.White);
-				spriteBatch.Draw(pGunTexture, pGunPosition, Color.White);
+				//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
+				spriteBatch.Draw(pTexture, pPosition, null, Color.White, 0, new Vector2(pTexture.Width / 2, pTexture.Height / 2), SpriteEffects.None, 0);
+				spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, 0, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
 			}
 		}
 

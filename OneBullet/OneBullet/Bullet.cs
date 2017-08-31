@@ -82,9 +82,9 @@ namespace OneBullet
 				bPosition.Y += bFallVelocity;
 			}
 
-			if (bPosition.X > graphics.Viewport.Width - bulletSize) // hits edge of screen
+			if (bPosition.X > graphics.Viewport.Width - (bulletSize / 2)) // hits edge of screen
 			{
-				bPosition.X = graphics.Viewport.Width - bulletSize;
+				bPosition.X = graphics.Viewport.Width - (bulletSize / 2);
 				Wall();
 			}
 			else if (bPosition.X < 0)
@@ -93,9 +93,9 @@ namespace OneBullet
 				Wall();
 			}
 
-			if (bPosition.Y > graphics.Viewport.Height - bulletSize) // drops to floor
+			if (bPosition.Y > graphics.Viewport.Height - (bulletSize / 2)) // drops to floor
 			{
-				bPosition.Y = graphics.Viewport.Height - bulletSize;
+				bPosition.Y = graphics.Viewport.Height - (bulletSize / 2);
 				bOnGround = true;
 				bKill = false;
 			}
@@ -105,7 +105,8 @@ namespace OneBullet
 		{
 			if (!bIsLoaded)
 			{
-				spriteBatch.Draw(bTexture, bPosition, Color.White);
+				//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
+				spriteBatch.Draw(bTexture, bPosition, null, Color.White, 0, new Vector2(bTexture.Width / 2, bTexture.Height/2), SpriteEffects.None, 0);
 			}
 		}
 
@@ -121,7 +122,7 @@ namespace OneBullet
 			{
 				bPosition.X = position.X - 70;
 			}
-			bPosition.Y = position.Y - 10;
+			bPosition.Y = position.Y;
 			bIsLoaded = false;
 			bMoving = true;
 		}
