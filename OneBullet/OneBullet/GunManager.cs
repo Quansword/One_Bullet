@@ -74,10 +74,11 @@ namespace OneBullet
 
         public void platformChecker()
         {
-            if (p1Position.Intersects(platformPosition))
+            if (platformPosition.Contains(p1Position))
             {
                 p1Position.Y = platformPosition.Y;
                 p1Velocity.Y = 0;
+                
 
             }
         }
@@ -102,7 +103,7 @@ namespace OneBullet
 
             base.Initialize();
             p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height - (int)charSize, (int)(charSize * 1.04), (int)charSize);
-            platformPosition = new Rectangle(400, 450,600,256);
+            platformPosition = new Rectangle(400, 480,600,256);
             p1GunPosition = p1Position;
             p1GunPosition.X += (int)charSize / 2;
             p1Velocity = new Vector2(0, 0);
