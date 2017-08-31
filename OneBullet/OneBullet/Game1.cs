@@ -167,8 +167,12 @@ namespace OneBullet
 		void BulletChecks()
 		{
 			// ------------------------------------------ Setting up the catching mechanic
-			Rectangle p1CatchPosition = new Rectangle(player1.pGunPosition.X, player1.pGunPosition.Y, (int)(player1.pGunPosition.Width / 2), player1.pGunPosition.Height);
-			Rectangle p2CatchPosition = new Rectangle(player2.pGunPosition.X, player2.pGunPosition.Y, (int)(player2.pGunPosition.Width / 2), player2.pGunPosition.Height);
+			Rectangle p1CatchPosition = new Rectangle(player1.pGunPosition.X, player1.pGunPosition.Y, (int)(player1.pGunPosition.Width / 2), (3 * (player1.pGunPosition.Height / 4)));
+			Rectangle p2CatchPosition = new Rectangle(player2.pGunPosition.X, player2.pGunPosition.Y, (int)(player2.pGunPosition.Width / 2), (3 * (player2.pGunPosition.Height / 4)));
+			Rectangle p1ModPosition = player1.pPosition;
+			Rectangle p2ModPosition = player2.pPosition;
+			p1ModPosition.Y -= (int)(charHeight / 2);
+			p2ModPosition.Y -= (int)(charHeight / 2);
 
 			if (player1.pTexture == megaManXR)
 			{
@@ -196,7 +200,7 @@ namespace OneBullet
 				{
 					if (!player1.loaded)
 					{
-						if (player1.pPosition.Intersects(bullet1.bPosition))
+						if (p1ModPosition.Intersects(bullet1.bPosition))
 						{
 							player1.Pickup(bullet1);
 							bullet1.Pickup();
@@ -207,7 +211,7 @@ namespace OneBullet
 				{
 					if (!player2.loaded)
 					{
-						if (player2.pPosition.Intersects(bullet1.bPosition))
+						if (p2ModPosition.Intersects(bullet1.bPosition))
 						{
 							player2.Pickup(bullet1);
 							bullet1.Pickup();
@@ -222,7 +226,7 @@ namespace OneBullet
 				{
 					if (player1.loaded)
 					{
-						if (player1.pPosition.Intersects(bullet1.bPosition)) // Hit
+						if (p1ModPosition.Intersects(bullet1.bPosition)) // Hit
 						{
 							player1.Hit();
 							bullet1.Hit();
@@ -235,7 +239,7 @@ namespace OneBullet
 							player1.Catch(bullet1);
 							bullet1.Catch();
 						}
-						else if (player1.pPosition.Intersects(bullet1.bPosition)) // Hit
+						else if (p1ModPosition.Intersects(bullet1.bPosition)) // Hit
 						{
 							player1.Hit();
 							bullet1.Hit();
@@ -246,7 +250,7 @@ namespace OneBullet
 				{
 					if (player2.loaded)
 					{
-						if (player2.pPosition.Intersects(bullet1.bPosition)) // Hit
+						if (p2ModPosition.Intersects(bullet1.bPosition)) // Hit
 						{
 							player2.Hit();
 							bullet1.Hit();
@@ -259,7 +263,7 @@ namespace OneBullet
 							player2.Catch(bullet1);
 							bullet1.Catch();
 						}
-						else if (player2.pPosition.Intersects(bullet1.bPosition)) // Hit
+						else if (p2ModPosition.Intersects(bullet1.bPosition)) // Hit
 						{
 							player2.Hit();
 							bullet1.Hit();
@@ -275,7 +279,7 @@ namespace OneBullet
 				{
 					if (!player1.loaded)
 					{
-						if (player1.pPosition.Intersects(bullet2.bPosition))
+						if (p1ModPosition.Intersects(bullet2.bPosition))
 						{
 							player1.Pickup(bullet2);
 							bullet2.Pickup();
@@ -286,7 +290,7 @@ namespace OneBullet
 				{
 					if (!player2.loaded)
 					{
-						if (player2.pPosition.Intersects(bullet2.bPosition))
+						if (p2ModPosition.Intersects(bullet2.bPosition))
 						{
 							player2.Pickup(bullet2);
 							bullet2.Pickup();
@@ -301,7 +305,7 @@ namespace OneBullet
 				{
 					if (player1.loaded)
 					{
-						if (player1.pPosition.Intersects(bullet2.bPosition)) // Hit
+						if (p1ModPosition.Intersects(bullet2.bPosition)) // Hit
 						{
 							player1.Hit();
 							bullet2.Hit();
@@ -314,7 +318,7 @@ namespace OneBullet
 							player1.Catch(bullet2);
 							bullet2.Catch();
 						}
-						else if (player1.pPosition.Intersects(bullet2.bPosition)) // Hit
+						else if (p1ModPosition.Intersects(bullet2.bPosition)) // Hit
 						{
 							player1.Hit();
 							bullet2.Hit();
@@ -325,7 +329,7 @@ namespace OneBullet
 				{
 					if (player2.loaded)
 					{
-						if (player2.pPosition.Intersects(bullet2.bPosition)) // Hit
+						if (p2ModPosition.Intersects(bullet2.bPosition)) // Hit
 						{
 							player2.Hit();
 							bullet2.Hit();
@@ -338,7 +342,7 @@ namespace OneBullet
 							player2.Catch(bullet2);
 							bullet2.Catch();
 						}
-						else if (player2.pPosition.Intersects(bullet2.bPosition)) // Hit
+						else if (p2ModPosition.Intersects(bullet2.bPosition)) // Hit
 						{
 							player2.Hit();
 							bullet2.Hit();
