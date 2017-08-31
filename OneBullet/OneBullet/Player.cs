@@ -15,7 +15,7 @@ namespace OneBullet
 		public int pGunOffset;
 		const int pAcceleration = 3;
 		public bool onGround, jumping, loaded, dead;
-		Keys jump, lowerGun, raiseGun;
+		Keys jump, lowerGun, raiseGun, shoot, left, right;
 		int playerNum;
 
 		public Bullet pBullet;
@@ -47,21 +47,55 @@ namespace OneBullet
 			pLevelOffset = 0;
 		}
 
-		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, double charWidth, double charHeight)
+		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, double charWidth, double charHeight, Texture2D bullet, Texture2D texRight, Texture2D texLeft, Texture2D gunR, Texture2D gunL)
 		{
 			if (playerNum == 1)
 			{
+				shoot = Keys.F;
+				left = Keys.A;
+				right = Keys.D;
 				jump = Keys.G;
 				lowerGun = Keys.S;
 				raiseGun = Keys.W;
 			}
 			else if (playerNum == 2)
 			{
+				shoot = Keys.NumPad1;
+				left = Keys.Left;
+				right = Keys.Right;
 				jump = Keys.NumPad2;
 				lowerGun = Keys.Down;
 				raiseGun = Keys.Up;
 			}
 
+			if (kState.IsKeyDown(shoot) && loaded && oldKState.IsKeyUp(shoot)) // Shoot bullet
+			{
+				if (pTexture == texRight)
+				{
+					pBullet.Fire(bullet, true, pGunPosition);
+				}
+				else
+				{
+					pBullet.Fire(bullet, false, pGunPosition);
+				}
+				Fire();
+			}
+			if (kState.IsKeyDown(left)) // Move left
+			{
+				pVelocity.X -= 10;
+				if (pTexture == texRight)
+				{
+					Turn(texLeft, gunL, -(int)charWidth / 2);
+				}
+			}
+			if (kState.IsKeyDown(right)) // Move right
+			{
+				pVelocity.X += 10;
+				if (pTexture == texLeft)
+				{
+					Turn(texRight, gunR, (int)charWidth / 2);
+				}
+			}
 			if (kState.IsKeyDown(jump)) // Jump
 			{
 				if (onGround && !jumping)

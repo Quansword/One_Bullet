@@ -120,70 +120,10 @@ namespace OneBullet
 			// ------------------------------------------ Keyboard inputs
 			kState = Keyboard.GetState();
 
-			// ------------------------------------------ Player 1 inputs
-			if (kState.IsKeyDown(Keys.F) && player1.loaded && oldKState.IsKeyUp(Keys.F)) // Shoot bullet
-			{
-				if (player1.pTexture == megaManXR)
-				{
-					player1.pBullet.Fire(bullet, true, player1.pGunPosition);
-				}
-				else
-				{
-					player1.pBullet.Fire(bullet, false, player1.pGunPosition);
-				}
-				player1.Fire();
-			}
-			if (kState.IsKeyDown(Keys.A)) // Move left
-			{
-				player1.pVelocity.X -= 10;
-				if (player1.pTexture == megaManXR)
-				{
-					player1.Turn(megaManXL, gunL, -(int)charWidth / 2);
-				}
-			}
-			if (kState.IsKeyDown(Keys.D)) // Move right
-			{
-				player1.pVelocity.X += 10;
-				if (player1.pTexture == megaManXL)
-				{
-					player1.Turn(megaManXR, gunR, (int)charWidth / 2);
-				}
-			}
-
-			// ------------------------------------------ Player 2 inputs
-			if (kState.IsKeyDown(Keys.NumPad1) && player2.loaded && oldKState.IsKeyUp(Keys.NumPad1)) // Shoot bullet
-			{
-				if (player2.pTexture == zeroR)
-				{
-					player2.pBullet.Fire(bullet, true, player2.pGunPosition);
-				}
-				else
-				{
-					player2.pBullet.Fire(bullet, false, player2.pGunPosition);
-				}
-				player2.Fire();
-			}
-			if (kState.IsKeyDown(Keys.Left)) // Move left
-			{
-				player2.pVelocity.X -= 10;
-				if (player2.pTexture == zeroR)
-				{
-					player2.Turn(zeroL, gunL, -(int)charWidth / 2);
-				}
-			}
-			if (kState.IsKeyDown(Keys.Right)) // Move right
-			{
-				player2.pVelocity.X += 10;
-				if (player2.pTexture == zeroL)
-				{
-					player2.Turn(zeroR, gunR, (int)charWidth / 2);
-				}
-			}
-
 			// ------------------------------------------ Updates
 
-			player1.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight);
-			player2.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight);
+			player1.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight, bullet, megaManXR, megaManXL, gunR, gunL);
+			player2.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight, bullet, zeroR, zeroL, gunR, gunL);
 			bullet1.Update(GraphicsDevice, (int)(charHeight / 3));
 			bullet2.Update(GraphicsDevice, (int)(charHeight / 3));
 
