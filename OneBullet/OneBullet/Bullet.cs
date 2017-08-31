@@ -8,7 +8,7 @@ namespace OneBullet
 	{
 		Texture2D bTexture;
 		public Rectangle bPosition;
-		const int bSpeed = 15;
+		const int bSpeed = 12;
 		const int bAcceleration = 2;
 		int bFallVelocity;
 		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill;
