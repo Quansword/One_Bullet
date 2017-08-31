@@ -145,7 +145,7 @@
 /processorParam:TextureFormat=Color
 /build:BulletL.png
 
-#begin p2L.png
+#begin placeholderGun_Left.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -155,9 +155,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:p2L.png
+/build:placeholderGun_Left.png
 
-#begin p2R.png
+#begin placeholderGun_Right.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -167,9 +167,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:p2R.png
+/build:placeholderGun_Right.png
 
-#begin p2GunR.png
+#begin placeholder_Left.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -179,9 +179,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:p2GunR.png
+/build:placeholder_Left.png
 
-#begin p2GunL.png
+#begin placeholder_right.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -191,5 +191,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:p2GunL.png
+/build:placeholder_right.png
 
