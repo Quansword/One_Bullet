@@ -32,6 +32,7 @@ namespace OneBullet
         bool p1HasBullet;
         bool p2BulletMoving;
         bool p2HasBullet;
+        bool nothing;
 
         KeyboardState kState;
         private KeyboardState oldKState;
