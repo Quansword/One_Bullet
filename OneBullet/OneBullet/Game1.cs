@@ -186,7 +186,7 @@ namespace OneBullet
 			// ------------------------------------------ Checking for pickup
 			if (!bullet1.bMoving && !bullet1.bIsLoaded)
 			{
-				if (!player1.loaded)
+				if (!player1.loaded && !player1.dead)
 				{
 					if (player1.pPosition.Intersects(bullet1.bPosition))
 					{
@@ -194,7 +194,7 @@ namespace OneBullet
 						bullet1.Pickup();
 					}
 				}
-				if (!player2.loaded)
+				if (!player2.loaded && !player2.dead)
 				{
 					if (player2.pPosition.Intersects(bullet1.bPosition))
 					{
@@ -206,7 +206,7 @@ namespace OneBullet
 			// ------------------------------------------ Checking for hit or catch
 			else if (bullet1.bMoving && !bullet1.bIsLoaded)
 			{
-				if (player1.loaded)
+				if (player1.loaded && !player1.dead)
 				{
 					if (player1.pPosition.Intersects(bullet1.bPosition)) // Hit
 					{
@@ -214,7 +214,7 @@ namespace OneBullet
 						bullet1.Hit();
 					}
 				}
-				else
+				else if (!player1.loaded)
 				{
 					if (p1CatchPosition.Intersects(bullet1.bPosition)) // Catch
 					{
@@ -227,7 +227,7 @@ namespace OneBullet
 						bullet1.Hit();
 					}
 				}
-				if (player2.loaded)
+				if (player2.loaded && !player2.dead)
 				{
 					if (player2.pPosition.Intersects(bullet1.bPosition)) // Hit
 					{
@@ -235,7 +235,7 @@ namespace OneBullet
 						bullet1.Hit();
 					}
 				}
-				else
+				else if (!player2.loaded)
 				{
 					if (p2CatchPosition.Intersects(bullet1.bPosition)) // Catch
 					{
@@ -253,7 +253,7 @@ namespace OneBullet
 			// ------------------------------------------ Checking for pickup
 			if (!bullet2.bMoving && !bullet2.bIsLoaded)
 			{
-				if (!player1.loaded)
+				if (!player1.loaded && !player1.dead)
 				{
 					if (player1.pPosition.Intersects(bullet2.bPosition))
 					{
@@ -261,7 +261,7 @@ namespace OneBullet
 						bullet2.Pickup();
 					}
 				}
-				if (!player2.loaded)
+				if (!player2.loaded && !player2.dead)
 				{
 					if (player2.pPosition.Intersects(bullet2.bPosition))
 					{
@@ -273,7 +273,7 @@ namespace OneBullet
 			// ------------------------------------------ Checking for hit or catch
 			else if (bullet2.bMoving && !bullet2.bIsLoaded)
 			{
-				if (player1.loaded)
+				if (player1.loaded && !player1.dead)
 				{
 					if (player1.pPosition.Intersects(bullet2.bPosition)) // Hit
 					{
@@ -281,7 +281,7 @@ namespace OneBullet
 						bullet2.Hit();
 					}
 				}
-				else
+				else if (!player1.loaded)
 				{
 					if (p1CatchPosition.Intersects(bullet2.bPosition)) // Catch
 					{
@@ -294,7 +294,7 @@ namespace OneBullet
 						bullet2.Hit();
 					}
 				}
-				if (player2.loaded)
+				if (player2.loaded && !player2.dead)
 				{
 					if (player2.pPosition.Intersects(bullet2.bPosition)) // Hit
 					{
@@ -302,7 +302,7 @@ namespace OneBullet
 						bullet2.Hit();
 					}
 				}
-				else
+				else if (!player2.loaded)
 				{
 					if (p2CatchPosition.Intersects(bullet2.bPosition)) // Catch
 					{

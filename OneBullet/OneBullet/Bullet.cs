@@ -97,6 +97,7 @@ namespace OneBullet
 			{
 				bPosition.Y = graphics.Viewport.Height - bulletSize;
 				bOnGround = true;
+				bKill = false;
 			}
 		}
 
