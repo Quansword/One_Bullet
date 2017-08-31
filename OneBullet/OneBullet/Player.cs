@@ -14,7 +14,9 @@ namespace OneBullet
 		public int pLevelOffset;
 		public int pGunOffset;
 		const int pAcceleration = 3;
-		public bool onGround, jumping, loaded;
+		public bool onGround, jumping, loaded, dead;
+		Keys jump, lowerGun, raiseGun;
+		int playerNum;
 
 		public Bullet pBullet;
 
@@ -27,25 +29,40 @@ namespace OneBullet
 
 		public GunLevel level = GunLevel.Mid;
 
-		public void Initialize(Texture2D texture, Texture2D gunTexture, Rectangle position, int gunOffset, Bullet bullet)
+		public void Initialize(Texture2D texture, Texture2D gunTexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum)
 		{
 			pTexture = texture;
 			pGunTexture = gunTexture;
 			pPosition = position;
 			pGunOffset = gunOffset;
-			pGunPosition = pPosition;
-			pGunPosition.X = pPosition.X + gunOffset;
+			pGunPosition = gunPosition;
+			pGunPosition.X += pGunOffset;
 			pBullet = bullet;
+			playerNum = pNum;
 			pVelocity = new Vector2(0, 0);
 			onGround = true;
 			jumping = false;
 			loaded = true;
+			dead = false;
 			pLevelOffset = 0;
 		}
 
-		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, double charSize)
+		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, double charWidth, double charHeight)
 		{
-			if (kState.IsKeyDown(Keys.G)) // Jump
+			if (playerNum == 1)
+			{
+				jump = Keys.G;
+				lowerGun = Keys.S;
+				raiseGun = Keys.W;
+			}
+			else if (playerNum == 2)
+			{
+				jump = Keys.NumPad2;
+				lowerGun = Keys.Down;
+				raiseGun = Keys.Up;
+			}
+
+			if (kState.IsKeyDown(jump)) // Jump
 			{
 				if (onGround && !jumping)
 				{
@@ -57,11 +74,11 @@ namespace OneBullet
 					pVelocity.Y -= 1;
 				}
 			}
-			if (kState.IsKeyUp(Keys.G) && oldKState.IsKeyDown(Keys.G))
+			if (kState.IsKeyUp(jump) && oldKState.IsKeyDown(jump))
 			{
 				jumping = false;
 			}
-			if (kState.IsKeyDown(Keys.W) && oldKState.IsKeyUp(Keys.W)) // Change gun level
+			if (kState.IsKeyDown(raiseGun) && oldKState.IsKeyUp(raiseGun)) // Change gun level
 			{
 				if (level == Player.GunLevel.Low)
 				{
@@ -71,10 +88,10 @@ namespace OneBullet
 				else if (level == Player.GunLevel.Mid)
 				{
 					level = Player.GunLevel.High;
-					pLevelOffset = -((int)charSize / 4);
+					pLevelOffset = -((int)charHeight / 4);
 				}
 			}
-			if (kState.IsKeyDown(Keys.S) && oldKState.IsKeyUp(Keys.S)) // Change gun level
+			if (kState.IsKeyDown(lowerGun) && oldKState.IsKeyUp(lowerGun)) // Change gun level
 			{
 				if (level == Player.GunLevel.High)
 				{
@@ -84,12 +101,12 @@ namespace OneBullet
 				else if (level == Player.GunLevel.Mid)
 				{
 					level = Player.GunLevel.Low;
-					pLevelOffset = (int)charSize / 4;
+					pLevelOffset = (int)charHeight / 4;
 				}
 			}
 
 			// ------------------------------------------ Falling parameters
-			if (pPosition.Y < graphics.Viewport.Height - charSize)
+			if (pPosition.Y < graphics.Viewport.Height - charHeight)
 			{
 				onGround = false;
 				pVelocity.Y += pAcceleration;
@@ -104,20 +121,20 @@ namespace OneBullet
 			pGunPosition.X = pPosition.X + pGunOffset;
 
 			pPosition.X += (int)pVelocity.X;
-			if (pPosition.X > graphics.Viewport.Width - (int)charSize)
+			if (pPosition.X > graphics.Viewport.Width - (int)charWidth)
 			{
-				pPosition.X = graphics.Viewport.Width - (int)charSize;
+				pPosition.X = graphics.Viewport.Width - (int)charWidth;
 			}
 			else if (pPosition.X < 0)
 			{
 				pPosition.X = 0;
 			}
 			pPosition.Y += (int)pVelocity.Y;
-			if (pPosition.Y > graphics.Viewport.Height - (int)charSize)
-				pPosition.Y = graphics.Viewport.Height - (int)charSize;
+			if (pPosition.Y > graphics.Viewport.Height - (int)charHeight)
+				pPosition.Y = graphics.Viewport.Height - (int)charHeight;
 
 			pGunPosition.X += (int)pVelocity.X;
-			pGunPosition.Y = pPosition.Y + pLevelOffset;
+			pGunPosition.Y = (pPosition.Y + (int)(charHeight / 3) + pLevelOffset);
 
 			// ------------------------------------------ Resetting values
 			pVelocity.X = 0;
@@ -125,8 +142,11 @@ namespace OneBullet
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw(pTexture, pPosition, Color.White);
-			spriteBatch.Draw(pGunTexture, pGunPosition, Color.White);
+			if (!dead)
+			{
+				spriteBatch.Draw(pTexture, pPosition, Color.White);
+				spriteBatch.Draw(pGunTexture, pGunPosition, Color.White);
+			}
 		}
 
 		public void Turn(Texture2D texture, Texture2D gunTexture, int gunOffset)
@@ -138,7 +158,7 @@ namespace OneBullet
 
 		public void Fire()
 		{
-			if (pBullet != null)
+			if (pBullet != null && !dead)
 			{
 				pBullet = null;
 				loaded = false;
@@ -147,7 +167,20 @@ namespace OneBullet
 
 		public void Pickup(Bullet bullet)
 		{
-			if (!loaded)
+			if (!loaded && !dead)
+			{
+				pBullet = bullet;
+				loaded = true;
+			}
+		}
+
+		public void Catch(Bullet bullet)
+		{
+			if (loaded && !dead)
+			{
+				Hit();
+			}
+			else
 			{
 				pBullet = bullet;
 				loaded = true;
@@ -156,7 +189,7 @@ namespace OneBullet
 
 		public void Hit()
 		{
-			// When a bullet hits the player
+			dead = true;
 		}
 	}
 }

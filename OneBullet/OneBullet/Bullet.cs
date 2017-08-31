@@ -11,7 +11,7 @@ namespace OneBullet
 		const int bSpeed = 15;
 		const int bAcceleration = 2;
 		int bFallVelocity;
-		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround;
+		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill;
 
 		public void Initialize(Texture2D texture, Rectangle position)
 		{
@@ -22,6 +22,7 @@ namespace OneBullet
 			bIsLoaded = true;
 			bHasRicocheted = false;
 			bOnGround = false;
+			bKill = false;
 			bFallVelocity = 0;
 		}
 
@@ -38,7 +39,7 @@ namespace OneBullet
 					bPosition.X -= bSpeed;
 				}
 			}
-			else if (!bMoving && !bOnGround && !bIsLoaded)
+			else if (!bMoving && !bOnGround && !bIsLoaded && !bKill)
 			{
 				if (bDirRight)
 				{
@@ -61,6 +62,21 @@ namespace OneBullet
 					{
 						bPosition.X += 7;
 					}
+				}
+				bFallVelocity += bAcceleration;
+				bPosition.Y += bFallVelocity;
+			}
+			else if (!bMoving && !bOnGround && !bIsLoaded && bKill)
+			{
+				if (bDirRight)
+				{
+					if (bFallVelocity < 8)
+						bPosition.X += bSpeed;
+				}
+				else
+				{
+					if (bFallVelocity < 8)
+						bPosition.X -= bSpeed;
 				}
 				bFallVelocity += bAcceleration;
 				bPosition.Y += bFallVelocity;
@@ -96,17 +112,23 @@ namespace OneBullet
 		{
 			bTexture = texture;
 			bDirRight = dirRight;
-			bPosition.X = position.X;
-			bPosition.Y = position.Y + 20; // temporary height fix with the +20
+			if (bDirRight)
+			{
+				bPosition.X = position.X + 100;
+			}
+			else
+			{
+				bPosition.X = position.X - 70;
+			}
+			bPosition.Y = position.Y - 10;
 			bIsLoaded = false;
 			bMoving = true;
 		}
 
 		public void Hit()
 		{
-			// When the bullet hits a player
-			// bMoving = false;
-			// bIsLoaded = true;
+			bMoving = false;
+			bKill = true;
 		}
 
 		public void Pickup()
@@ -123,9 +145,8 @@ namespace OneBullet
 
 		public void Catch()
 		{
-			// When bullet is caught
-			// bMoving = false;
-			// bIsLoaded = true;
+			bMoving = false;
+			bIsLoaded = true;
 		}
 
 		public void Ricochet(Texture2D texture)
@@ -133,6 +154,23 @@ namespace OneBullet
 			// When the bullet ricochets
 			// if bHasRicocheted is false
 			// change texture to opposite direction texture
+		}
+
+		public void Dead(Texture2D texture, bool dirRight, Rectangle position)
+		{
+			bTexture = texture;
+			bDirRight = dirRight;
+			if (bDirRight)
+			{
+				bPosition.X = position.X + 100;
+			}
+			else
+			{
+				bPosition.X = position.X - 70;
+			}
+			bPosition.Y = position.Y - 10;
+			bIsLoaded = false;
+			bMoving = false;
 		}
 	}
 }
