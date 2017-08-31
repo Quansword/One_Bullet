@@ -14,7 +14,9 @@ namespace OneBullet
 		public int pLevelOffset;
 		public int pGunOffset;
 		const int pAcceleration = 3;
-		public bool onGround, jumping;
+		public bool onGround, jumping, loaded;
+
+		public Bullet pBullet;
 
 		public enum GunLevel
 		{
@@ -25,7 +27,7 @@ namespace OneBullet
 
 		public GunLevel level = GunLevel.Mid;
 
-		public void Initialize(Texture2D texture, Texture2D gunTexture, Rectangle position, int gunOffset)
+		public void Initialize(Texture2D texture, Texture2D gunTexture, Rectangle position, int gunOffset, Bullet bullet)
 		{
 			pTexture = texture;
 			pGunTexture = gunTexture;
@@ -33,9 +35,11 @@ namespace OneBullet
 			pGunOffset = gunOffset;
 			pGunPosition = pPosition;
 			pGunPosition.X = pPosition.X + gunOffset;
+			pBullet = bullet;
 			pVelocity = new Vector2(0, 0);
 			onGround = true;
 			jumping = false;
+			loaded = true;
 			pLevelOffset = 0;
 		}
 
@@ -130,6 +134,11 @@ namespace OneBullet
 			pTexture = texture;
 			pGunTexture = gunTexture;
 			pGunOffset = gunOffset;
+		}
+
+		public void Hit()
+		{
+			// When a bullet hits the player
 		}
 	}
 }

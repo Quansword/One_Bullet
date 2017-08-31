@@ -12,10 +12,10 @@ namespace OneBullet
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 		Player player1;
-		Texture2D megaManXR;
-		Texture2D megaManXL;
-		Texture2D p1GunR;
-		Texture2D p1GunL;
+		Bullet bullet1;
+		Texture2D megaManXR, megaManXL;
+		Texture2D p1GunR, p1GunL;
+		Texture2D bullet;
 		const int pAcceleration = 3;
 		double charSize;
 		KeyboardState kState;
@@ -26,6 +26,8 @@ namespace OneBullet
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
+			// Resolution independence
+			//Vector2 virtualScreen = new Vector2(1280, 720);
 			//graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
 			//graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 			graphics.PreferredBackBufferWidth = 1280;
@@ -46,6 +48,7 @@ namespace OneBullet
 		{
 			// TODO: Add your initialization logic here
 			player1 = new Player();
+			bullet1 = new Bullet();
 			base.Initialize();
 			
 		}
@@ -63,12 +66,17 @@ namespace OneBullet
 			Rectangle p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height - (int)charSize, (int)(charSize * 1.04), (int)charSize);
 			int p1GunOffset = (int)charSize / 2;
 
+			Rectangle b1Position = new Rectangle(-100, -100, (int)(charSize / 3), (int)(charSize / 3));
+
 			megaManXR = Content.Load<Texture2D>("MegaManX_Right");
 			megaManXL = Content.Load<Texture2D>("MegaManX_Left");
 			p1GunR = Content.Load<Texture2D>("gun_right");
 			p1GunL = Content.Load<Texture2D>("gun_left");
 
-			player1.Initialize(megaManXR, p1GunR, p1Position, p1GunOffset);
+			bullet = Content.Load<Texture2D>("shot_poulpi");
+
+			bullet1.Initialize(bullet, b1Position);
+			player1.Initialize(megaManXR, p1GunR, p1Position, p1GunOffset, bullet1);
 		}
 
 		/// <summary>
@@ -95,6 +103,18 @@ namespace OneBullet
 			// ------------------------------------------ Keyboard inputs
 			kState = Keyboard.GetState();
 
+			if (kState.IsKeyDown(Keys.F) && player1.loaded) // Shoot bullet
+			{
+				player1.loaded = false;
+				if (player1.pTexture == megaManXR)
+				{
+					player1.pBullet.Fire(bullet, true, player1.pGunPosition);
+				}
+				else
+				{
+					player1.pBullet.Fire(bullet, false, player1.pGunPosition);
+				}
+			}
 			if (kState.IsKeyDown(Keys.A)) // Move left
 			{
 				player1.pVelocity.X -= 10;
@@ -113,6 +133,7 @@ namespace OneBullet
 			}
 
 			player1.Update(kState, oldKState, GraphicsDevice, charSize);
+			bullet1.Update();
 
 			oldKState = kState;
 
@@ -130,6 +151,7 @@ namespace OneBullet
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
 			player1.Draw(spriteBatch);
+			bullet1.Draw(spriteBatch);
 			spriteBatch.End();
 
 			base.Draw(gameTime);
