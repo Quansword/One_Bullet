@@ -17,10 +17,12 @@ namespace OneBullet
         Texture2D p1Sprite;
         Texture2D p1TempDirection;
         Texture2D bullet;
+        Texture2D platform;
 
         Rectangle bulletPosition;
         Rectangle p1Position;
         Rectangle p1GunPosition;
+        Rectangle platformPosition;
         Vector2 p1Velocity;
 
         int p1LevelOffset;
@@ -45,11 +47,9 @@ namespace OneBullet
 
         GunLevel level = GunLevel.Mid;
 
+        //speed and direction bullet is moving when fired
         public void bulletMovement()
         {
-
-
-
             if(p1BulletMoving == true && p1TempDirection == megaManXR)
             {
                 p1HasBullet = false;
@@ -69,6 +69,17 @@ namespace OneBullet
 
             }
 
+        }
+
+
+        public void platformChecker()
+        {
+            if (p1Position.Intersects(platformPosition))
+            {
+                p1Position.Y = platformPosition.Y;
+                p1Velocity.Y = 0;
+
+            }
         }
 
         public GunManager()
@@ -91,6 +102,7 @@ namespace OneBullet
 
             base.Initialize();
             p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height - (int)charSize, (int)(charSize * 1.04), (int)charSize);
+            platformPosition = new Rectangle(400, 450,600,256);
             p1GunPosition = p1Position;
             p1GunPosition.X += (int)charSize / 2;
             p1Velocity = new Vector2(0, 0);
@@ -110,6 +122,7 @@ namespace OneBullet
             p1GunR = Content.Load<Texture2D>("gunR");
             p1GunL = Content.Load<Texture2D>("gunL");
             bullet = Content.Load<Texture2D>("shot_poulpi");
+            platform = Content.Load<Texture2D>("square");
             p1GunSprite = p1GunR;
             p1Sprite = megaManXR;
         }
@@ -124,6 +137,7 @@ namespace OneBullet
         protected override void Update(GameTime gameTime)
         {
 
+            //checks to see if bullet was fired and what direction the player was facing
             if (kState.IsKeyDown(Keys.F) && p1HasBullet == true) // move bullet
             {
                 p1BulletMoving = true;
@@ -131,6 +145,7 @@ namespace OneBullet
             }
 
             bulletMovement();
+            platformChecker();
             //////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////
@@ -242,13 +257,15 @@ namespace OneBullet
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+            spriteBatch.Draw(platform, platformPosition, Color.White);
             spriteBatch.Draw(p1Sprite, p1Position, Color.White);
             spriteBatch.Draw(p1GunSprite, p1GunPosition, Color.White);
             spriteBatch.Draw(bullet, bulletPosition, Color.White);
+
 
             spriteBatch.End();
 
