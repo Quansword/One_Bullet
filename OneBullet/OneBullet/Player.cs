@@ -45,6 +45,7 @@ namespace OneBullet
 			loaded = true;
 			dead = false;
 			pLevelOffset = 0;
+           
 		}
 
 		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, double charWidth, double charHeight, Texture2D bullet, Texture2D texRight, Texture2D texLeft, Texture2D gunR, Texture2D gunL)
@@ -105,7 +106,8 @@ namespace OneBullet
 						pVelocity.Y -= 30;
 						jumping = true;
 					}
-					else if (!onGround && jumping && pVelocity.Y < 0)
+
+                    else if (!onGround && jumping && pVelocity.Y < 0)
 					{
 						pVelocity.Y -= 1;
 					}

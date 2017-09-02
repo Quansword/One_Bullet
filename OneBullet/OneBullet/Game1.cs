@@ -13,7 +13,8 @@ namespace OneBullet
 		SpriteBatch spriteBatch;
 		Player player1, player2;
 		Bullet bullet1, bullet2;
-		Texture2D background, backgroundElements;
+        Stage background, platform;
+		Texture2D bg, bgElements;
 		Texture2D megaManXR, megaManXL;
 		Texture2D zeroR, zeroL;
 		Texture2D gunR, gunL;
@@ -54,14 +55,13 @@ namespace OneBullet
 			player2 = new Player();
 			bullet1 = new Bullet();
 			bullet2 = new Bullet();
+            background = new Stage();
+            platform = new Stage();
 			base.Initialize();
 			
 		}
 
-		/// <summary>
-		/// LoadContent will be called once per game and is the place to load
-		/// all of your content.
-		/// </summary>
+
 		protected override void LoadContent()
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
@@ -79,37 +79,30 @@ namespace OneBullet
 			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 			Rectangle b2Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 
-			background = Content.Load<Texture2D>("background1");
-			backgroundElements = Content.Load<Texture2D>("background1Elements");
+			bg = Content.Load<Texture2D>("background1");
+		    bgElements = Content.Load<Texture2D>("background1Elements");
 			megaManXR = Content.Load<Texture2D>("MegaManX_Right");
 			megaManXL = Content.Load<Texture2D>("MegaManX_Left");
 			zeroR = Content.Load<Texture2D>("Zero_Right");
 			zeroL = Content.Load<Texture2D>("Zero_Left");
 			gunR = Content.Load<Texture2D>("gun_right");
 			gunL = Content.Load<Texture2D>("gun_left");
-
 			bullet = Content.Load<Texture2D>("shot_poulpi");
 
 			bullet1.Initialize(bullet, b1Position);
 			bullet2.Initialize(bullet, b1Position);
 			player1.Initialize(megaManXR, gunR, p1Position, p1GunPos, p1GunOffset, bullet1, 1);
 			player2.Initialize(zeroL, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2);
+            background.Initialize(bg);
+            platform.Initialize(bgElements);
 		}
 
-		/// <summary>
-		/// UnloadContent will be called once per game and is the place to unload
-		/// game-specific content.
-		/// </summary>
 		protected override void UnloadContent()
 		{
 			// TODO: Unload any non ContentManager content here
 		}
 
-		/// <summary>
-		/// Allows the game to run logic such as updating the world,
-		/// checking for collisions, gathering input, and playing audio.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
+
 		protected override void Update(GameTime gameTime)
 		{
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -361,22 +354,23 @@ namespace OneBullet
 			}
 		}
 
-		/// <summary>
-		/// This is called when the game should draw itself.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
+
 		protected override void Draw(GameTime gameTime)
 		{
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
-			spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-			spriteBatch.Draw(backgroundElements, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-			player1.Draw(spriteBatch);
+            //spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            //spriteBatch.Draw(backgroundElements, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            platform.Draw(spriteBatch);
+            background.Draw(spriteBatch);
+            player1.Draw(spriteBatch);
 			player2.Draw(spriteBatch);
 			bullet1.Draw(spriteBatch);
 			bullet2.Draw(spriteBatch);
+     
+            
 			spriteBatch.End();
 
 			base.Draw(gameTime);
