@@ -17,8 +17,10 @@ namespace OneBullet
 		public bool onGround, jumping, loaded, dead;
 		Keys jump, lowerGun, raiseGun, shoot, left, right;
 		int playerNum;
+        public Rectangle platform1Pos = new Rectangle(400, 500, 200, 200);
 
-		public Bullet pBullet;
+
+        public Bullet pBullet;
 
 		public enum GunLevel
 		{
@@ -106,6 +108,12 @@ namespace OneBullet
 						pVelocity.Y -= 30;
 						jumping = true;
 					}
+
+                    else if (platform1Pos.Contains(pPosition) && !jumping)
+                    {
+                        pPosition.Y -= 30;
+                        jumping = true;
+                    }
 
                     else if (!onGround && jumping && pVelocity.Y < 0)
 					{
@@ -237,5 +245,6 @@ namespace OneBullet
 		{
 			dead = true;
 		}
+
 	}
 }

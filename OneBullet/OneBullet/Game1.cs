@@ -13,8 +13,8 @@ namespace OneBullet
 		SpriteBatch spriteBatch;
 		Player player1, player2;
 		Bullet bullet1, bullet2;
-        Stage background, platform;
-		Texture2D bg, bgElements;
+        Platforms platform1;
+		Texture2D background, bgElements;
 		Texture2D megaManXR, megaManXL;
 		Texture2D zeroR, zeroL;
 		Texture2D gunR, gunL;
@@ -24,7 +24,8 @@ namespace OneBullet
 		KeyboardState kState;
 		private KeyboardState oldKState;
 
-		public Game1()
+
+        public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
@@ -55,9 +56,8 @@ namespace OneBullet
 			player2 = new Player();
 			bullet1 = new Bullet();
 			bullet2 = new Bullet();
-            background = new Stage();
-            platform = new Stage();
-			base.Initialize();
+            platform1 = new Platforms();
+            base.Initialize();
 			
 		}
 
@@ -79,8 +79,8 @@ namespace OneBullet
 			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 			Rectangle b2Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 
-			bg = Content.Load<Texture2D>("background1");
-		    bgElements = Content.Load<Texture2D>("background1Elements");
+			background = Content.Load<Texture2D>("background1");
+		    bgElements = Content.Load<Texture2D>("square");
 			megaManXR = Content.Load<Texture2D>("MegaManX_Right");
 			megaManXL = Content.Load<Texture2D>("MegaManX_Left");
 			zeroR = Content.Load<Texture2D>("Zero_Right");
@@ -93,8 +93,7 @@ namespace OneBullet
 			bullet2.Initialize(bullet, b1Position);
 			player1.Initialize(megaManXR, gunR, p1Position, p1GunPos, p1GunOffset, bullet1, 1);
 			player2.Initialize(zeroL, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2);
-            background.Initialize(bg);
-            platform.Initialize(bgElements);
+            platform1.Initialize(bgElements);
 		}
 
 		protected override void UnloadContent()
@@ -361,16 +360,12 @@ namespace OneBullet
 
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
-            //spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-            //spriteBatch.Draw(backgroundElements, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-            platform.Draw(spriteBatch);
-            background.Draw(spriteBatch);
+            spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            platform1.Draw(spriteBatch);
             player1.Draw(spriteBatch);
 			player2.Draw(spriteBatch);
 			bullet1.Draw(spriteBatch);
 			bullet2.Draw(spriteBatch);
-     
-            
 			spriteBatch.End();
 
 			base.Draw(gameTime);
