@@ -9,18 +9,18 @@ namespace OneBullet
     /// </summary>
     public class Platforms
     {
-        Texture2D platform1;
-        Player player1;
-        public Rectangle platform1Pos = new Rectangle(400, 500, 200, 200);
+        Texture2D texture;
+        Vector2 position;
+        public Rectangle rectangle;
 
 
 
-        public void Initialize(Texture2D stageTexture)
+        public Platforms(Texture2D stageTexture, Vector2 newPosition)
         {
-            platform1 = stageTexture;
-           // player1 = new Player();
+            texture = stageTexture;
+            position = newPosition;
+            rectangle = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
         }
-
 
        /*  public void Update(GameTime gameTime)
         {
@@ -34,7 +34,7 @@ namespace OneBullet
         public void Draw(SpriteBatch spriteBatch)
         {
             // TODO: Add your drawing code here
-            spriteBatch.Draw(platform1, platform1Pos, Color.White);
+            spriteBatch.Draw(texture, rectangle, Color.White);
 
 
         }

@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+
+
 
 namespace OneBullet
 {
@@ -13,7 +16,7 @@ namespace OneBullet
 		SpriteBatch spriteBatch;
 		Player player1, player2;
 		Bullet bullet1, bullet2;
-        Platforms platform1;
+        //Platforms platform1;
 		Texture2D background, bgElements;
 		Texture2D megaManXR, megaManXL;
 		Texture2D zeroR, zeroL;
@@ -23,8 +26,9 @@ namespace OneBullet
 		double charHeight, charWidth;
 		KeyboardState kState;
 		private KeyboardState oldKState;
-
-
+        List<Platforms> platform = new List<Platforms>();
+        
+        
         public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
@@ -56,7 +60,7 @@ namespace OneBullet
 			player2 = new Player();
 			bullet1 = new Bullet();
 			bullet2 = new Bullet();
-            platform1 = new Platforms();
+            //platform1 = new Platforms();
             base.Initialize();
 			
 		}
@@ -93,10 +97,14 @@ namespace OneBullet
 			bullet2.Initialize(bullet, b1Position);
 			player1.Initialize(megaManXR, gunR, p1Position, p1GunPos, p1GunOffset, bullet1, 1);
 			player2.Initialize(zeroL, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2);
-            platform1.Initialize(bgElements);
-		}
+            //platform1.Initialize(bgElements);
+            platform.Add(new Platforms(Content.Load<Texture2D>("square"), new Vector2(250, 400)));
+           // platform.Add(new Platforms(Content.Load<Texture2D>("square"), new Vector2(350, 400)));
+           // platform.Add(new Platforms(Content.Load<Texture2D>("square"), new Vector2(700, 400)));
 
-		protected override void UnloadContent()
+        }
+
+        protected override void UnloadContent()
 		{
 			// TODO: Unload any non ContentManager content here
 		}
@@ -107,10 +115,17 @@ namespace OneBullet
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
 
-			// TODO: Add your update logic here
+            foreach (Platforms platformz in platform)
+                if (player1.pPosition.Intersects(platformz.rectangle) )
+                {
+                    player1.pPosition.Y = 0;
+                    player1.jumping = false;
+                }
 
-			// ------------------------------------------ Keyboard inputs
-			kState = Keyboard.GetState();
+            // TODO: Add your update logic here
+
+            // ------------------------------------------ Keyboard inputs
+            kState = Keyboard.GetState();
 
 			// ------------------------------------------ Updates
 
@@ -361,7 +376,9 @@ namespace OneBullet
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
             spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-            platform1.Draw(spriteBatch);
+            foreach (Platforms platformz in platform)
+                platformz.Draw(spriteBatch);
+            //platform1.Draw(spriteBatch);
             player1.Draw(spriteBatch);
 			player2.Draw(spriteBatch);
 			bullet1.Draw(spriteBatch);
@@ -370,5 +387,20 @@ namespace OneBullet
 
 			base.Draw(gameTime);
 		}
+
+
 	}
 }
+
+static class RectangleHelper
+{
+    const int penetrationMargin = 5;
+    public static bool isOnTopOf(this Rectangle r1, Rectangle r2)
+    {
+        return (r1.Bottom >= r2.Top - penetrationMargin &&
+            r1.Bottom <= r2.Top + 1 &&
+            r1.Right >= r2.Left + 5 &&
+            r1.Left <= r2.Right - 5);
+    }
+}
+

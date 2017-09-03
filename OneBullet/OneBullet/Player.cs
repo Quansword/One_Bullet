@@ -11,6 +11,7 @@ namespace OneBullet
 		public Rectangle pPosition;
 		public Rectangle pGunPosition;
 		public Vector2 pVelocity;
+        public Vector2 pJump;
 		public int pLevelOffset;
 		public int pGunOffset;
 		const int pAcceleration = 3;
@@ -103,22 +104,24 @@ namespace OneBullet
 				}
 				if (kState.IsKeyDown(jump)) // Jump
 				{
-					if (onGround && !jumping)
+					if (jumping == false)
 					{
 						pVelocity.Y -= 30;
 						jumping = true;
 					}
 
-                    else if (platform1Pos.Contains(pPosition) && !jumping)
-                    {
-                        pPosition.Y -= 30;
-                        jumping = true;
-                    }
 
-                    else if (!onGround && jumping && pVelocity.Y < 0)
+                    else if (jumping == true)
 					{
-						pVelocity.Y -= 1;
+                        float i = 1;
+                        pVelocity.Y += .15f * i;
 					}
+
+
+                    if(jumping == false)
+                    {
+                        pVelocity.Y = 0f;
+                    }
 				}
 				if (kState.IsKeyUp(jump) && oldKState.IsKeyDown(jump))
 				{
