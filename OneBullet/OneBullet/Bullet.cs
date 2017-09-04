@@ -11,7 +11,7 @@ namespace OneBullet
 		Vector2 bVelocity;
 		const int bSpeed = 12;
 		const int bAcceleration = 2;
-		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill;
+		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill, bDead;
 
 		public void Initialize(Texture2D texture, Rectangle position)
 		{
@@ -23,6 +23,7 @@ namespace OneBullet
 			bHasRicocheted = false;
 			bOnGround = false;
 			bKill = false;
+			bDead = false;
 			bVelocity = new Vector2(0, 0);
 		}
 
@@ -43,26 +44,29 @@ namespace OneBullet
 			{
 				if (!bKill)
 				{
-					if (bDirRight)
+					if (!bDead)
 					{
-						if (bVelocity.Y < 6)
+						if (bDirRight)
 						{
-							bVelocity.X = -10;
+							if (bVelocity.Y < 6)
+							{
+								bVelocity.X = -10;
+							}
+							else
+							{
+								bVelocity.X = -7;
+							}
 						}
 						else
 						{
-							bVelocity.X = -7;
-						}
-					}
-					else
-					{
-						if (bVelocity.Y < 6)
-						{
-							bVelocity.X = 10;
-						}
-						else
-						{
-							bVelocity.X = 7;
+							if (bVelocity.Y < 6)
+							{
+								bVelocity.X = 10;
+							}
+							else
+							{
+								bVelocity.X = 7;
+							}
 						}
 					}
 				}
@@ -126,7 +130,7 @@ namespace OneBullet
 			}
 			else
 			{
-				bPosition.X = position.X - 70;
+				bPosition.X = position.X - 100;
 			}
 			bPosition.Y = position.Y;
 			bIsLoaded = false;
@@ -143,6 +147,7 @@ namespace OneBullet
 		{
 			bIsLoaded = true;
 			bOnGround = false;
+			bDead = false;
 			bVelocity.Y = 0;
 			bVelocity.X = 0;
 		}
@@ -179,17 +184,18 @@ namespace OneBullet
 			bDirRight = dirRight;
 			if (bDirRight)
 			{
-				bPosition.X = position.X + 100;
+				bPosition.X = position.X;
 
             }
             else
 			{
-				bPosition.X = position.X - 70;
+				bPosition.X = position.X;
 
             }
-            bPosition.Y = position.Y - 10;
+            bPosition.Y = position.Y;
 			bIsLoaded = false;
 			bMoving = false;
+			bDead = true;
 		}
 	}
 }

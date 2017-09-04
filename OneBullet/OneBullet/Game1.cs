@@ -174,20 +174,20 @@ namespace OneBullet
 
 			if (player1.pTexture == megaManXR)
 			{
-				p1CatchPosition.X += (int)(player1.pGunPosition.Width / 4);
+				p1CatchPosition.X -= (int)(player1.pGunPosition.Width / 4);
 			}
 			else
 			{
-				p1CatchPosition.X += (int)(player1.pGunPosition.Width / 4);
+				p1CatchPosition.X -= (int)(player1.pGunPosition.Width / 4);
 			}
 
 			if (player2.pTexture == zeroR)
 			{
-				p2CatchPosition.X += (int)(player2.pGunPosition.Width / 4);
+				p2CatchPosition.X -= (int)(player2.pGunPosition.Width / 4);
 			}
 			else
 			{
-				p2CatchPosition.X += (int)(player2.pGunPosition.Width / 4);
+				p2CatchPosition.X -= (int)(player2.pGunPosition.Width / 4);
 			}
 
 			// ------------------------------------------ Bullet 1 checks
