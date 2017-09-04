@@ -123,11 +123,11 @@ namespace OneBullet
 			// ------------------------------------------ Updates
 
 			if (!player1.dead)
-				player1.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight, bullet, megaManXR, megaManXL, gunR, gunL);
+				player1.Update(kState, oldKState, GraphicsDevice, bullet, megaManXR, megaManXL, gunR, gunL, gameTime);
 			if (!player2.dead)
-				player2.Update(kState, oldKState, GraphicsDevice, charWidth, charHeight, bullet, zeroR, zeroL, gunR, gunL);
-			bullet1.Update(GraphicsDevice, (int)(charHeight / 3));
-			bullet2.Update(GraphicsDevice, (int)(charHeight / 3));
+				player2.Update(kState, oldKState, GraphicsDevice, bullet, zeroR, zeroL, gunR, gunL, gameTime);
+			bullet1.Update(GraphicsDevice, (int)(charHeight / 3), gameTime);
+			bullet2.Update(GraphicsDevice, (int)(charHeight / 3), gameTime);
 
 			BulletChecks();
 
@@ -169,10 +169,8 @@ namespace OneBullet
 			// ------------------------------------------ Setting up the catching mechanic
 			Rectangle p1CatchPosition = new Rectangle(player1.pGunPosition.X, player1.pGunPosition.Y, (int)(player1.pGunPosition.Width / 2), (3 * (player1.pGunPosition.Height / 4)));
 			Rectangle p2CatchPosition = new Rectangle(player2.pGunPosition.X, player2.pGunPosition.Y, (int)(player2.pGunPosition.Width / 2), (3 * (player2.pGunPosition.Height / 4)));
-			Rectangle p1ModPosition = player1.pPosition;
-			Rectangle p2ModPosition = player2.pPosition;
-			p1ModPosition.Y -= (int)(charHeight / 2);
-			p2ModPosition.Y -= (int)(charHeight / 2);
+			Rectangle p1ModPosition = player1.pCollisionPosition;
+			Rectangle p2ModPosition = player2.pCollisionPosition;
 
 			if (player1.pTexture == megaManXR)
 			{

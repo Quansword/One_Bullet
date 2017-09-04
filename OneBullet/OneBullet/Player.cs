@@ -9,9 +9,10 @@ namespace OneBullet
 		public Texture2D pTexture;
 		public Texture2D pGunTexture;
 		public Rectangle pPosition;
+		public Rectangle pCollisionPosition;
 		public Rectangle pGunPosition;
-		public Vector2 pVelocity;
-		public int pLevelOffset;
+		Vector2 pVelocity;
+		int pLevelOffset;
 		public int pGunOffset;
 		const int pAcceleration = 3;
 		public bool onGround, jumping, loaded, dead;
@@ -34,6 +35,9 @@ namespace OneBullet
 			pTexture = texture;
 			pGunTexture = gunTexture;
 			pPosition = position;
+			pCollisionPosition = pPosition;
+			pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
+			pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
 			pGunOffset = gunOffset;
 			pGunPosition = gunPosition;
 			pGunPosition.X += pGunOffset;
@@ -47,7 +51,7 @@ namespace OneBullet
 			pLevelOffset = 0;
 		}
 
-		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, double charWidth, double charHeight, Texture2D bullet, Texture2D texRight, Texture2D texLeft, Texture2D gunR, Texture2D gunL)
+		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, Texture2D bullet, Texture2D texRight, Texture2D texLeft, Texture2D gunR, Texture2D gunL, GameTime gameTime)
 		{
 			if (!dead)
 			{
@@ -87,7 +91,7 @@ namespace OneBullet
 					pVelocity.X -= 10;
 					if (pTexture == texRight)
 					{
-						Turn(texLeft, gunL, -(int)charWidth / 2);
+						Turn(texLeft, gunL, -(int)pPosition.Width / 2);
 					}
 				}
 				if (kState.IsKeyDown(right)) // Move right
@@ -95,7 +99,7 @@ namespace OneBullet
 					pVelocity.X += 10;
 					if (pTexture == texLeft)
 					{
-						Turn(texRight, gunR, (int)charWidth / 2);
+						Turn(texRight, gunR, (int)pPosition.Width / 2);
 					}
 				}
 				if (kState.IsKeyDown(jump)) // Jump
@@ -124,7 +128,7 @@ namespace OneBullet
 					else if (level == Player.GunLevel.Mid)
 					{
 						level = Player.GunLevel.High;
-						pLevelOffset = -((int)charHeight / 4);
+						pLevelOffset = -((int)pPosition.Height / 4);
 					}
 				}
 				if (kState.IsKeyDown(lowerGun) && oldKState.IsKeyUp(lowerGun)) // Change gun level
@@ -137,12 +141,12 @@ namespace OneBullet
 					else if (level == Player.GunLevel.Mid)
 					{
 						level = Player.GunLevel.Low;
-						pLevelOffset = (int)charHeight / 4;
+						pLevelOffset = (int)pPosition.Height / 4;
 					}
 				}
 
 				// ------------------------------------------ Falling parameters
-				if (pPosition.Y < graphics.Viewport.Height - (charHeight / 2))
+				if (pCollisionPosition.Y < graphics.Viewport.Height)
 				{
 					onGround = false;
 					pVelocity.Y += pAcceleration;
@@ -154,22 +158,24 @@ namespace OneBullet
 				}
 
 				// ------------------------------------------ Calculating velocity
+				pPosition.X += (int)(pVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+				if (pPosition.X > graphics.Viewport.Width - (int)(pPosition.Width / 2))
+				{
+					pPosition.X = graphics.Viewport.Width - (int)(pPosition.Width / 2);
+				}
+				else if (pPosition.X < (pPosition.Width / 2))
+				{
+					pPosition.X = (int)(pPosition.Width / 2);
+				}
+				pPosition.Y += (int)(pVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+				if (pPosition.Y > graphics.Viewport.Height - (int)(pPosition.Height / 2))
+					pPosition.Y = graphics.Viewport.Height - (int)(pPosition.Height / 2);
+
+				pCollisionPosition = pPosition;
+				pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
+				pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
+
 				pGunPosition.X = pPosition.X + pGunOffset;
-
-				pPosition.X += (int)pVelocity.X;
-				if (pPosition.X > graphics.Viewport.Width - (int)(charWidth / 2))
-				{
-					pPosition.X = graphics.Viewport.Width - (int)(charWidth / 2);
-				}
-				else if (pPosition.X < (charWidth / 2))
-				{
-					pPosition.X = (int)(charWidth / 2);
-				}
-				pPosition.Y += (int)pVelocity.Y;
-				if (pPosition.Y > graphics.Viewport.Height - (int)(charHeight / 2))
-					pPosition.Y = graphics.Viewport.Height - (int)(charHeight / 2);
-
-				pGunPosition.X += (int)pVelocity.X;
 				pGunPosition.Y = (pPosition.Y + pLevelOffset);
 
 				// ------------------------------------------ Resetting values

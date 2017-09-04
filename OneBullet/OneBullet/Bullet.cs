@@ -8,9 +8,9 @@ namespace OneBullet
 	{
 		Texture2D bTexture;
 		public Rectangle bPosition;
+		Vector2 bVelocity;
 		const int bSpeed = 12;
 		const int bAcceleration = 2;
-		int bFallVelocity;
 		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill;
 
 		public void Initialize(Texture2D texture, Rectangle position)
@@ -23,79 +23,85 @@ namespace OneBullet
 			bHasRicocheted = false;
 			bOnGround = false;
 			bKill = false;
-			bFallVelocity = 0;
+			bVelocity = new Vector2(0, 0);
 		}
 
-		public void Update(GraphicsDevice graphics, int bulletSize)
+		public void Update(GraphicsDevice graphics, int bulletSize, GameTime gameTime)
 		{
 			if (bMoving)
 			{
 				if (bDirRight)
 				{
-					bPosition.X += bSpeed;
+					bVelocity.X = bSpeed;
 				}
 				else
 				{
-					bPosition.X -= bSpeed;
+					bVelocity.X = -bSpeed;
 				}
 			}
-			else if (!bMoving && !bOnGround && !bIsLoaded && !bKill) // not moving, bullet is falling after hitting platform or wall
+			else if (!bMoving && !bOnGround && !bIsLoaded) // not moving, bullet is falling after hitting platform or wall
 			{
-				if (bDirRight)
+				if (!bKill)
 				{
-					if (bFallVelocity < 6)
+					if (bDirRight)
 					{
-						bPosition.X -= 10;
+						if (bVelocity.Y < 6)
+						{
+							bVelocity.X = -10;
+						}
+						else
+						{
+							bVelocity.X = -7;
+						}
 					}
 					else
 					{
-						bPosition.X -= 7;
+						if (bVelocity.Y < 6)
+						{
+							bVelocity.X = 10;
+						}
+						else
+						{
+							bVelocity.X = 7;
+						}
 					}
 				}
-				else
+				else// if hit player
 				{
-					if (bFallVelocity < 6)
+					if (bDirRight)
 					{
-						bPosition.X += 10;
+						if (bVelocity.Y < 8)
+							bVelocity.X = bSpeed;
 					}
 					else
 					{
-						bPosition.X += 7;
+						if (bVelocity.Y < 8)
+							bVelocity.X = -bSpeed;
 					}
 				}
-				bFallVelocity += bAcceleration;
-				bPosition.Y += bFallVelocity;
-			}
-			else if (!bMoving && !bOnGround && !bIsLoaded && bKill) // if hit player
-			{
-				if (bDirRight)
-				{
-					if (bFallVelocity < 8)
-						bPosition.X += bSpeed;
-				}
-				else
-				{
-					if (bFallVelocity < 8)
-						bPosition.X -= bSpeed;
-				}
-				bFallVelocity += bAcceleration;
-				bPosition.Y += bFallVelocity;
+				bVelocity.Y += bAcceleration;
 			}
 
+			bPosition.X += (int)(bVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
 			if (bPosition.X > graphics.Viewport.Width - (bulletSize / 2)) // hits edge of screen
 			{
 				bPosition.X = graphics.Viewport.Width - (bulletSize / 2);
+				bVelocity.X = 0;
 				Wall();
 			}
 			else if (bPosition.X < 0)
 			{
 				bPosition.X = 0;
+				bVelocity.X = 0;
 				Wall();
 			}
 
+			bPosition.Y += (int)(bVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
 			if (bPosition.Y > graphics.Viewport.Height - (bulletSize / 2)) // drops to floor
 			{
 				bPosition.Y = graphics.Viewport.Height - (bulletSize / 2);
+				bVelocity.Y = 0;
+				bVelocity.X = 0;
 				bOnGround = true;
 				bKill = false;
 			}
@@ -137,7 +143,8 @@ namespace OneBullet
 		{
 			bIsLoaded = true;
 			bOnGround = false;
-			bFallVelocity = 0;
+			bVelocity.Y = 0;
+			bVelocity.X = 0;
 		}
 
 		public void Wall()
