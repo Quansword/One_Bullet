@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Media;
 
 namespace OneBullet
 {
@@ -207,11 +208,13 @@ namespace OneBullet
 
 		public void Pickup(Bullet bullet)
 		{
-			if (!loaded && !dead)
+            var player2 = new System.Media.SoundPlayer(@"C:\Users\u0460939\Documents\GitHub\One_Bullet\OneBullet\OneBullet\50 Cal Machine Gun Load-SoundBible.com-1345076003.wav");
+            if (!loaded && !dead)
 			{
 				pBullet = bullet;
 				loaded = true;
-			}
+                player2.Play();
+            }
 		}
 
 		public void Catch(Bullet bullet)
