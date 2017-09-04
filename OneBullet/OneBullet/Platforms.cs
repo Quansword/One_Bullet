@@ -6,7 +6,7 @@ namespace OneBullet
 {
 	class Platforms
 	{
-		Texture2D platTexture;
+		public Texture2D platTexture;
 		public Rectangle platPosition;
 
 		public void Initialize(Texture2D texture, Rectangle position)
