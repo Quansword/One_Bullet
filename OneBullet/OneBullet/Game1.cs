@@ -26,7 +26,7 @@ namespace OneBullet
 		double charHeight, charWidth;
 		KeyboardState kState;
 		private KeyboardState oldKState;
-        List<Platforms> platform = new List<Platforms>();
+        List<Platform> platform = new List<Platform>();
         
         
         public Game1()
@@ -97,10 +97,9 @@ namespace OneBullet
 			bullet2.Initialize(bullet, b1Position);
 			player1.Initialize(megaManXR, gunR, p1Position, p1GunPos, p1GunOffset, bullet1, 1);
 			player2.Initialize(zeroL, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2);
-            //platform1.Initialize(bgElements);
-            platform.Add(new Platforms(Content.Load<Texture2D>("square"), new Vector2(250, 400)));
-           // platform.Add(new Platforms(Content.Load<Texture2D>("square"), new Vector2(350, 400)));
-           // platform.Add(new Platforms(Content.Load<Texture2D>("square"), new Vector2(700, 400)));
+            platform.Add(new Platform(Content.Load<Texture2D>("square"), new Vector2(250, 400)));
+            platform.Add(new Platform(Content.Load<Texture2D>("square"), new Vector2(200, 550)));
+           // platform.Add(new Platform(Content.Load<Texture2D>("square"), new Vector2(700, 400)));
 
         }
 
@@ -115,11 +114,18 @@ namespace OneBullet
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
 
-            foreach (Platforms platformz in platform)
-                if (player1.pPosition.Intersects(platformz.rectangle) )
+            foreach (Platform platformz in platform)
+                if (player1.pPosition.isOnTopOf(platformz.rectangle) )
                 {
-                    player1.pPosition.Y = 0;
+                    player1.pVelocity.Y = 0;
                     player1.jumping = false;
+                }
+
+            foreach (Platform platformz in platform)
+                if (player2.pPosition.isOnTopOf(platformz.rectangle))
+                {
+                    player2.pVelocity.Y = 0;
+                    player2.jumping = false;
                 }
 
             // TODO: Add your update logic here
@@ -376,7 +382,7 @@ namespace OneBullet
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
             spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-            foreach (Platforms platformz in platform)
+            foreach (Platform platformz in platform)
                 platformz.Draw(spriteBatch);
             //platform1.Draw(spriteBatch);
             player1.Draw(spriteBatch);

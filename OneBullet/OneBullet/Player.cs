@@ -10,8 +10,8 @@ namespace OneBullet
 		public Texture2D pGunTexture;
 		public Rectangle pPosition;
 		public Rectangle pGunPosition;
+        public Rectangle rectangle;
 		public Vector2 pVelocity;
-        public Vector2 pJump;
 		public int pLevelOffset;
 		public int pGunOffset;
 		const int pAcceleration = 3;
@@ -102,7 +102,7 @@ namespace OneBullet
 						Turn(texRight, gunR, (int)charWidth / 2);
 					}
 				}
-				if (kState.IsKeyDown(jump)) // Jump
+                /*if (kState.IsKeyDown(jump)) // Jump
 				{
 					if (jumping == false)
 					{
@@ -122,12 +122,26 @@ namespace OneBullet
                     {
                         pVelocity.Y = 0f;
                     }
-				}
+				} 
 				if (kState.IsKeyUp(jump) && oldKState.IsKeyDown(jump))
 				{
 					jumping = false;
-				}
-				if (kState.IsKeyDown(raiseGun) && oldKState.IsKeyUp(raiseGun)) // Change gun level
+				} */
+
+                rectangle = new Rectangle((int)pPosition.X, (int)pPosition.Y, pTexture.Width, pTexture.Height);
+
+                if (kState.IsKeyDown(jump) && jumping == false) //jump
+                {
+                    pPosition.Y -= (int)150f;
+                    pVelocity.Y = -5f;
+                    jumping = true;
+                }
+
+
+                float i = 1;
+                pVelocity.Y += 0.15f * i;
+
+                if (kState.IsKeyDown(raiseGun) && oldKState.IsKeyUp(raiseGun)) // Change gun level
 				{
 					if (level == Player.GunLevel.Low)
 					{
@@ -179,8 +193,8 @@ namespace OneBullet
 					pPosition.X = (int)(charWidth / 2);
 				}
 				pPosition.Y += (int)pVelocity.Y;
-				if (pPosition.Y > graphics.Viewport.Height - (int)(charHeight / 2))
-					pPosition.Y = graphics.Viewport.Height - (int)(charHeight / 2);
+				//if (pPosition.Y > graphics.Viewport.Height - (int)(charHeight / 2))
+				//	pPosition.Y = graphics.Viewport.Height - (int)(charHeight / 2);
 
 				pGunPosition.X += (int)pVelocity.X;
 				pGunPosition.Y = (pPosition.Y + pLevelOffset);
