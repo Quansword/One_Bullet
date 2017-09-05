@@ -8,15 +8,20 @@ namespace OneBullet
 	{
 		Texture2D bTexture;
 		public Rectangle bPosition;
+		Rectangle newPosition;
 		Vector2 bVelocity;
 		const int bSpeed = 12;
 		const int bAcceleration = 2;
 		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill, bDead;
 
+		int collisionPlatform;
+		Level.CollisionDir collisionDir = Level.CollisionDir.None;
+
 		public void Initialize(Texture2D texture, Rectangle position)
 		{
 			bTexture = texture;
 			bPosition = position;
+			newPosition = bPosition;
 			bDirRight = true;
 			bMoving = false;
 			bIsLoaded = true;
@@ -25,6 +30,7 @@ namespace OneBullet
 			bKill = false;
 			bDead = false;
 			bVelocity = new Vector2(0, 0);
+			collisionPlatform = -1;
 		}
 
 		public void Update(GraphicsDevice graphics, int bulletSize, GameTime gameTime)
@@ -86,28 +92,51 @@ namespace OneBullet
 				bVelocity.Y += bAcceleration;
 			}
 
+			CalcVelocity(gameTime);
+
 			bPosition.X += (int)(bVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
-			if (bPosition.X > graphics.Viewport.Width - (bulletSize / 2)) // hits edge of screen
+			bPosition.Y += (int)(bVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+		}
+
+		void CalcVelocity(GameTime gameTime)
+		{
+			collisionPlatform = -1;
+			newPosition = bPosition;
+			newPosition.X += (int)(bVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+			newPosition.Y += (int)(bVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+
+			collisionPlatform = Level.curLevel.PlatformCollision(newPosition);
+			if (collisionPlatform == -1)
 			{
-				bPosition.X = graphics.Viewport.Width - (bulletSize / 2);
-				bVelocity.X = 0;
-				Wall();
+				collisionDir = Level.CollisionDir.None;
 			}
-			else if (bPosition.X < 0)
+			else
 			{
-				bPosition.X = 0;
-				bVelocity.X = 0;
-				Wall();
+				collisionDir = Level.curLevel.PlatformDirection(collisionPlatform, bPosition);
+				if (collisionDir != Level.CollisionDir.None)
+				{
+					bVelocity = Level.curLevel.NewVelocity(collisionPlatform, collisionDir, bPosition, bVelocity);
+					if (collisionDir == Level.CollisionDir.Bottom || collisionDir == Level.CollisionDir.Top)
+					{
+						bPosition.Y += (int)bVelocity.Y;
+						bVelocity.Y = 0;
+						bVelocity.X = 0;
+						bOnGround = true;
+						bKill = false;
+					}
+					else
+					{
+						bPosition.X += (int)bVelocity.X;
+						bVelocity.X = 0;
+						Wall();
+					}
+				}
 			}
 
-			bPosition.Y += (int)(bVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
-			if (bPosition.Y > graphics.Viewport.Height - (bulletSize / 2)) // drops to floor
+			// ------------------------------------------ Falling parameters
+			if (collisionDir == Level.CollisionDir.Bottom)
 			{
-				bPosition.Y = graphics.Viewport.Height - (bulletSize / 2);
-				bVelocity.Y = 0;
-				bVelocity.X = 0;
 				bOnGround = true;
-				bKill = false;
 			}
 		}
 

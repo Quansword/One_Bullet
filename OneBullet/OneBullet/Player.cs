@@ -8,7 +8,8 @@ namespace OneBullet
 	{
 		public Texture2D pTexture, pTextureR, pTextureL;
 		public Texture2D pGunTexture, pGunTextureR, pGunTextureL;
-		public Rectangle pPosition, newPosition;
+		public Rectangle pPosition;
+		Rectangle newPosition;
 		public Rectangle pCollisionPosition;
 		public Rectangle pGunPosition;
 		Vector2 pVelocity;
