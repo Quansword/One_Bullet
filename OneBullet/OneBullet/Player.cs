@@ -101,11 +101,11 @@ namespace OneBullet
 					{
 						if (pTexture == pTextureR)
 						{
-							pBullet.Fire(true, pGunPosition);
+							pBullet.Fire(new Vector2(1,0), pGunPosition);
 						}
 						else
 						{
-							pBullet.Fire(false, pGunPosition);
+							pBullet.Fire(new Vector2(-1, 0), pGunPosition);
 						}
 						Fire();
 					}
@@ -197,11 +197,11 @@ namespace OneBullet
 			{
 				if (pTexture == pTextureR)
 				{
-					pBullet.Dead(true, pGunPosition);
+					pBullet.Dead(new Vector2(1, 0), pGunPosition);
 				}
 				else
 				{
-					pBullet.Dead(false, pGunPosition);
+					pBullet.Dead(new Vector2(-1, 0), pGunPosition);
 				}
 				Fire();
 			}

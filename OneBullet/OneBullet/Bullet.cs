@@ -9,10 +9,10 @@ namespace OneBullet
 		Texture2D bTexture;
 		public Rectangle bPosition;
 		Rectangle newPosition;
-		Vector2 bVelocity;
+		Vector2 bVelocity, bShootDirection;
 		const int bSpeed = 12;
 		const int bAcceleration = 2;
-		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill, bDead;
+		public bool bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill, bDead;
 
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
@@ -22,7 +22,6 @@ namespace OneBullet
 			bTexture = texture;
 			bPosition = position;
 			newPosition = bPosition;
-			bDirRight = true;
 			bMoving = false;
 			bIsLoaded = true;
 			bHasRicocheted = false;
@@ -30,6 +29,7 @@ namespace OneBullet
 			bKill = false;
 			bDead = false;
 			bVelocity = new Vector2(0, 0);
+			bShootDirection = new Vector2(0, 0);
 			collisionPlatform = -1;
 		}
 
@@ -37,7 +37,7 @@ namespace OneBullet
 		{
 			if (bMoving)
 			{
-				if (bDirRight)
+				if (bShootDirection.X == 1)
 				{
 					bVelocity.X = bSpeed;
 				}
@@ -52,7 +52,7 @@ namespace OneBullet
 				{
 					if (!bDead)
 					{
-						if (bDirRight)
+						if (bShootDirection.X == 1)
 						{
 							if (bVelocity.Y < 6)
 							{
@@ -78,7 +78,7 @@ namespace OneBullet
 				}
 				else// if hit player
 				{
-					if (bDirRight)
+					if (bShootDirection.X == 1)
 					{
 						if (bVelocity.Y < 8)
 							bVelocity.X = bSpeed;
@@ -150,17 +150,45 @@ namespace OneBullet
 			}
 		}
 
-		public void Fire(bool dirRight, Rectangle position)
+		public void Fire(Vector2 dir, Rectangle position)
 		{
-			bDirRight = dirRight;
-			if (bDirRight)
+			bShootDirection = dir;
+			if (bShootDirection.X == 1)
 			{
-				bPosition.X = position.X + (position.Width / 4);
+				bVelocity.X = bSpeed;
+				if (bShootDirection.Y == 0)
+				{
+					bPosition.X = position.X + (position.Width / 4);
+				}
+				else if (bShootDirection.Y == 1)
+				{
+					bPosition.X = position.X + (position.Width / 8);
+					bPosition.Y = position.Y + (position.Width / 8);
+				}
+				else
+				{
+					bPosition.X = position.X + (position.Width / 8);
+					bPosition.Y = position.Y - (position.Width / 8);
+				}
 				//bTexture = bTextureR;
 			}
 			else
 			{
-				bPosition.X = position.X - (position.Width / 4);
+				bVelocity.X = -bSpeed;
+				if (bShootDirection.Y == 0)
+				{
+					bPosition.X = position.X - (position.Width / 4);
+				}
+				else if (bShootDirection.Y == 1)
+				{
+					bPosition.X = position.X - (position.Width / 8);
+					bPosition.Y = position.Y + (position.Width / 8);
+				}
+				else
+				{
+					bPosition.X = position.X - (position.Width / 8);
+					bPosition.Y = position.Y - (position.Width / 8);
+				}
 				//bTexture = bTextureL;
 			}
 			bPosition.Y = position.Y;
@@ -199,8 +227,8 @@ namespace OneBullet
 		{
 			if (!bHasRicocheted)
 			{
-				bHasRicocheted = true;
-				bDirRight = !bDirRight;
+				// bHasRicocheted = true;
+				// bDirRight = !bDirRight;
 				// change texture to opposite direction texture
 			}
 			else
@@ -209,10 +237,10 @@ namespace OneBullet
 			}
 		}
 
-		public void Dead(bool dirRight, Rectangle position) // almost same as fire()
+		public void Dead(Vector2 dir, Rectangle position) // almost same as fire()
 		{
-			bDirRight = dirRight;
-			if (bDirRight)
+			bShootDirection = dir;
+			if (bShootDirection.X == 1)
 			{
 				bPosition.X = position.X;
 				//bTexture = bTextureR;

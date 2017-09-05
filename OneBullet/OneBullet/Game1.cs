@@ -381,7 +381,7 @@ namespace OneBullet
             plat4.Initialize(platform, plat4Pos);
             plat5.Initialize(platform, plat5Pos);
 
-            Platforms[] lvlPlats = { plat1, plat2, plat3, plat4, plat5};
+            Platforms[] lvlPlats = { plat1, plat2, plat3, plat4, plat5 };
 
 			level01.Initialize(background, backgroundPos, 5, lvlPlats, floorPlat, ceilingPlat, rWallPlat, lWallPlat);
 		}
