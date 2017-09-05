@@ -21,6 +21,7 @@ namespace OneBullet
 		int playerNum;
         SoundEffect sFreload;
         SoundEffect sFdead;
+        SoundEffect sFmusic;
 
         public Bullet pBullet;
 
@@ -33,7 +34,7 @@ namespace OneBullet
 
 		public GunLevel level = GunLevel.Mid;
 
-		public void Initialize(Texture2D texture, Texture2D gunTexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum, SoundEffect moresound, SoundEffect deadsound)
+		public void Initialize(Texture2D texture, Texture2D gunTexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum, SoundEffect moresound, SoundEffect deadsound, SoundEffect musicsound)
 		{
 			pTexture = texture;
 			pGunTexture = gunTexture;
@@ -51,6 +52,8 @@ namespace OneBullet
 			pLevelOffset = 0;
             sFreload = moresound;
             sFdead = deadsound;
+            sFmusic = musicsound;
+            sFmusic.Play();
 		}
 
 		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, double charWidth, double charHeight, Texture2D bullet, Texture2D texRight, Texture2D texLeft, Texture2D gunR, Texture2D gunL)

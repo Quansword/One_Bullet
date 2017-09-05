@@ -223,9 +223,9 @@
 /processorParam:Quality=Best
 /build:Shells_falls-Marcel-829263474.wav
 
-#begin GunShot.wav
+#begin One Bullet OST Main Theme 180bpm.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:GunShot.wav
+/build:One Bullet OST Main Theme 180bpm.wav
 

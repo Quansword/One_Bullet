@@ -24,6 +24,7 @@ namespace OneBullet
         SoundEffect sFreload;
         SoundEffect sFdead;
         SoundEffect sFfire;
+        SoundEffect sFmusic;
         const int pAcceleration = 3;
 		double charHeight, charWidth;
 		KeyboardState kState;
@@ -97,13 +98,14 @@ namespace OneBullet
             sFreload = Content.Load<SoundEffect>("50 Cal Machine Gun Load-SoundBible.com-1345076003");
             sFdead = Content.Load<SoundEffect>("Pain-SoundBible.com-1883168362");
             sFfire = Content.Load<SoundEffect>("9_mm_gunshot-mike-koenig-123");
+            sFmusic = Content.Load<SoundEffect>("One Bullet OST Main Theme 180bpm");
 
             bullet = Content.Load<Texture2D>("shot_poulpi");
 
 			bullet1.Initialize(bullet, b1Position, sFshellfall, sFfire);
             bullet2.Initialize(bullet, b1Position, sFshellfall, sFfire);
-			player1.Initialize(megaManXR, gunR, p1Position, p1GunPos, p1GunOffset, bullet1, 1, sFreload, sFdead);
-			player2.Initialize(zeroL, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2, sFreload, sFdead);
+			player1.Initialize(megaManXR, gunR, p1Position, p1GunPos, p1GunOffset, bullet1, 1, sFreload, sFdead, sFmusic);
+			player2.Initialize(zeroL, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2, sFreload, sFdead, sFmusic);
 		}
 
 		/// <summary>
