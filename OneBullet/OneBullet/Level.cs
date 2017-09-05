@@ -41,20 +41,13 @@ namespace OneBullet
 			if (floor != null)
 			{
 				if (floor.platPosition.Intersects(playerCollision))
-<<<<<<< HEAD
 				{
 					return 0;
 				}
-=======
-                {
-                    return 0;
-                }
                 else if (floor.platPosition.Contains(playerCollision))
                 {
                     return 0;
                 }
-
->>>>>>> origin/LynnFinalWeek
 			}
 			if (rightWall != null)
 			{
@@ -70,28 +63,35 @@ namespace OneBullet
 			if (leftWall != null)
 			{
 				if (leftWall.platPosition.Intersects(playerCollision))
-<<<<<<< HEAD
+				{
 					return 2;
+				}
+				else if (leftWall.platPosition.Contains(playerCollision))
+				{
+					return 2;
+				}
 			}
 			if (ceiling != null)
 			{
 				if (ceiling.platPosition.Intersects(playerCollision))
+				{
 					return 3;
+				}
+				else if (ceiling.platPosition.Contains(playerCollision))
+				{
+					return 3;
+				}
 			}
-=======
-                {
-                    return 2;
-                }
-                else if (leftWall.platPosition.Contains(playerCollision))
-                {
-                    return 2;
-                }
-            }
->>>>>>> origin/LynnFinalWeek
 			for (int i = 0; i < platNum; i++)
 			{
 				if (lPlatforms[i].platPosition.Intersects(playerCollision))
+				{
 					return i + 4;
+				}
+				else if (lPlatforms[i].platPosition.Contains(playerCollision))
+				{
+					return i + 4;
+				}
 			}
 			return -1;
 		}
