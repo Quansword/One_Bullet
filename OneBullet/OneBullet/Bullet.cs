@@ -93,6 +93,7 @@ namespace OneBullet
 			}
 
 			CalcVelocity(gameTime);
+			CalcVelocity(gameTime);
 
 			bPosition.X += (int)(bVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
 			bPosition.Y += (int)(bVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
@@ -154,12 +155,12 @@ namespace OneBullet
 			bDirRight = dirRight;
 			if (bDirRight)
 			{
-				bPosition.X = position.X + 100;
+				bPosition.X = position.X + (position.Width / 4);
 				//bTexture = bTextureR;
 			}
 			else
 			{
-				bPosition.X = position.X - 100;
+				bPosition.X = position.X - (position.Width / 4);
 				//bTexture = bTextureL;
 			}
 			bPosition.Y = position.Y;

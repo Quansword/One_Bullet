@@ -8,10 +8,9 @@ namespace OneBullet
 	{
 		public Texture2D pTexture, pTextureR, pTextureL;
 		public Texture2D pGunTexture, pGunTextureR, pGunTextureL;
-		public Rectangle pPosition;
+		public Rectangle pPosition, pCollisionPosition;
 		Rectangle newPosition;
-		public Rectangle pCollisionPosition;
-		public Rectangle pGunPosition;
+		public Rectangle pGunPosition, pGunCollisionPosition;
 		Vector2 pVelocity;
 		int pLevelOffset;
 		public int pGunOffset;
@@ -59,6 +58,7 @@ namespace OneBullet
 			pGunOffset = gunOffset;
 			pGunPosition = gunPosition;
 			pGunPosition.X += pGunOffset;
+			pGunCollisionPosition = pGunPosition;
 			pBullet = bullet;
 			pVelocity = new Vector2(0, 0);
 			onGround = true;
@@ -94,15 +94,21 @@ namespace OneBullet
 
 				if (kState.IsKeyDown(shoot) && loaded && oldKState.IsKeyUp(shoot)) // Shoot bullet
 				{
-					if (pTexture == pTextureR)
+					pGunCollisionPosition = pGunPosition;
+					pGunCollisionPosition.X -= pGunPosition.Height;
+					pGunCollisionPosition.Y -= pGunPosition.Width;
+					if (Level.curLevel.PlatformCollision(pGunCollisionPosition) == -1)
 					{
-						pBullet.Fire(true, pGunPosition);
+						if (pTexture == pTextureR)
+						{
+							pBullet.Fire(true, pGunPosition);
+						}
+						else
+						{
+							pBullet.Fire(false, pGunPosition);
+						}
+						Fire();
 					}
-					else
-					{
-						pBullet.Fire(false, pGunPosition);
-					}
-					Fire();
 				}
 				if (kState.IsKeyDown(left)) // Move left
 				{

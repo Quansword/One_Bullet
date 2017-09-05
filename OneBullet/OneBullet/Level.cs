@@ -41,7 +41,9 @@ namespace OneBullet
 			if (floor != null)
 			{
 				if (floor.platPosition.Intersects(playerCollision))
+				{
 					return 0;
+				}
 			}
 			if (rightWall != null)
 			{
