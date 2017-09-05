@@ -369,8 +369,8 @@ namespace OneBullet
 
 			Rectangle plat1Pos = new Rectangle( 100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM LEFT
             Rectangle plat2Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 + 350, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM RIGHT
-            Rectangle plat3Pos = new Rectangle(350 / 2 + 50, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) -170, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID LEFT
-            Rectangle plat4Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 +250, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 170, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID RIGHTss
+            Rectangle plat3Pos = new Rectangle(350 / 2 + 50, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) -190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID LEFT
+            Rectangle plat4Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 +250, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID RIGHTss
             Rectangle plat5Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 -100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 300, (int)charWidth * 2, (int)(2 * charHeight / 3)); //CENTER TOP
 
             Platforms plat1 = new Platforms();
