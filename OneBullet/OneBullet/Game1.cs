@@ -367,13 +367,32 @@ namespace OneBullet
 			Platforms lWallPlat = new Platforms();
 			lWallPlat.Initialize(platform, lWallPlatPos);
 
-			Rectangle plat1Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3));
-			Platforms plat1 = new Platforms();
-			plat1.Initialize(platform, plat1Pos);
+            Rectangle plat1Pos = new Rectangle(100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM LEFT
+            Rectangle plat2Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 + 350, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM RIGHT
+            Rectangle plat3Pos = new Rectangle(350 / 2 + 50, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID LEFT
+            Rectangle plat4Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 + 250, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID RIGHTss
+            Rectangle plat5Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 - 100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 300, (int)charWidth * 2, (int)(2 * charHeight / 3)); //CENTER TOP
 
-			Platforms[] lvlPlats = { plat1 };
+            Platforms plat1 = new Platforms();
+            Platforms plat2 = new Platforms();
+            Platforms plat3 = new Platforms();
+            Platforms plat4 = new Platforms();
+            Platforms plat5 = new Platforms();
 
-			level01.Initialize(background, backgroundPos, 1, lvlPlats, floorPlat, rWallPlat, lWallPlat);
-		}
+
+
+            plat1.Initialize(platform, plat1Pos);
+            plat2.Initialize(platform, plat2Pos);
+            plat3.Initialize(platform, plat3Pos);
+            plat4.Initialize(platform, plat4Pos);
+            plat5.Initialize(platform, plat5Pos);
+
+
+
+
+            Platforms[] lvlPlats = { plat1, plat2, plat3, plat4, plat5 };
+
+            level01.Initialize(background, backgroundPos, 5, lvlPlats, floorPlat, rWallPlat, lWallPlat);
+        }
 	}
 }
