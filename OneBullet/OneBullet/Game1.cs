@@ -13,6 +13,7 @@ namespace OneBullet
 		SpriteBatch spriteBatch;
 		Player player1, player2;
 		Bullet bullet1, bullet2;
+		Level level01;
 		const int pAcceleration = 3;
 		double charHeight, charWidth;
 		KeyboardState kState;
@@ -49,8 +50,8 @@ namespace OneBullet
 			player2 = new Player();
 			bullet1 = new Bullet();
 			bullet2 = new Bullet();
+			level01 = new Level();
 			base.Initialize();
-			
 		}
 
 		/// <summary>
@@ -63,18 +64,17 @@ namespace OneBullet
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
 			// TODO: use this.Content to load your game content here
-			Rectangle p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height - (int)charHeight, (int)charWidth, (int)charHeight);
+			Rectangle p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height - (int)(2 * charHeight), (int)charWidth, (int)charHeight);
 			Rectangle p1GunPos = new Rectangle(p1Position.X, p1Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
 			int p1GunOffset = (int)charWidth / 2;
 
-			Rectangle p2Position = new Rectangle((3 * (GraphicsDevice.Viewport.Width / 4)), GraphicsDevice.Viewport.Height - (int)charHeight, (int)charWidth, (int)charHeight);
+			Rectangle p2Position = new Rectangle((3 * (GraphicsDevice.Viewport.Width / 4)), GraphicsDevice.Viewport.Height - (int)(2 * charHeight), (int)charWidth, (int)charHeight);
 			Rectangle p2GunPos = new Rectangle(p2Position.X, p2Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
 			int p2GunOffset = -(int)charWidth / 2;
 
 			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 			Rectangle b2Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 
-			Texture2D background = Content.Load<Texture2D>("background1");
 			Texture2D player1TextureR = Content.Load<Texture2D>("MegaManX_Right");
 			Texture2D player1TextureL = Content.Load<Texture2D>("MegaManX_Left");
 			Texture2D player2TextureR = Content.Load<Texture2D>("Zero_Right");
@@ -88,6 +88,12 @@ namespace OneBullet
 			bullet2.Initialize(bullet, b1Position);
 			player1.Initialize(player1TextureR, player1TextureL, gunR, gunL, p1Position, p1GunPos, p1GunOffset, bullet1, 1);
 			player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2);
+
+			// ------------------------------------------ Level and platform content
+			Texture2D background = Content.Load<Texture2D>("background1");
+			Texture2D platform1 = Content.Load<Texture2D>("test_platform");
+
+			Level01Init(background, platform1);
 		}
 
 		/// <summary>
@@ -333,6 +339,7 @@ namespace OneBullet
 
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
+			level01.Draw(spriteBatch);
 			//spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 			//spriteBatch.Draw(backgroundElements, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 			player1.Draw(spriteBatch);
@@ -342,6 +349,23 @@ namespace OneBullet
 			spriteBatch.End();
 
 			base.Draw(gameTime);
+		}
+
+		void Level01Init(Texture2D background, Texture2D platform)
+		{
+			Rectangle backgroundPos = new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
+			Rectangle floorPlatPos = new Rectangle(0, GraphicsDevice.Viewport.Height - (int)(charHeight), GraphicsDevice.Viewport.Width, (int)charHeight);
+			Platforms floorPlat = new Platforms();
+			floorPlat.Initialize(platform, floorPlatPos);
+
+			Rectangle plat1Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3));
+			Platforms plat1 = new Platforms();
+			plat1.Initialize(platform, plat1Pos);
+
+			Platforms[] lvlPlats = { plat1 };
+
+			level01.Initialize(background, backgroundPos, 1, lvlPlats, floorPlat);
 		}
 	}
 }

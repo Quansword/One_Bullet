@@ -8,7 +8,7 @@ namespace OneBullet
 	{
 		public Texture2D pTexture, pTextureR, pTextureL;
 		public Texture2D pGunTexture, pGunTextureR, pGunTextureL;
-		public Rectangle pPosition;
+		public Rectangle pPosition, newPosition;
 		public Rectangle pCollisionPosition;
 		public Rectangle pGunPosition;
 		Vector2 pVelocity;
@@ -48,6 +48,7 @@ namespace OneBullet
 				pGunTexture = pGunTextureL;
 			}
 			pPosition = position;
+			newPosition = pPosition;
 			pCollisionPosition = pPosition;
 			pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
 			pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
@@ -157,6 +158,33 @@ namespace OneBullet
 					}
 				}
 
+				// ------------------------------------------ Calculating velocity
+				newPosition = pCollisionPosition;
+				newPosition.X += (int)(pVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+				newPosition.Y += (int)(pVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+				if (Level.curLevel.PlatformCollision(newPosition))
+				{
+					pPosition.X += (int)(pVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+					if (pPosition.X > graphics.Viewport.Width - (int)(pPosition.Width / 2))
+					{
+						pPosition.X = graphics.Viewport.Width - (int)(pPosition.Width / 2);
+					}
+					else if (pPosition.X < (pPosition.Width / 2))
+					{
+						pPosition.X = (int)(pPosition.Width / 2);
+					}
+					pPosition.Y += (int)(pVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+					if (pPosition.Y > graphics.Viewport.Height - (int)(pPosition.Height / 2))
+						pPosition.Y = graphics.Viewport.Height - (int)(pPosition.Height / 2);
+
+					pCollisionPosition = pPosition;
+					pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
+					pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
+				}
+
+				pGunPosition.X = pPosition.X + pGunOffset;
+				pGunPosition.Y = (pPosition.Y + pLevelOffset);
+
 				// ------------------------------------------ Falling parameters
 				if (pCollisionPosition.Y < graphics.Viewport.Height - pCollisionPosition.Height)
 				{
@@ -168,27 +196,6 @@ namespace OneBullet
 					onGround = true;
 					pVelocity.Y = 0;
 				}
-
-				// ------------------------------------------ Calculating velocity
-				pPosition.X += (int)(pVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
-				if (pPosition.X > graphics.Viewport.Width - (int)(pPosition.Width / 2))
-				{
-					pPosition.X = graphics.Viewport.Width - (int)(pPosition.Width / 2);
-				}
-				else if (pPosition.X < (pPosition.Width / 2))
-				{
-					pPosition.X = (int)(pPosition.Width / 2);
-				}
-				pPosition.Y += (int)(pVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
-				if (pPosition.Y > graphics.Viewport.Height - (int)(pPosition.Height / 2))
-					pPosition.Y = graphics.Viewport.Height - (int)(pPosition.Height / 2);
-
-				pCollisionPosition = pPosition;
-				pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
-				pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
-
-				pGunPosition.X = pPosition.X + pGunOffset;
-				pGunPosition.Y = (pPosition.Y + pLevelOffset);
 
 				// ------------------------------------------ Resetting values
 				pVelocity.X = 0;
