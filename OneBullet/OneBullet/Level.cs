@@ -11,7 +11,16 @@ namespace OneBullet
 		public Rectangle backgroundPosition;
 		public Platforms floor, rightWall, leftWall;
 		public Platforms[] lPlatforms;
-		int platNum;
+		public int platNum;
+
+		public enum CollisionDir
+		{
+			Top,
+			Bottom,
+			Left,
+			Right,
+			None
+		};
 
 		public void Initialize(Texture2D bg, Rectangle bgPos, int pNum, Platforms[] lPlat, Platforms fPlat = null, Platforms rWall = null, Platforms lWall = null)
 		{
@@ -26,29 +35,201 @@ namespace OneBullet
 			Level.curLevel = this;
 		}
 
-		public bool PlatformCollision(Rectangle playerCollision)
+		public int PlatformCollision(Rectangle playerCollision)
 		{
 			if (floor != null)
 			{
 				if (floor.platPosition.Intersects(playerCollision))
-					return false;
+					return 0;
 			}
 			if (rightWall != null)
 			{
 				if (rightWall.platPosition.Intersects(playerCollision))
-					return false;
+					return 1;
 			}
 			if (leftWall != null)
 			{
-				if (rightWall.platPosition.Intersects(playerCollision))
-					return false;
+				if (leftWall.platPosition.Intersects(playerCollision))
+					return 2;
 			}
-			foreach (var plat in lPlatforms)
+			for (int i = 0; i < platNum; i++)
 			{
-				if (plat.platPosition.Intersects(playerCollision))
-					return false;
+				if (lPlatforms[i].platPosition.Intersects(playerCollision))
+					return i + 3;
 			}
-			return true;
+			return -1;
+		}
+
+		public CollisionDir PlatformDirection(int platformIndex, Rectangle playerPos)
+		{
+			int distDown = -1;
+			int distUp = -1;
+			int distRight = -1;
+			int distLeft = -1;
+			int leastDist = 0;
+			CollisionDir dir = CollisionDir.None;
+
+			if (platformIndex == 0)
+			{
+				distDown = floor.platPosition.Top - playerPos.Bottom;
+				distUp = playerPos.Top - floor.platPosition.Bottom;
+				distRight = floor.platPosition.Left - playerPos.Right;
+				distLeft = playerPos.Left - floor.platPosition.Right;
+			}
+			else if (platformIndex == 1)
+			{
+				distDown = rightWall.platPosition.Top - playerPos.Bottom;
+				distUp = playerPos.Top - rightWall.platPosition.Bottom;
+				distRight = rightWall.platPosition.Left - playerPos.Right;
+				distLeft = playerPos.Left - rightWall.platPosition.Right;
+			}
+			else if (platformIndex == 2)
+			{
+				distDown = leftWall.platPosition.Top - playerPos.Bottom;
+				distUp = playerPos.Top - leftWall.platPosition.Bottom;
+				distRight = leftWall.platPosition.Left - playerPos.Right;
+				distLeft = playerPos.Left - leftWall.platPosition.Right;
+			}
+			else
+			{
+				distDown = lPlatforms[platformIndex - 3].platPosition.Top - playerPos.Bottom;
+				distUp = playerPos.Top - lPlatforms[platformIndex - 3].platPosition.Bottom;
+				distRight = lPlatforms[platformIndex - 3].platPosition.Left - playerPos.Right;
+				distLeft = playerPos.Left - lPlatforms[platformIndex - 3].platPosition.Right;
+			}
+
+			if (distDown > 0)
+			{
+				leastDist = distDown;
+				dir = CollisionDir.Bottom;
+
+				if (distRight > 0)
+				{
+					if (distRight < leastDist)
+					{
+						dir = CollisionDir.Right;
+					}
+				}
+				else if (distLeft > 0)
+				{
+					if (distLeft < leastDist)
+					{
+						dir = CollisionDir.Left;
+					}
+				}
+			}
+			else if (distUp > 0)
+			{
+				leastDist = distUp;
+				dir = CollisionDir.Top;
+
+				if (distRight > 0)
+				{
+					if (distRight < leastDist)
+					{
+						dir = CollisionDir.Right;
+					}
+				}
+				else if (distLeft > 0)
+				{
+					if (distLeft < leastDist)
+					{
+						dir = CollisionDir.Left;
+					}
+				}
+			}
+			else if (distRight > 0)
+			{
+				dir = CollisionDir.Right;
+			}
+			else if (distLeft > 0)
+			{
+				dir = CollisionDir.Left;
+			}
+
+			return dir;
+		}
+
+		public Vector2 NewVelocity(int platformIndex, Level.CollisionDir dir, Rectangle playerPos, Vector2 velocity)
+		{
+			Vector2 newVelocity = velocity;
+			if (dir == CollisionDir.Bottom)
+			{
+				if (platformIndex == 0)
+				{
+					newVelocity.Y = floor.platPosition.Top - playerPos.Bottom - 1;
+				}
+				else if (platformIndex == 1)
+				{
+					newVelocity.Y = rightWall.platPosition.Top - playerPos.Bottom - 1;
+				}
+				else if (platformIndex == 2)
+				{
+					newVelocity.Y = leftWall.platPosition.Top - playerPos.Bottom - 1;
+				}
+				else
+				{
+					newVelocity.Y = lPlatforms[platformIndex - 3].platPosition.Top - playerPos.Bottom - 1;
+				}
+			}
+			else if (dir == CollisionDir.Top)
+			{
+				if (platformIndex == 0)
+				{
+					newVelocity.Y = floor.platPosition.Bottom - playerPos.Top + 1;
+				}
+				else if (platformIndex == 1)
+				{
+					newVelocity.Y = rightWall.platPosition.Bottom - playerPos.Top + 1;
+				}
+				else if (platformIndex == 2)
+				{
+					newVelocity.Y = leftWall.platPosition.Bottom - playerPos.Top + 1;
+				}
+				else
+				{
+					newVelocity.Y = lPlatforms[platformIndex - 3].platPosition.Bottom - playerPos.Top + 1;
+				}
+			}
+			else if (dir == CollisionDir.Right)
+			{
+				if (platformIndex == 0)
+				{
+					newVelocity.X = floor.platPosition.Left - playerPos.Right - 1;
+				}
+				else if (platformIndex == 1)
+				{
+					newVelocity.X = rightWall.platPosition.Left - playerPos.Right - 1;
+				}
+				else if (platformIndex == 2)
+				{
+					newVelocity.X = leftWall.platPosition.Left - playerPos.Right - 1;
+				}
+				else
+				{
+					newVelocity.X = lPlatforms[platformIndex - 3].platPosition.Left - playerPos.Right - 1;
+				}
+			}
+			else if (dir == CollisionDir.Left)
+			{
+				if (platformIndex == 0)
+				{
+					newVelocity.X = floor.platPosition.Right - playerPos.Left + 1;
+				}
+				else if (platformIndex == 1)
+				{
+					newVelocity.X = rightWall.platPosition.Right - playerPos.Left + 1;
+				}
+				else if (platformIndex == 2)
+				{
+					newVelocity.X = leftWall.platPosition.Right - playerPos.Left + 1;
+				}
+				else
+				{
+					newVelocity.X = lPlatforms[platformIndex - 3].platPosition.Right - playerPos.Left + 1;
+				}
+			}
+			return newVelocity;
 		}
 
 		public void Draw(SpriteBatch spriteBatch)

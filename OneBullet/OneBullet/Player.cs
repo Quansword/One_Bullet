@@ -30,6 +30,9 @@ namespace OneBullet
 
 		public GunLevel level = GunLevel.Mid;
 
+		int collisionPlatform;
+		Level.CollisionDir collisionDir = Level.CollisionDir.None;
+
 		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D gunTextureR, Texture2D gunTextureL, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum)
 		{
 			playerNum = pNum;
@@ -62,6 +65,7 @@ namespace OneBullet
 			loaded = true;
 			dead = false;
 			pLevelOffset = 0;
+			collisionPlatform = -1;
 		}
 
 		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, GameTime gameTime)
@@ -121,6 +125,7 @@ namespace OneBullet
 					{
 						pVelocity.Y -= 30;
 						jumping = true;
+						onGround = false;
 					}
 					else if (!onGround && jumping && pVelocity.Y < 0)
 					{
@@ -159,43 +164,23 @@ namespace OneBullet
 				}
 
 				// ------------------------------------------ Calculating velocity
-				newPosition = pCollisionPosition;
-				newPosition.X += (int)(pVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
-				newPosition.Y += (int)(pVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
-				if (Level.curLevel.PlatformCollision(newPosition))
-				{
-					pPosition.X += (int)(pVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
-					if (pPosition.X > graphics.Viewport.Width - (int)(pPosition.Width / 2))
-					{
-						pPosition.X = graphics.Viewport.Width - (int)(pPosition.Width / 2);
-					}
-					else if (pPosition.X < (pPosition.Width / 2))
-					{
-						pPosition.X = (int)(pPosition.Width / 2);
-					}
-					pPosition.Y += (int)(pVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
-					if (pPosition.Y > graphics.Viewport.Height - (int)(pPosition.Height / 2))
-						pPosition.Y = graphics.Viewport.Height - (int)(pPosition.Height / 2);
+				CalcVelocity(gameTime);
+				CalcVelocity(gameTime);
 
-					pCollisionPosition = pPosition;
-					pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
-					pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
-				}
+				pPosition.X += (int)(pVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+				pPosition.Y += (int)(pVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+
+				pCollisionPosition = pPosition;
+				pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
+				pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
 
 				pGunPosition.X = pPosition.X + pGunOffset;
 				pGunPosition.Y = (pPosition.Y + pLevelOffset);
 
-				// ------------------------------------------ Falling parameters
-				if (pCollisionPosition.Y < graphics.Viewport.Height - pCollisionPosition.Height)
-				{
+				if (pVelocity.Y != 0)
 					onGround = false;
-					pVelocity.Y += pAcceleration;
-				}
-				else if (!onGround)
-				{
-					onGround = true;
-					pVelocity.Y = 0;
-				}
+
+				pVelocity.Y += pAcceleration;
 
 				// ------------------------------------------ Resetting values
 				pVelocity.X = 0;
@@ -212,6 +197,46 @@ namespace OneBullet
 					pBullet.Dead(false, pGunPosition);
 				}
 				Fire();
+			}
+		}
+
+		void CalcVelocity(GameTime gameTime)
+		{
+			collisionPlatform = -1;
+			newPosition = pCollisionPosition;
+			newPosition.X += (int)(pVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+			newPosition.Y += (int)(pVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+
+			collisionPlatform = Level.curLevel.PlatformCollision(newPosition);
+			if (collisionPlatform == -1)
+			{
+				collisionDir = Level.CollisionDir.None;
+			}
+			else
+			{
+				collisionDir = Level.curLevel.PlatformDirection(collisionPlatform, pCollisionPosition);
+				if (collisionDir != Level.CollisionDir.None)
+				{
+					pVelocity = Level.curLevel.NewVelocity(collisionPlatform, collisionDir, pCollisionPosition, pVelocity);
+					if (collisionDir == Level.CollisionDir.Bottom || collisionDir == Level.CollisionDir.Top)
+					{
+						pPosition.Y += (int)pVelocity.Y;
+						pCollisionPosition.Y += (int)pVelocity.Y;
+						pVelocity.Y = 0;
+					}
+					else
+					{
+						pPosition.X += (int)pVelocity.X;
+						pCollisionPosition.X += (int)pVelocity.X;
+						pVelocity.X = 0;
+					}
+				}
+			}
+
+			// ------------------------------------------ Falling parameters
+			if (collisionDir == Level.CollisionDir.Bottom)
+			{
+				onGround = true;
 			}
 		}
 

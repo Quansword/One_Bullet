@@ -359,13 +359,21 @@ namespace OneBullet
 			Platforms floorPlat = new Platforms();
 			floorPlat.Initialize(platform, floorPlatPos);
 
+			Rectangle rWallPlatPos = new Rectangle(GraphicsDevice.Viewport.Width, 0, (int)charWidth, GraphicsDevice.Viewport.Height);
+			Platforms rWallPlat = new Platforms();
+			rWallPlat.Initialize(platform, rWallPlatPos);
+
+			Rectangle lWallPlatPos = new Rectangle(0 - (int)charWidth, 0, (int)charWidth, GraphicsDevice.Viewport.Height);
+			Platforms lWallPlat = new Platforms();
+			lWallPlat.Initialize(platform, lWallPlatPos);
+
 			Rectangle plat1Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3));
 			Platforms plat1 = new Platforms();
 			plat1.Initialize(platform, plat1Pos);
 
 			Platforms[] lvlPlats = { plat1 };
 
-			level01.Initialize(background, backgroundPos, 1, lvlPlats, floorPlat);
+			level01.Initialize(background, backgroundPos, 1, lvlPlats, floorPlat, rWallPlat, lWallPlat);
 		}
 	}
 }
