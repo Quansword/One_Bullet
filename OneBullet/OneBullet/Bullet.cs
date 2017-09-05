@@ -120,17 +120,18 @@ namespace OneBullet
 			}
 		}
 
-		public void Fire(Texture2D texture, bool dirRight, Rectangle position)
+		public void Fire(bool dirRight, Rectangle position)
 		{
-			bTexture = texture;
 			bDirRight = dirRight;
 			if (bDirRight)
 			{
 				bPosition.X = position.X + 100;
+				//bTexture = bTextureR;
 			}
 			else
 			{
 				bPosition.X = position.X - 100;
+				//bTexture = bTextureL;
 			}
 			bPosition.Y = position.Y;
 			bIsLoaded = false;
@@ -178,21 +179,21 @@ namespace OneBullet
 			}
 		}
 
-		public void Dead(Texture2D texture, bool dirRight, Rectangle position) // almost same as fire()
+		public void Dead(bool dirRight, Rectangle position) // almost same as fire()
 		{
-			bTexture = texture;
 			bDirRight = dirRight;
 			if (bDirRight)
 			{
 				bPosition.X = position.X;
+				//bTexture = bTextureR;
 
             }
             else
 			{
 				bPosition.X = position.X;
-
-            }
-            bPosition.Y = position.Y;
+				//bTexture = bTextureL;
+			}
+			bPosition.Y = position.Y;
 			bIsLoaded = false;
 			bMoving = false;
 			bDead = true;

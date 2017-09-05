@@ -13,11 +13,6 @@ namespace OneBullet
 		SpriteBatch spriteBatch;
 		Player player1, player2;
 		Bullet bullet1, bullet2;
-		Texture2D background, backgroundElements;
-		Texture2D megaManXR, megaManXL;
-		Texture2D zeroR, zeroL;
-		Texture2D gunR, gunL;
-		Texture2D bullet;
 		const int pAcceleration = 3;
 		double charHeight, charWidth;
 		KeyboardState kState;
@@ -79,21 +74,20 @@ namespace OneBullet
 			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 			Rectangle b2Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 
-			background = Content.Load<Texture2D>("background1");
-			backgroundElements = Content.Load<Texture2D>("background1Elements");
-			megaManXR = Content.Load<Texture2D>("MegaManX_Right");
-			megaManXL = Content.Load<Texture2D>("MegaManX_Left");
-			zeroR = Content.Load<Texture2D>("Zero_Right");
-			zeroL = Content.Load<Texture2D>("Zero_Left");
-			gunR = Content.Load<Texture2D>("gun_right");
-			gunL = Content.Load<Texture2D>("gun_left");
+			Texture2D background = Content.Load<Texture2D>("background1");
+			Texture2D player1TextureR = Content.Load<Texture2D>("MegaManX_Right");
+			Texture2D player1TextureL = Content.Load<Texture2D>("MegaManX_Left");
+			Texture2D player2TextureR = Content.Load<Texture2D>("Zero_Right");
+			Texture2D player2TextureL = Content.Load<Texture2D>("Zero_Left");
+			Texture2D gunR = Content.Load<Texture2D>("gun_right");
+			Texture2D gunL = Content.Load<Texture2D>("gun_left");
 
-			bullet = Content.Load<Texture2D>("shot_poulpi");
+			Texture2D bullet = Content.Load<Texture2D>("shot_poulpi");
 
 			bullet1.Initialize(bullet, b1Position);
 			bullet2.Initialize(bullet, b1Position);
-			player1.Initialize(megaManXR, gunR, p1Position, p1GunPos, p1GunOffset, bullet1, 1);
-			player2.Initialize(zeroL, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2);
+			player1.Initialize(player1TextureR, player1TextureL, gunR, gunL, p1Position, p1GunPos, p1GunOffset, bullet1, 1);
+			player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2);
 		}
 
 		/// <summary>
@@ -116,48 +110,18 @@ namespace OneBullet
 				Exit();
 
 			// TODO: Add your update logic here
+			BulletChecks();
 
 			// ------------------------------------------ Keyboard inputs
 			kState = Keyboard.GetState();
 
 			// ------------------------------------------ Updates
-
 			if (!player1.dead)
-				player1.Update(kState, oldKState, GraphicsDevice, bullet, megaManXR, megaManXL, gunR, gunL, gameTime);
+				player1.Update(kState, oldKState, GraphicsDevice, gameTime);
 			if (!player2.dead)
-				player2.Update(kState, oldKState, GraphicsDevice, bullet, zeroR, zeroL, gunR, gunL, gameTime);
+				player2.Update(kState, oldKState, GraphicsDevice, gameTime);
 			bullet1.Update(GraphicsDevice, (int)(charHeight / 3), gameTime);
 			bullet2.Update(GraphicsDevice, (int)(charHeight / 3), gameTime);
-
-			BulletChecks();
-
-			// ------------------------------------------ Death handle
-			if (player1.dead && player1.loaded)
-			{
-				if (player1.pTexture == megaManXR)
-				{
-					player1.pBullet.Dead(bullet, true, player1.pGunPosition);
-					player1.Fire();
-				}
-				else
-				{
-					player1.pBullet.Dead(bullet, false, player1.pGunPosition);
-					player1.Fire();
-				}
-			}
-			if (player2.dead && player2.loaded)
-			{
-				if (player2.pTexture == zeroR)
-				{
-					player2.pBullet.Dead(bullet, true, player2.pGunPosition);
-					player2.Fire();
-				}
-				else
-				{
-					player2.pBullet.Dead(bullet, false, player2.pGunPosition);
-					player2.Fire();
-				}
-			}
 
 			oldKState = kState;
 
@@ -172,7 +136,7 @@ namespace OneBullet
 			Rectangle p1ModPosition = player1.pCollisionPosition;
 			Rectangle p2ModPosition = player2.pCollisionPosition;
 
-			if (player1.pTexture == megaManXR)
+			if (player1.pTexture == player1.pTextureR)
 			{
 				p1CatchPosition.X -= (int)(player1.pGunPosition.Width / 4);
 			}
@@ -181,7 +145,7 @@ namespace OneBullet
 				p1CatchPosition.X -= (int)(player1.pGunPosition.Width / 4);
 			}
 
-			if (player2.pTexture == zeroR)
+			if (player2.pTexture == player2.pTextureR)
 			{
 				p2CatchPosition.X -= (int)(player2.pGunPosition.Width / 4);
 			}
@@ -369,8 +333,8 @@ namespace OneBullet
 
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
-			spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-			spriteBatch.Draw(backgroundElements, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+			//spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+			//spriteBatch.Draw(backgroundElements, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 			player1.Draw(spriteBatch);
 			player2.Draw(spriteBatch);
 			bullet1.Draw(spriteBatch);

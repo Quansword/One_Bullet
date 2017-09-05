@@ -6,8 +6,8 @@ namespace OneBullet
 {
 	class Player
 	{
-		public Texture2D pTexture;
-		public Texture2D pGunTexture;
+		public Texture2D pTexture, pTextureR, pTextureL;
+		public Texture2D pGunTexture, pGunTextureR, pGunTextureL;
 		public Rectangle pPosition;
 		public Rectangle pCollisionPosition;
 		public Rectangle pGunPosition;
@@ -30,10 +30,23 @@ namespace OneBullet
 
 		public GunLevel level = GunLevel.Mid;
 
-		public void Initialize(Texture2D texture, Texture2D gunTexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum)
+		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D gunTextureR, Texture2D gunTextureL, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum)
 		{
-			pTexture = texture;
-			pGunTexture = gunTexture;
+			playerNum = pNum;
+			pTextureR = textureR;
+			pTextureL = textureL;
+			pGunTextureR = gunTextureR;
+			pGunTextureL = gunTextureL;
+			if (playerNum % 2 == 1)
+			{
+				pTexture = pTextureR;
+				pGunTexture = pGunTextureR;
+			}
+			else
+			{
+				pTexture = pTextureL;
+				pGunTexture = pGunTextureL;
+			}
 			pPosition = position;
 			pCollisionPosition = pPosition;
 			pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
@@ -42,7 +55,6 @@ namespace OneBullet
 			pGunPosition = gunPosition;
 			pGunPosition.X += pGunOffset;
 			pBullet = bullet;
-			playerNum = pNum;
 			pVelocity = new Vector2(0, 0);
 			onGround = true;
 			jumping = false;
@@ -51,7 +63,7 @@ namespace OneBullet
 			pLevelOffset = 0;
 		}
 
-		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, Texture2D bullet, Texture2D texRight, Texture2D texLeft, Texture2D gunR, Texture2D gunL, GameTime gameTime)
+		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, GameTime gameTime)
 		{
 			if (!dead)
 			{
@@ -76,30 +88,30 @@ namespace OneBullet
 
 				if (kState.IsKeyDown(shoot) && loaded && oldKState.IsKeyUp(shoot)) // Shoot bullet
 				{
-					if (pTexture == texRight)
+					if (pTexture == pTextureR)
 					{
-						pBullet.Fire(bullet, true, pGunPosition);
+						pBullet.Fire(true, pGunPosition);
 					}
 					else
 					{
-						pBullet.Fire(bullet, false, pGunPosition);
+						pBullet.Fire(false, pGunPosition);
 					}
 					Fire();
 				}
 				if (kState.IsKeyDown(left)) // Move left
 				{
 					pVelocity.X -= 10;
-					if (pTexture == texRight)
+					if (pTexture == pTextureR)
 					{
-						Turn(texLeft, gunL, -(int)pPosition.Width / 2);
+						Turn(-(int)pPosition.Width / 2);
 					}
 				}
 				if (kState.IsKeyDown(right)) // Move right
 				{
 					pVelocity.X += 10;
-					if (pTexture == texLeft)
+					if (pTexture == pTextureL)
 					{
-						Turn(texRight, gunR, (int)pPosition.Width / 2);
+						Turn((int)pPosition.Width / 2);
 					}
 				}
 				if (kState.IsKeyDown(jump)) // Jump
@@ -146,7 +158,7 @@ namespace OneBullet
 				}
 
 				// ------------------------------------------ Falling parameters
-				if (pCollisionPosition.Y < graphics.Viewport.Height)
+				if (pCollisionPosition.Y < graphics.Viewport.Height - pCollisionPosition.Height)
 				{
 					onGround = false;
 					pVelocity.Y += pAcceleration;
@@ -181,6 +193,19 @@ namespace OneBullet
 				// ------------------------------------------ Resetting values
 				pVelocity.X = 0;
 			}
+			// ------------------------------------------ Death handle
+			else if (dead && loaded)
+			{
+				if (pTexture == pTextureR)
+				{
+					pBullet.Dead(true, pGunPosition);
+				}
+				else
+				{
+					pBullet.Dead(false, pGunPosition);
+				}
+				Fire();
+			}
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
@@ -193,12 +218,20 @@ namespace OneBullet
 			}
 		}
 
-		public void Turn(Texture2D texture, Texture2D gunTexture, int gunOffset)
+		public void Turn(int gunOffset)
 		{
 			if (!dead)
 			{
-				pTexture = texture;
-				pGunTexture = gunTexture;
+				if (pTexture == pTextureR)
+				{
+					pTexture = pTextureL;
+					pGunTexture = pGunTextureL;
+				}
+				else
+				{
+					pTexture = pTextureR;
+					pGunTexture = pGunTextureR;
+				}
 				pGunOffset = gunOffset;
 			}
 		}
