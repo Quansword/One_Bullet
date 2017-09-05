@@ -9,7 +9,7 @@ namespace OneBullet
 		public static Level curLevel;
 		public Texture2D background;
 		public Rectangle backgroundPosition;
-		public Platforms floor, rightWall, leftWall;
+		public Platforms floor, ceiling, rightWall, leftWall;
 		public Platforms[] lPlatforms;
 		public int platNum;
 
@@ -22,7 +22,7 @@ namespace OneBullet
 			None
 		};
 
-		public void Initialize(Texture2D bg, Rectangle bgPos, int pNum, Platforms[] lPlat, Platforms fPlat = null, Platforms rWall = null, Platforms lWall = null)
+		public void Initialize(Texture2D bg, Rectangle bgPos, int pNum, Platforms[] lPlat, Platforms fPlat = null, Platforms cPlat = null, Platforms rWall = null, Platforms lWall = null)
 		{
 			background = bg;
 			backgroundPosition = bgPos;
@@ -30,6 +30,7 @@ namespace OneBullet
 			lPlatforms = new Platforms[platNum];
 			lPlatforms = lPlat;
 			floor = fPlat;
+			ceiling = cPlat;
 			rightWall = rWall;
 			leftWall = lWall;
 			Level.curLevel = this;
@@ -52,10 +53,15 @@ namespace OneBullet
 				if (leftWall.platPosition.Intersects(playerCollision))
 					return 2;
 			}
+			if (ceiling != null)
+			{
+				if (ceiling.platPosition.Intersects(playerCollision))
+					return 3;
+			}
 			for (int i = 0; i < platNum; i++)
 			{
 				if (lPlatforms[i].platPosition.Intersects(playerCollision))
-					return i + 3;
+					return i + 4;
 			}
 			return -1;
 		}
@@ -90,12 +96,19 @@ namespace OneBullet
 				distRight = leftWall.platPosition.Left - playerPos.Right;
 				distLeft = playerPos.Left - leftWall.platPosition.Right;
 			}
+			else if (platformIndex == 3)
+			{
+				distDown = ceiling.platPosition.Top - playerPos.Bottom;
+				distUp = playerPos.Top - ceiling.platPosition.Bottom;
+				distRight = ceiling.platPosition.Left - playerPos.Right;
+				distLeft = playerPos.Left - ceiling.platPosition.Right;
+			}
 			else
 			{
-				distDown = lPlatforms[platformIndex - 3].platPosition.Top - playerPos.Bottom;
-				distUp = playerPos.Top - lPlatforms[platformIndex - 3].platPosition.Bottom;
-				distRight = lPlatforms[platformIndex - 3].platPosition.Left - playerPos.Right;
-				distLeft = playerPos.Left - lPlatforms[platformIndex - 3].platPosition.Right;
+				distDown = lPlatforms[platformIndex - 4].platPosition.Top - playerPos.Bottom;
+				distUp = playerPos.Top - lPlatforms[platformIndex - 4].platPosition.Bottom;
+				distRight = lPlatforms[platformIndex - 4].platPosition.Left - playerPos.Right;
+				distLeft = playerPos.Left - lPlatforms[platformIndex - 4].platPosition.Right;
 			}
 
 			if (distDown > 0)
@@ -167,9 +180,13 @@ namespace OneBullet
 				{
 					newVelocity.Y = leftWall.platPosition.Top - playerPos.Bottom - 1;
 				}
+				else if (platformIndex == 3)
+				{
+					newVelocity.Y = ceiling.platPosition.Top - playerPos.Bottom - 1;
+				}
 				else
 				{
-					newVelocity.Y = lPlatforms[platformIndex - 3].platPosition.Top - playerPos.Bottom - 1;
+					newVelocity.Y = lPlatforms[platformIndex - 4].platPosition.Top - playerPos.Bottom - 1;
 				}
 			}
 			else if (dir == CollisionDir.Top)
@@ -186,9 +203,13 @@ namespace OneBullet
 				{
 					newVelocity.Y = leftWall.platPosition.Bottom - playerPos.Top + 1;
 				}
+				else if (platformIndex == 3)
+				{
+					newVelocity.Y = ceiling.platPosition.Bottom - playerPos.Top + 1;
+				}
 				else
 				{
-					newVelocity.Y = lPlatforms[platformIndex - 3].platPosition.Bottom - playerPos.Top + 1;
+					newVelocity.Y = lPlatforms[platformIndex - 4].platPosition.Bottom - playerPos.Top + 1;
 				}
 			}
 			else if (dir == CollisionDir.Right)
@@ -205,9 +226,13 @@ namespace OneBullet
 				{
 					newVelocity.X = leftWall.platPosition.Left - playerPos.Right - 1;
 				}
+				else if (platformIndex == 3)
+				{
+					newVelocity.X = ceiling.platPosition.Left - playerPos.Right - 1;
+				}
 				else
 				{
-					newVelocity.X = lPlatforms[platformIndex - 3].platPosition.Left - playerPos.Right - 1;
+					newVelocity.X = lPlatforms[platformIndex - 4].platPosition.Left - playerPos.Right - 1;
 				}
 			}
 			else if (dir == CollisionDir.Left)
@@ -224,9 +249,13 @@ namespace OneBullet
 				{
 					newVelocity.X = leftWall.platPosition.Right - playerPos.Left + 1;
 				}
+				else if (platformIndex == 3)
+				{
+					newVelocity.X = ceiling.platPosition.Right - playerPos.Left + 1;
+				}
 				else
 				{
-					newVelocity.X = lPlatforms[platformIndex - 3].platPosition.Right - playerPos.Left + 1;
+					newVelocity.X = lPlatforms[platformIndex - 4].platPosition.Right - playerPos.Left + 1;
 				}
 			}
 			return newVelocity;
@@ -238,6 +267,10 @@ namespace OneBullet
 			if (floor != null)
 			{
 				floor.Draw(spriteBatch);
+			}
+			if (ceiling != null)
+			{
+				ceiling.Draw(spriteBatch);
 			}
 			if (rightWall != null)
 			{
