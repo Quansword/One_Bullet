@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using System.Media;
 
 namespace OneBullet
 {
@@ -18,7 +20,11 @@ namespace OneBullet
 		Texture2D zeroR, zeroL;
 		Texture2D gunR, gunL;
 		Texture2D bullet;
-		const int pAcceleration = 3;
+        SoundEffect sFshellfall;
+        SoundEffect sFreload;
+        SoundEffect sFdead;
+        SoundEffect sFfire;
+        const int pAcceleration = 3;
 		double charHeight, charWidth;
 		KeyboardState kState;
 		private KeyboardState oldKState;
@@ -54,7 +60,7 @@ namespace OneBullet
 			player2 = new Player();
 			bullet1 = new Bullet();
 			bullet2 = new Bullet();
-			base.Initialize();
+            base.Initialize();
 			
 		}
 
@@ -87,13 +93,17 @@ namespace OneBullet
 			zeroL = Content.Load<Texture2D>("Zero_Left");
 			gunR = Content.Load<Texture2D>("gun_right");
 			gunL = Content.Load<Texture2D>("gun_left");
+            sFshellfall = Content.Load<SoundEffect>("Shells_falls-Marcel-829263474");
+            sFreload = Content.Load<SoundEffect>("50 Cal Machine Gun Load-SoundBible.com-1345076003");
+            sFdead = Content.Load<SoundEffect>("Pain-SoundBible.com-1883168362");
+            sFfire = Content.Load<SoundEffect>("9_mm_gunshot-mike-koenig-123");
 
-			bullet = Content.Load<Texture2D>("shot_poulpi");
+            bullet = Content.Load<Texture2D>("shot_poulpi");
 
-			bullet1.Initialize(bullet, b1Position);
-			bullet2.Initialize(bullet, b1Position);
-			player1.Initialize(megaManXR, gunR, p1Position, p1GunPos, p1GunOffset, bullet1, 1);
-			player2.Initialize(zeroL, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2);
+			bullet1.Initialize(bullet, b1Position, sFshellfall, sFfire);
+            bullet2.Initialize(bullet, b1Position, sFshellfall, sFfire);
+			player1.Initialize(megaManXR, gunR, p1Position, p1GunPos, p1GunOffset, bullet1, 1, sFreload, sFdead);
+			player2.Initialize(zeroL, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2, sFreload, sFdead);
 		}
 
 		/// <summary>

@@ -193,3 +193,39 @@
 /processorParam:TextureFormat=Color
 /build:placeholder_right.png
 
+#begin 9_mm_gunshot-mike-koenig-123.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:9_mm_gunshot-mike-koenig-123.wav
+
+#begin 50 Cal Machine Gun Load-SoundBible.com-1345076003.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:50 Cal Machine Gun Load-SoundBible.com-1345076003.wav
+
+#begin Fart Strain-SoundBible.com-935811180.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Fart Strain-SoundBible.com-935811180.wav
+
+#begin Pain-SoundBible.com-1883168362.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Pain-SoundBible.com-1883168362.wav
+
+#begin Shells_falls-Marcel-829263474.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Shells_falls-Marcel-829263474.wav
+
+#begin GunShot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:GunShot.wav
+

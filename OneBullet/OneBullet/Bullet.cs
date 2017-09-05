@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using System.Media;
 
 namespace OneBullet
@@ -13,11 +14,15 @@ namespace OneBullet
 		const int bAcceleration = 2;
 		int bFallVelocity;
 		public bool bDirRight, bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill;
+        SoundEffect sFshellfall;
+        SoundEffect sFfire;
 
-		public void Initialize(Texture2D texture, Rectangle position)
+		public void Initialize(Texture2D texture, Rectangle position, SoundEffect sFall, SoundEffect firesound)
         {
             bTexture = texture;
             bPosition = position;
+            sFshellfall = sFall;
+            sFfire = firesound;
             bDirRight = true;
             bMoving = false;
             bIsLoaded = true;
@@ -31,7 +36,6 @@ namespace OneBullet
 
         public void Update(GraphicsDevice graphics, int bulletSize)
 		{
-            var player1 = new System.Media.SoundPlayer(@"C:\Users\u0460939\Documents\GitHub\One_Bullet\OneBullet\OneBullet\Shells_falls-Marcel-829263474.wav");
             if (bMoving)
 			{
 				if (bDirRight)
@@ -101,7 +105,7 @@ namespace OneBullet
 			{
 				bPosition.Y = graphics.Viewport.Height - bulletSize;
 				bOnGround = true;
-                player1.Play();
+                sFshellfall.Play();
 				bKill = false;
 			}
 		}
@@ -116,7 +120,6 @@ namespace OneBullet
 
 		public void Fire(Texture2D texture, bool dirRight, Rectangle position)
 		{
-            var player3 = new System.Media.SoundPlayer(@"C:\Users\u0460939\Documents\GitHub\One_Bullet\OneBullet\OneBullet\OneBullet_GunShot.wav");
             bTexture = texture;
 			bDirRight = dirRight;
 			if (bDirRight)
@@ -130,7 +133,7 @@ namespace OneBullet
 			bPosition.Y = position.Y - 10;
 			bIsLoaded = false;
 			bMoving = true;
-            player3.Play();
+            sFfire.Play();
         }
 
 		public void Hit()
@@ -166,7 +169,6 @@ namespace OneBullet
 
 		public void Dead(Texture2D texture, bool dirRight, Rectangle position) // almost same as fire()
 		{
-            var player4 = new System.Media.SoundPlayer(@"C:\Users\u0460939\Documents\GitHub\One_Bullet\OneBullet\OneBullet\Pain-SoundBible.com-1883168362.wav");
             bTexture = texture;
 			bDirRight = dirRight;
 			if (bDirRight)
@@ -182,7 +184,6 @@ namespace OneBullet
             bPosition.Y = position.Y - 10;
 			bIsLoaded = false;
 			bMoving = false;
-            player4.Play();
         }
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using System.Media;
 
 namespace OneBullet
@@ -18,8 +19,10 @@ namespace OneBullet
 		public bool onGround, jumping, loaded, dead;
 		Keys jump, lowerGun, raiseGun, shoot, left, right;
 		int playerNum;
+        SoundEffect sFreload;
+        SoundEffect sFdead;
 
-		public Bullet pBullet;
+        public Bullet pBullet;
 
 		public enum GunLevel
 		{
@@ -30,7 +33,7 @@ namespace OneBullet
 
 		public GunLevel level = GunLevel.Mid;
 
-		public void Initialize(Texture2D texture, Texture2D gunTexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum)
+		public void Initialize(Texture2D texture, Texture2D gunTexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum, SoundEffect moresound, SoundEffect deadsound)
 		{
 			pTexture = texture;
 			pGunTexture = gunTexture;
@@ -46,6 +49,8 @@ namespace OneBullet
 			loaded = true;
 			dead = false;
 			pLevelOffset = 0;
+            sFreload = moresound;
+            sFdead = deadsound;
 		}
 
 		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, double charWidth, double charHeight, Texture2D bullet, Texture2D texRight, Texture2D texLeft, Texture2D gunR, Texture2D gunL)
@@ -208,12 +213,11 @@ namespace OneBullet
 
 		public void Pickup(Bullet bullet)
 		{
-            var player2 = new System.Media.SoundPlayer(@"C:\Users\u0460939\Documents\GitHub\One_Bullet\OneBullet\OneBullet\50 Cal Machine Gun Load-SoundBible.com-1345076003.wav");
             if (!loaded && !dead)
 			{
 				pBullet = bullet;
 				loaded = true;
-                player2.Play();
+                sFreload.Play();
             }
 		}
 
@@ -236,6 +240,7 @@ namespace OneBullet
 		public void Hit()
 		{
 			dead = true;
+            sFdead.Play();
 		}
 	}
 }
