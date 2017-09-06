@@ -405,10 +405,10 @@ namespace OneBullet
         void Respawn()
         {
 
-            Vector2 respawnPoint1 = new Vector2(plat1Pos.X + 30, plat1Pos.Y - 70);
-            Vector2 respawnPoint2 = new Vector2(plat2Pos.X + 30, plat2Pos.Y - 70);
-            Vector2 respawnPoint3 = new Vector2(plat3Pos.X + 30, plat3Pos.Y - 70);
-            Vector2 respawnPoint4 = new Vector2(plat4Pos.X+ 30, plat4Pos.Y - 70);
+            Vector2 respawnPoint1 = new Vector2(plat1Pos.X, plat1Pos.Y - 10);
+            Vector2 respawnPoint2 = new Vector2(plat2Pos.X, plat2Pos.Y - 10);
+            Vector2 respawnPoint3 = new Vector2(plat3Pos.X, plat3Pos.Y - 10);
+            Vector2 respawnPoint4 = new Vector2(plat4Pos.X, plat4Pos.Y - 10);
 
             
     
