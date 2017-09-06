@@ -145,3 +145,10 @@
 /processorParam:TextureFormat=Color
 /build:square.png
 
+#begin arialbd.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:arialbd.spritefont
+

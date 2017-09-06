@@ -19,6 +19,9 @@ namespace OneBullet
 		double charHeight, charWidth;
 		KeyboardState kState;
 		private KeyboardState oldKState;
+        int player1Lives = 3;
+        int player2Lives = 3;
+        SpriteFont font;
 
         public Rectangle plat1Pos;
         public Rectangle plat2Pos;
@@ -98,6 +101,7 @@ namespace OneBullet
 			Texture2D player2TextureL = Content.Load<Texture2D>("Zero_Left");
 			Texture2D gunR = Content.Load<Texture2D>("gun_right");
 			Texture2D gunL = Content.Load<Texture2D>("gun_left");
+            font = Content.Load<SpriteFont>("arialbd");
 
 			Texture2D bullet = Content.Load<Texture2D>("shot_poulpi");
 
@@ -364,7 +368,10 @@ namespace OneBullet
 			player2.Draw(spriteBatch);
 			bullet1.Draw(spriteBatch);
 			bullet2.Draw(spriteBatch);
-			spriteBatch.End();
+            spriteBatch.DrawString(font, player1Lives.ToString(), new Vector2(0, 0), Color.Purple);
+            spriteBatch.DrawString(font, player2Lives.ToString(), new Vector2(1270, 0), Color.Purple);
+
+            spriteBatch.End();
 
 			base.Draw(gameTime);
 		}
@@ -405,15 +412,17 @@ namespace OneBullet
         void Respawn()
         {
 
-            Vector2 respawnPoint1 = new Vector2(plat1Pos.X, plat1Pos.Y - 10);
-            Vector2 respawnPoint2 = new Vector2(plat2Pos.X, plat2Pos.Y - 10);
-            Vector2 respawnPoint3 = new Vector2(plat3Pos.X, plat3Pos.Y - 10);
-            Vector2 respawnPoint4 = new Vector2(plat4Pos.X, plat4Pos.Y - 10);
+            Vector2 respawnPoint1 = new Vector2(plat1Pos.X + 30, plat1Pos.Y - 70);
+            Vector2 respawnPoint2 = new Vector2(plat2Pos.X + 30, plat2Pos.Y - 70);
+            Vector2 respawnPoint3 = new Vector2(plat3Pos.X + 30, plat3Pos.Y - 70);
+            Vector2 respawnPoint4 = new Vector2(plat4Pos.X + 30, plat4Pos.Y - 70);
 
             
     
             if (player1.dead == true) 
             {
+
+                player1Lives--;
                 
                 double x1Distance = Math.Pow(respawnPoint1.X - player2.pPosition.X, 2);
                 double y1Distance = Math.Pow(respawnPoint1.Y - player2.pPosition.Y, 2);
@@ -477,6 +486,7 @@ namespace OneBullet
 
             if (player2.dead == true)
             {
+                player2Lives--;
 
                 double x1Distance = Math.Pow(respawnPoint1.X - player1.pPosition.X, 2);
                 double y1Distance = Math.Pow(respawnPoint1.Y - player1.pPosition.Y, 2);
