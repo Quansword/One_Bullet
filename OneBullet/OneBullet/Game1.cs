@@ -23,11 +23,29 @@ namespace OneBullet
         int player2Lives = 3;
         SpriteFont font;
 
-        public Rectangle plat1Pos;
-        public Rectangle plat2Pos;
-        public Rectangle plat3Pos;
-        public Rectangle plat4Pos;
-        public Rectangle plat5Pos;
+        Rectangle plat1Pos;
+        Rectangle plat2Pos;
+        Rectangle plat3Pos;
+        Rectangle plat4Pos;
+        Rectangle plat5Pos;
+
+        Rectangle p1Position;
+        Rectangle p1GunPos;
+        int p1GunOffset;
+
+        Rectangle p2Position;
+        Rectangle p2GunPos;
+        int p2GunOffset;
+
+        Rectangle b1Position;
+        Rectangle b2Position;
+
+        Texture2D player1TextureR;
+        Texture2D player1TextureL;
+        Texture2D player2TextureR;
+        Texture2D player2TextureL;
+        Texture2D gunR;
+        Texture2D gunL;
 
 
 
@@ -84,23 +102,23 @@ namespace OneBullet
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
 			// TODO: use this.Content to load your game content here
-			Rectangle p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height - (int)(2 * charHeight), (int)charWidth, (int)charHeight);
-			Rectangle p1GunPos = new Rectangle(p1Position.X, p1Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
-			int p1GunOffset = (int)charWidth / 2;
+			p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height - (int)(2 * charHeight), (int)charWidth, (int)charHeight);
+			p1GunPos = new Rectangle(p1Position.X, p1Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
+			p1GunOffset = (int)charWidth / 2;
 
-			Rectangle p2Position = new Rectangle((3 * (GraphicsDevice.Viewport.Width / 4)), GraphicsDevice.Viewport.Height - (int)(2 * charHeight), (int)charWidth, (int)charHeight);
-			Rectangle p2GunPos = new Rectangle(p2Position.X, p2Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
-			int p2GunOffset = -(int)charWidth / 2;
+			p2Position = new Rectangle((3 * (GraphicsDevice.Viewport.Width / 4)), GraphicsDevice.Viewport.Height - (int)(2 * charHeight), (int)charWidth, (int)charHeight);
+			p2GunPos = new Rectangle(p2Position.X, p2Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
+		    p2GunOffset = -(int)charWidth / 2;
 
-			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
-			Rectangle b2Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
+			b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
+			b2Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 
-			Texture2D player1TextureR = Content.Load<Texture2D>("MegaManX_Right");
-			Texture2D player1TextureL = Content.Load<Texture2D>("MegaManX_Left");
-			Texture2D player2TextureR = Content.Load<Texture2D>("Zero_Right");
-			Texture2D player2TextureL = Content.Load<Texture2D>("Zero_Left");
-			Texture2D gunR = Content.Load<Texture2D>("gun_right");
-			Texture2D gunL = Content.Load<Texture2D>("gun_left");
+			player1TextureR = Content.Load<Texture2D>("MegaManX_Right");
+			player1TextureL = Content.Load<Texture2D>("MegaManX_Left");
+			player2TextureR = Content.Load<Texture2D>("Zero_Right");
+			player2TextureL = Content.Load<Texture2D>("Zero_Left");
+		    gunR = Content.Load<Texture2D>("gun_right");
+			gunL = Content.Load<Texture2D>("gun_left");
             font = Content.Load<SpriteFont>("arialbd");
 
 			Texture2D bullet = Content.Load<Texture2D>("shot_poulpi");
@@ -402,6 +420,7 @@ namespace OneBullet
             plat2.Initialize(platform, plat2Pos);
             plat3.Initialize(platform, plat3Pos);
             plat4.Initialize(platform, plat4Pos);
+
             plat5.Initialize(platform, plat5Pos);
 
             Platforms[] lvlPlats = { plat1, plat2, plat3, plat4, plat5 };
@@ -470,17 +489,24 @@ namespace OneBullet
                     player1.dead = false;
                 }
 
-                if (bullet1.bDead == true)
+                if (bullet1.bIsLoaded == false)
                 {
-                    player1.pBullet.bDead = false;
-                    player1.pBullet.bIsLoaded = true;
+                    player1.Initialize(player1TextureR, player1TextureL, gunR, gunL, player1.pPosition, p1GunPos, p1GunOffset, bullet1, 1);
+                    bullet1.bIsLoaded = true;
+                }
+
+                else if(bullet2.bIsLoaded == false)
+                {
+                    player1.Initialize(player1TextureR, player1TextureL, gunR, gunL, player1.pPosition, p1GunPos, p1GunOffset, bullet2, 1);
+                    bullet2.bIsLoaded = true;
 
                 }
 
-                else if(bullet2.bDead == true)
+                else if(bullet1.bIsLoaded == false && bullet2.bIsLoaded == false)
                 {
-                    player1.pBullet.bDead = false;
-                    player1.pBullet.bIsLoaded = true;
+                    player1.Initialize(player1TextureR, player1TextureL, gunR, gunL, player1.pPosition, p1GunPos, p1GunOffset, bullet1, 1);
+                    bullet1.bIsLoaded = true;
+
                 }
             }
 
@@ -505,6 +531,8 @@ namespace OneBullet
                 double player4Distance = Math.Sqrt(x4Distance + y4Distance);
 
                 double maxDistance = Math.Max(Math.Max(Math.Max(player1Distance, player2Distance), player3Distance), player4Distance);
+
+               
 
                 if(maxDistance == player1Distance)
                 {
@@ -534,17 +562,23 @@ namespace OneBullet
                     player2.dead = false;
                 }
 
-                if (bullet1.bDead == true)
+                if (bullet2.bIsLoaded == false)
                 {
-                    player2.pBullet.bDead = false;
-                    player2.pBullet.bIsLoaded = true;
-
+                    player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, player2.pPosition, p2GunPos, p2GunOffset, bullet2, 2);
+                    bullet2.bIsLoaded = true;
                 }
 
-                else if (bullet2.bDead == true)
+                else if (bullet1.bIsLoaded == false)
                 {
-                    player2.pBullet.bDead = false;
-                    player2.pBullet.bIsLoaded = true;
+                    player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, player2.pPosition, p2GunPos, p2GunOffset, bullet1, 2);
+                    bullet1.bIsLoaded = true;
+                }
+
+
+                else if(bullet1.bIsLoaded == false && bullet2.bIsLoaded == false)
+                {
+                    player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, player2.pPosition, p2GunPos, p2GunOffset, bullet2, 2);
+                    bullet2.bIsLoaded = true;
                 }
 
             }
