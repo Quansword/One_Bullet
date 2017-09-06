@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace OneBullet
 {
@@ -19,11 +20,20 @@ namespace OneBullet
 		KeyboardState kState;
 		private KeyboardState oldKState;
 
-		public Game1()
+        public Rectangle plat1Pos;
+        public Rectangle plat2Pos;
+        public Rectangle plat3Pos;
+        public Rectangle plat4Pos;
+        public Rectangle plat5Pos;
+
+
+
+
+        public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
-
+            
 			// Resolution independence
 			//Vector2 virtualScreen = new Vector2(1280, 720);
 			//graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
@@ -51,7 +61,14 @@ namespace OneBullet
 			bullet1 = new Bullet();
 			bullet2 = new Bullet();
 			level01 = new Level();
-			base.Initialize();
+
+            plat1Pos = new Rectangle(100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM LEFT
+            plat2Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 + 350, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM RIGHT
+            plat3Pos = new Rectangle(225, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID LEFT
+            plat4Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 + 250, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID RIGHT
+            plat5Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 - 100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 300, (int)charWidth * 2, (int)(2 * charHeight / 3)); //CENTER TOP
+
+            base.Initialize();
 		}
 
 		/// <summary>
@@ -117,6 +134,7 @@ namespace OneBullet
 
 			// TODO: Add your update logic here
 			BulletChecks();
+            Respawn();
 
 			// ------------------------------------------ Keyboard inputs
 			kState = Keyboard.GetState();
@@ -351,7 +369,7 @@ namespace OneBullet
 			base.Draw(gameTime);
 		}
 
-		void Level01Init(Texture2D background, Texture2D platform)
+		public void Level01Init(Texture2D background, Texture2D platform)
 		{
 			Rectangle backgroundPos = new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
@@ -367,19 +385,11 @@ namespace OneBullet
 			Platforms lWallPlat = new Platforms();
 			lWallPlat.Initialize(platform, lWallPlatPos);
 
-            Rectangle plat1Pos = new Rectangle(100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM LEFT
-            Rectangle plat2Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 + 350, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM RIGHT
-            Rectangle plat3Pos = new Rectangle(350 / 2 + 50, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID LEFT
-            Rectangle plat4Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 + 250, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID RIGHTss
-            Rectangle plat5Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 - 100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 300, (int)charWidth * 2, (int)(2 * charHeight / 3)); //CENTER TOP
-
             Platforms plat1 = new Platforms();
             Platforms plat2 = new Platforms();
             Platforms plat3 = new Platforms();
             Platforms plat4 = new Platforms();
             Platforms plat5 = new Platforms();
-
-
 
             plat1.Initialize(platform, plat1Pos);
             plat2.Initialize(platform, plat2Pos);
@@ -387,12 +397,147 @@ namespace OneBullet
             plat4.Initialize(platform, plat4Pos);
             plat5.Initialize(platform, plat5Pos);
 
-
-
-
             Platforms[] lvlPlats = { plat1, plat2, plat3, plat4, plat5 };
 
             level01.Initialize(background, backgroundPos, 5, lvlPlats, floorPlat, rWallPlat, lWallPlat);
+        }
+
+        void Respawn()
+        {
+
+            Vector2 respawnPoint1 = new Vector2(plat1Pos.X, plat1Pos.Y - 10);
+            Vector2 respawnPoint2 = new Vector2(plat2Pos.X, plat2Pos.Y - 10);
+            Vector2 respawnPoint3 = new Vector2(plat3Pos.X, plat3Pos.Y - 10);
+            Vector2 respawnPoint4 = new Vector2(plat4Pos.X, plat4Pos.Y - 10);
+
+            
+    
+            if (player1.dead == true) 
+            {
+                
+                double x1Distance = Math.Pow(respawnPoint1.X - player2.pPosition.X, 2);
+                double y1Distance = Math.Pow(respawnPoint1.Y - player2.pPosition.Y, 2);
+                double player1Distance = Math.Sqrt(x1Distance + y1Distance);
+
+                double x2Distance = Math.Pow(respawnPoint2.X - player2.pPosition.X, 2);
+                double y2Distance = Math.Pow(respawnPoint2.Y - player2.pPosition.Y, 2);
+                double player2Distance = Math.Sqrt(x2Distance + y2Distance);
+
+                double x3Distance = Math.Pow(respawnPoint3.X - player2.pPosition.X, 2);
+                double y3Distance = Math.Pow(respawnPoint3.Y - player2.pPosition.Y, 2);
+                double player3Distance = Math.Sqrt(x3Distance + y3Distance);
+
+                double x4Distance = Math.Pow(respawnPoint4.X - player2.pPosition.X, 2);
+                double y4Distance = Math.Pow(respawnPoint4.Y - player2.pPosition.Y, 2);
+                double player4Distance = Math.Sqrt(x4Distance + y4Distance);
+
+                double maxDistance = Math.Max(Math.Max(Math.Max(player1Distance, player2Distance), player3Distance), player4Distance);
+
+                if (maxDistance == player1Distance)
+                {
+                    player1.pPosition.X = (int)respawnPoint1.X;
+                    player1.pPosition.Y = (int)respawnPoint1.Y;
+                    player1.dead = false;
+                }
+
+                else if (maxDistance == player2Distance)
+                {
+                    player1.pPosition.X = (int)respawnPoint2.X;
+                    player1.pPosition.Y = (int)respawnPoint2.Y;
+                    player1.dead = false;
+                }
+
+                else if (maxDistance == player3Distance)
+                {
+                    player1.pPosition.X = (int)respawnPoint3.X;
+                    player1.pPosition.Y = (int)respawnPoint3.Y;
+                    player1.dead = false;
+                }
+
+                else
+                {
+                    player1.pPosition.X = (int)respawnPoint4.X;
+                    player1.pPosition.Y = (int)respawnPoint4.Y;
+                    player1.dead = false;
+                }
+
+                if (bullet1.bDead == true)
+                {
+                    player1.pBullet.bDead = false;
+                    player1.pBullet.bIsLoaded = true;
+
+                }
+
+                else if(bullet2.bDead == true)
+                {
+                    player1.pBullet.bDead = false;
+                    player1.pBullet.bIsLoaded = true;
+                }
+            }
+
+            if (player2.dead == true)
+            {
+
+                double x1Distance = Math.Pow(respawnPoint1.X - player1.pPosition.X, 2);
+                double y1Distance = Math.Pow(respawnPoint1.Y - player1.pPosition.Y, 2);
+                double player1Distance = Math.Sqrt(x1Distance + y1Distance);
+
+                double x2Distance = Math.Pow(respawnPoint2.X - player1.pPosition.X, 2);
+                double y2Distance = Math.Pow(respawnPoint2.Y - player1.pPosition.Y, 2);
+                double player2Distance = Math.Sqrt(x2Distance + y2Distance);
+
+                double x3Distance = Math.Pow(respawnPoint3.X - player1.pPosition.X, 2);
+                double y3Distance = Math.Pow(respawnPoint3.Y - player1.pPosition.Y, 2);
+                double player3Distance = Math.Sqrt(x3Distance + y3Distance);
+
+                double x4Distance = Math.Pow(respawnPoint4.X - player1.pPosition.X, 2);
+                double y4Distance = Math.Pow(respawnPoint4.Y - player1.pPosition.Y, 2);
+                double player4Distance = Math.Sqrt(x4Distance + y4Distance);
+
+                double maxDistance = Math.Max(Math.Max(Math.Max(player1Distance, player2Distance), player3Distance), player4Distance);
+
+                if(maxDistance == player1Distance)
+                {
+                    player2.pPosition.X = (int)respawnPoint1.X;
+                    player2.pPosition.Y = (int)respawnPoint1.Y;
+                    player2.dead = false;
+                }
+
+                else if (maxDistance == player2Distance)
+                {
+                    player2.pPosition.X = (int)respawnPoint2.X;
+                    player2.pPosition.Y = (int)respawnPoint2.Y;
+                    player2.dead = false;
+                }
+
+                else if (maxDistance == player3Distance)
+                {
+                    player2.pPosition.X = (int)respawnPoint3.X;
+                    player2.pPosition.Y = (int)respawnPoint3.Y;
+                    player2.dead = false;
+                }
+
+                else
+                {
+                    player2.pPosition.X = (int)respawnPoint4.X;
+                    player2.pPosition.Y = (int)respawnPoint4.Y;
+                    player2.dead = false;
+                }
+
+                if (bullet1.bDead == true)
+                {
+                    player2.pBullet.bDead = false;
+                    player2.pBullet.bIsLoaded = true;
+
+                }
+
+                else if (bullet2.bDead == true)
+                {
+                    player2.pBullet.bDead = false;
+                    player2.pBullet.bIsLoaded = true;
+                }
+
+            }
         }
 	}
 }
