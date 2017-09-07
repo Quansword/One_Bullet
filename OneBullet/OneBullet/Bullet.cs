@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,9 +11,9 @@ namespace OneBullet
 		public Rectangle bPosition;
 		Rectangle newPosition;
 		Vector2 bVelocity, bShootDirection;
-		const int bSpeed = 12;
+		const int bSpeed = 16;
 		const int bAcceleration = 2;
-		public bool bMoving, bIsLoaded, bHasRicocheted, bOnGround, bKill, bDead;
+		public bool bMoving, bIsLoaded, bOnGround, bKill, bDead;
 
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
@@ -24,7 +25,6 @@ namespace OneBullet
 			newPosition = bPosition;
 			bMoving = false;
 			bIsLoaded = true;
-			bHasRicocheted = false;
 			bOnGround = false;
 			bKill = false;
 			bDead = false;
@@ -39,11 +39,37 @@ namespace OneBullet
 			{
 				if (bShootDirection.X == 1)
 				{
-					bVelocity.X = bSpeed;
+					if (bShootDirection.Y == 0)
+					{
+						bVelocity.X = bSpeed;
+					}
+					else if (bShootDirection.Y == 1)
+					{
+						bVelocity.X = 11;
+						bVelocity.Y = -11;
+					}
+					else
+					{
+						bVelocity.X = 11;
+						bVelocity.Y = 11;
+					}
 				}
 				else
 				{
-					bVelocity.X = -bSpeed;
+					if (bShootDirection.Y == 0)
+					{
+						bVelocity.X = -bSpeed;
+					}
+					else if (bShootDirection.Y == 1)
+					{
+						bVelocity.X = -11;
+						bVelocity.Y = -11;
+					}
+					else
+					{
+						bVelocity.X = -11;
+						bVelocity.Y = 11;
+					}
 				}
 			}
 			else if (!bMoving && !bOnGround && !bIsLoaded) // not moving, bullet is falling after hitting platform or wall
@@ -120,16 +146,21 @@ namespace OneBullet
 					if (collisionDir == Level.CollisionDir.Bottom || collisionDir == Level.CollisionDir.Top)
 					{
 						bPosition.Y += (int)bVelocity.Y;
-						bVelocity.Y = 0;
-						bVelocity.X = 0;
-						bOnGround = true;
-						bKill = false;
+						if (!bMoving)
+						{
+							bVelocity.Y = 0;
+							bVelocity.X = 0;
+							bOnGround = true;
+						}
+						else
+						{
+							bShootDirection.Y = -bShootDirection.Y;
+						}
 					}
 					else
 					{
 						bPosition.X += (int)bVelocity.X;
-						bVelocity.X = 0;
-						Wall();
+						bShootDirection.X = -bShootDirection.X;
 					}
 				}
 			}
@@ -159,18 +190,18 @@ namespace OneBullet
 				if (bShootDirection.Y == 0)
 				{
 					bPosition.X = position.X + (position.Width / 4);
+					bPosition.Y = position.Y;
 				}
 				else if (bShootDirection.Y == 1)
 				{
-					bPosition.X = position.X + (position.Width / 8);
-					bPosition.Y = position.Y + (position.Width / 8);
+					bPosition.X = (int)(position.X + Math.Sqrt(position.Width / 4));
+					bPosition.Y = (int)(position.Y - Math.Sqrt(position.Width / 4));
 				}
 				else
 				{
-					bPosition.X = position.X + (position.Width / 8);
-					bPosition.Y = position.Y - (position.Width / 8);
+					bPosition.X = (int)(position.X + Math.Sqrt(position.Width / 4));
+					bPosition.Y = (int)(position.Y + Math.Sqrt(position.Width / 4));
 				}
-				//bTexture = bTextureR;
 			}
 			else
 			{
@@ -178,20 +209,19 @@ namespace OneBullet
 				if (bShootDirection.Y == 0)
 				{
 					bPosition.X = position.X - (position.Width / 4);
+					bPosition.Y = position.Y;
 				}
 				else if (bShootDirection.Y == 1)
 				{
-					bPosition.X = position.X - (position.Width / 8);
-					bPosition.Y = position.Y + (position.Width / 8);
+					bPosition.X = (int)(position.X - Math.Sqrt(position.Width / 4));
+					bPosition.Y = (int)(position.Y - Math.Sqrt(position.Width / 4));
 				}
 				else
 				{
-					bPosition.X = position.X - (position.Width / 8);
-					bPosition.Y = position.Y - (position.Width / 8);
+					bPosition.X = (int)(position.X - Math.Sqrt(position.Width / 4));
+					bPosition.Y = (int)(position.Y + Math.Sqrt(position.Width / 4));
 				}
-				//bTexture = bTextureL;
 			}
-			bPosition.Y = position.Y;
 			bIsLoaded = false;
 			bMoving = true;
 		}
@@ -207,6 +237,7 @@ namespace OneBullet
 			bIsLoaded = true;
 			bOnGround = false;
 			bDead = false;
+			bKill = false;
 			bVelocity.Y = 0;
 			bVelocity.X = 0;
 		}
@@ -214,7 +245,6 @@ namespace OneBullet
 		public void Wall()
 		{
 			bMoving = false;
-			bHasRicocheted = false;
 		}
 
 		public void Catch()
@@ -223,33 +253,16 @@ namespace OneBullet
 			bIsLoaded = true;
 		}
 
-		public void Ricochet(Texture2D texture)
-		{
-			if (!bHasRicocheted)
-			{
-				// bHasRicocheted = true;
-				// bDirRight = !bDirRight;
-				// change texture to opposite direction texture
-			}
-			else
-			{
-				Wall();
-			}
-		}
-
 		public void Dead(Vector2 dir, Rectangle position) // almost same as fire()
 		{
 			bShootDirection = dir;
 			if (bShootDirection.X == 1)
 			{
 				bPosition.X = position.X;
-				//bTexture = bTextureR;
-
             }
             else
 			{
 				bPosition.X = position.X;
-				//bTexture = bTextureL;
 			}
 			bPosition.Y = position.Y;
 			bIsLoaded = false;

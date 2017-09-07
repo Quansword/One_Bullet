@@ -40,55 +40,35 @@ namespace OneBullet
 		{
 			if (floor != null)
 			{
-				if (floor.platPosition.Intersects(playerCollision))
+				if (floor.platPosition.Intersects(playerCollision) || floor.platPosition.Contains(playerCollision))
 				{
 					return 0;
 				}
-                else if (floor.platPosition.Contains(playerCollision))
-                {
-                    return 0;
-                }
 			}
 			if (rightWall != null)
 			{
-				if (rightWall.platPosition.Intersects(playerCollision))
-                {
-                    return 1;
-                }
-                else if (rightWall.platPosition.Contains(playerCollision))
+				if (rightWall.platPosition.Intersects(playerCollision) || rightWall.platPosition.Contains(playerCollision))
                 {
                     return 1;
                 }
             }
 			if (leftWall != null)
 			{
-				if (leftWall.platPosition.Intersects(playerCollision))
-				{
-					return 2;
-				}
-				else if (leftWall.platPosition.Contains(playerCollision))
+				if (leftWall.platPosition.Intersects(playerCollision) || leftWall.platPosition.Contains(playerCollision))
 				{
 					return 2;
 				}
 			}
 			if (ceiling != null)
 			{
-				if (ceiling.platPosition.Intersects(playerCollision))
-				{
-					return 3;
-				}
-				else if (ceiling.platPosition.Contains(playerCollision))
+				if (ceiling.platPosition.Intersects(playerCollision) || ceiling.platPosition.Contains(playerCollision))
 				{
 					return 3;
 				}
 			}
 			for (int i = 0; i < platNum; i++)
 			{
-				if (lPlatforms[i].platPosition.Intersects(playerCollision))
-				{
-					return i + 4;
-				}
-				else if (lPlatforms[i].platPosition.Contains(playerCollision))
+				if (lPlatforms[i].platPosition.Intersects(playerCollision) || lPlatforms[i].platPosition.Contains(playerCollision))
 				{
 					return i + 4;
 				}
@@ -146,14 +126,14 @@ namespace OneBullet
 				leastDist = distDown;
 				dir = CollisionDir.Bottom;
 
-				if (distRight > 0)
+				if (distRight >= 0)
 				{
 					if (distRight < leastDist)
 					{
 						dir = CollisionDir.Right;
 					}
 				}
-				else if (distLeft > 0)
+				else if (distLeft >= 0)
 				{
 					if (distLeft < leastDist)
 					{
@@ -161,19 +141,19 @@ namespace OneBullet
 					}
 				}
 			}
-			else if (distUp > 0)
+			else if (distUp >= 0)
 			{
 				leastDist = distUp;
 				dir = CollisionDir.Top;
 
-				if (distRight > 0)
+				if (distRight >= 0)
 				{
 					if (distRight < leastDist)
 					{
 						dir = CollisionDir.Right;
 					}
 				}
-				else if (distLeft > 0)
+				else if (distLeft >= 0)
 				{
 					if (distLeft < leastDist)
 					{
@@ -181,11 +161,11 @@ namespace OneBullet
 					}
 				}
 			}
-			else if (distRight > 0)
+			else if (distRight >= 0)
 			{
 				dir = CollisionDir.Right;
 			}
-			else if (distLeft > 0)
+			else if (distLeft >= 0)
 			{
 				dir = CollisionDir.Left;
 			}
@@ -193,7 +173,7 @@ namespace OneBullet
 			return dir;
 		}
 
-		public Vector2 NewVelocity(int platformIndex, Level.CollisionDir dir, Rectangle playerPos, Vector2 velocity)
+		public Vector2 NewVelocity(int platformIndex, CollisionDir dir, Rectangle playerPos, Vector2 velocity)
 		{
 			Vector2 newVelocity = velocity;
 			if (dir == CollisionDir.Bottom)

@@ -101,11 +101,33 @@ namespace OneBullet
 					{
 						if (pTexture == pTextureR)
 						{
-							pBullet.Fire(new Vector2(1,0), pGunPosition);
+							if (level == GunLevel.Mid)
+							{
+								pBullet.Fire(new Vector2(1, 0), pGunPosition);
+							}
+							else if (level == GunLevel.High)
+							{
+								pBullet.Fire(new Vector2(1, 1), pGunPosition);
+							}
+							else
+							{
+								pBullet.Fire(new Vector2(1, -1), pGunPosition);
+							}
 						}
 						else
 						{
-							pBullet.Fire(new Vector2(-1, 0), pGunPosition);
+							if (level == GunLevel.Mid)
+							{
+								pBullet.Fire(new Vector2(-1, 0), pGunPosition);
+							}
+							else if (level == GunLevel.High)
+							{
+								pBullet.Fire(new Vector2(-1, 1), pGunPosition);
+							}
+							else
+							{
+								pBullet.Fire(new Vector2(-1, -1), pGunPosition);
+							}
 						}
 						Fire();
 					}
@@ -253,7 +275,19 @@ namespace OneBullet
 			{
 				//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
 				spriteBatch.Draw(pTexture, pPosition, null, Color.White, 0, new Vector2(pTexture.Width / 2, pTexture.Height / 2), SpriteEffects.None, 0);
-				spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, 0, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
+
+				if (level == GunLevel.Mid)
+				{
+					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, 0, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
+				}
+				else if ((level == GunLevel.High && pTexture == pTextureL) || (level == GunLevel.Low && pTexture == pTextureR))
+				{
+					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, 45, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
+				}
+				else
+				{
+					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, -45, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
+				}
 			}
 		}
 
