@@ -239,6 +239,7 @@ namespace OneBullet
 			bKill = true;
 			bOnGround = false;
 			bIsLoaded = false;
+			bDead = false;
 			bVelocity.X = 0;
 			bVelocity.Y = 0;
 		}
