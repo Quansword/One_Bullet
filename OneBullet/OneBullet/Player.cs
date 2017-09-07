@@ -18,7 +18,7 @@ namespace OneBullet
 		Vector2 pVelocity;
 		int pLevelOffset;
 		public int pGunOffset;
-		public int pLives = 3;
+		public int pLives = 10;
 		float pAcceleration;
 		public bool onGround, jumping, loaded, dead;
 		Keys jump, lowerGun, raiseGun, shoot, left, right;
@@ -58,10 +58,11 @@ namespace OneBullet
 			pGunTextureUnloadedL = gunUnloadedL;
 			pAliveTexture = aliveGUITexture;
 			pDeadTexture = deadGUITexture;
-			pLivesTextures = new Texture2D[3];
-			pLivesTextures[0] = pAliveTexture;
-			pLivesTextures[1] = pAliveTexture;
-			pLivesTextures[2] = pAliveTexture;
+			pLivesTextures = new Texture2D[10];
+			for (int i = 0; i < 10; i++)
+			{
+				pLivesTextures[i] = pAliveTexture;
+			}
 			if (playerNum % 2 == 1)
 			{
 				pTexture = pTextureR;
@@ -610,14 +611,14 @@ namespace OneBullet
 			}
 			if (playerNum == 1)
 			{
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 10; i++)
 				{
 					spriteBatch.Draw(pLivesTextures[i], new Rectangle((height / 50) + ((height / 15) * i), height / 50, height / 10, height / 10), Color.White);
 				}
 			}
 			else
 			{
-				for (int i = 2; i > -1; i--)
+				for (int i = 9; i > -1; i--)
 				{
 					spriteBatch.Draw(pLivesTextures[i], new Rectangle(width - ((height / 8) + ((height / 15) * i)), height / 50, height / 10, height / 10), Color.White);
 				}
