@@ -69,8 +69,10 @@ namespace OneBullet
 			Texture2D player2JumpR = Content.Load<Texture2D>("p2JumpR");
 			Texture2D player2JumpL = Content.Load<Texture2D>("p2JumpL");
 
-			Texture2D gunR = Content.Load<Texture2D>("gun_right");
-			Texture2D gunL = Content.Load<Texture2D>("gun_left");
+			Texture2D gunR = Content.Load<Texture2D>("gunR_loaded");
+			Texture2D gunL = Content.Load<Texture2D>("gunL_loaded");
+			Texture2D gunUR = Content.Load<Texture2D>("gunR_unloaded");
+			Texture2D gunUL = Content.Load<Texture2D>("gunL_unloaded");
 
 			Texture2D bullet = Content.Load<Texture2D>("bullet");
 
@@ -87,8 +89,8 @@ namespace OneBullet
 
 			bullet1.Initialize(bullet, b1Position, sfShellFall, sfFire);
 			bullet2.Initialize(bullet, b1Position, sfShellFall, sfFire);
-			player1.Initialize(player1TextureR, player1TextureL, player1JumpR, player1JumpL, gunR, gunL, p1Life, p1Dead, p1Position, p1GunPos, p1GunOffset, bullet1, sfReload, sfDead, 1);
-			player2.Initialize(player2TextureR, player2TextureL, player2JumpR, player2JumpL, gunR, gunL, p2Life, p2Dead, p2Position, p2GunPos, p2GunOffset, bullet2, sfReload, sfDead, 2);
+			player1.Initialize(player1TextureR, player1TextureL, player1JumpR, player1JumpL, gunR, gunL, gunUR, gunUL, p1Life, p1Dead, p1Position, p1GunPos, p1GunOffset, bullet1, sfReload, sfDead, 1);
+			player2.Initialize(player2TextureR, player2TextureL, player2JumpR, player2JumpL, gunR, gunL, gunUR, gunUL, p2Life, p2Dead, p2Position, p2GunPos, p2GunOffset, bullet2, sfReload, sfDead, 2);
 
 			// ------------------------------------------ Level and platform content
 			Level01Init();

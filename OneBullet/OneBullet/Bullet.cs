@@ -181,7 +181,14 @@ namespace OneBullet
 			if (!bIsLoaded)
 			{
 				//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
-				spriteBatch.Draw(bTexture, bDrawPosition, null, Color.White); //, 0, new Vector2(bTexture.Width / 2, bTexture.Height/2), SpriteEffects.None, 0);
+				if (bOnGround)
+				{
+					spriteBatch.Draw(bTexture, bPosition, null, Color.White);
+				}
+				else
+				{
+					spriteBatch.Draw(bTexture, bDrawPosition, null, Color.White); //, 0, new Vector2(bTexture.Width / 2, bTexture.Height/2), SpriteEffects.None, 0);
+				}
 			}
 		}
 

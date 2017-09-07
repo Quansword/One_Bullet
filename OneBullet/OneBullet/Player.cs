@@ -8,13 +8,13 @@ namespace OneBullet
 	class Player
 	{
 		public Texture2D pTexture, pTextureR, pTextureL, pJumpTextureR, pJumpTextureL;
-		public Texture2D pGunTexture, pGunTextureR, pGunTextureL;
+		public Texture2D pGunTexture, pGunTextureR, pGunTextureL, pGunTextureUnloadedR, pGunTextureUnloadedL;
 		Texture2D pAliveTexture, pDeadTexture;
 		Texture2D[] pLivesTextures;
 		public Rectangle pPosition, pCollisionPosition;
 		Rectangle newPosition;
 		Rectangle spriteSheet;
-		public Rectangle pGunPosition, pGunCollisionPosition;
+		public Rectangle pGunPosition, pGunCollisionPosition, pGunDisplayLoaded, pGunDisplayUnloaded;
 		Vector2 pVelocity;
 		int pLevelOffset;
 		public int pGunOffset;
@@ -45,7 +45,7 @@ namespace OneBullet
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
 
-		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D jumpTextureR, Texture2D jumpTextureL, Texture2D gunTextureR, Texture2D gunTextureL, Texture2D aliveGUITexture, Texture2D deadGUITexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, SoundEffect reloadSound, SoundEffect deadSound, int pNum)
+		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D jumpTextureR, Texture2D jumpTextureL, Texture2D gunTextureR, Texture2D gunTextureL, Texture2D gunUnloadedR, Texture2D gunUnloadedL, Texture2D aliveGUITexture, Texture2D deadGUITexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, SoundEffect reloadSound, SoundEffect deadSound, int pNum)
 		{
 			playerNum = pNum;
 			pTextureR = textureR;
@@ -54,6 +54,8 @@ namespace OneBullet
 			pJumpTextureL = jumpTextureL;
 			pGunTextureR = gunTextureR;
 			pGunTextureL = gunTextureL;
+			pGunTextureUnloadedR = gunUnloadedR;
+			pGunTextureUnloadedL = gunUnloadedL;
 			pAliveTexture = aliveGUITexture;
 			pDeadTexture = deadGUITexture;
 			pLivesTextures = new Texture2D[3];
@@ -81,8 +83,13 @@ namespace OneBullet
 			pGunCollisionPosition = pGunPosition;
 			pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
 			pGunCollisionPosition.Width = (int)(pGunPosition.Width * 1.2);
-			pGunCollisionPosition.X -= pGunPosition.Height / 2;
-			pGunCollisionPosition.Y -= pGunPosition.Width / 2;
+			pGunCollisionPosition.X -= pGunPosition.Width / 2;
+			pGunCollisionPosition.Y -= pGunPosition.Height / 2;
+			pGunDisplayLoaded = pGunPosition;
+			pGunDisplayLoaded.X -= pGunPosition.Width;
+			pGunDisplayLoaded.Width = pGunDisplayLoaded.Height * 3;
+			pGunDisplayUnloaded = pGunDisplayLoaded;
+			pGunDisplayUnloaded.Height = (int)(pGunDisplayUnloaded.Height * 1.5);
 			pBullet = bullet;
 			sfReload = reloadSound;
 			sfDead = deadSound;
@@ -378,32 +385,106 @@ namespace OneBullet
 					spriteBatch.Draw(pTexture, pPosition, spriteSheet, Color.White, 0, new Vector2(spriteSheet.Width / 3 + 30, spriteSheet.Height / 4 + 65), SpriteEffects.None, 0);
 				}
 
+				if (pTexture == pTextureR)
+				{
+					pGunDisplayLoaded.X = pGunPosition.X - (pGunPosition.Width / 4);
+					pGunDisplayUnloaded.X = pGunPosition.X - (pGunPosition.Width / 4);
+				}
+				else
+				{
+					pGunDisplayLoaded.X = pGunPosition.X + (pGunPosition.Width / 4);
+					pGunDisplayUnloaded.X = pGunPosition.X + (pGunPosition.Width / 4);
+				}
+				pGunDisplayLoaded.Y = pGunPosition.Y + (pGunPosition.Width / 10);
+				pGunDisplayUnloaded.Y = pGunPosition.Y + (pGunPosition.Width / 5);
 				if (level == GunLevel.Mid)
 				{
-					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, 0, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
+					if (loaded)
+					{
+						if (pTexture == pTextureR)
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayLoaded, null, Color.White, 0, new Vector2(pGunTexture.Width / 1.8f, pGunTexture.Height / 2), SpriteEffects.None, 0);
+						}
+						else
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayLoaded, null, Color.White, 0, new Vector2(pGunTexture.Width / 2.2f, pGunTexture.Height / 2), SpriteEffects.None, 0);
+						}
+					}
+					else
+					{
+						if (pTexture == pTextureR)
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayUnloaded, null, Color.White, 0, new Vector2(pGunTexture.Width / 1.8f, pGunTexture.Height / 2.3f), SpriteEffects.None, 0);
+						}
+						else
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayUnloaded, null, Color.White, 0, new Vector2(pGunTexture.Width / 2.2f, pGunTexture.Height / 2.3f), SpriteEffects.None, 0);
+						}
+					}
 				}
 				else if ((level == GunLevel.High && pTexture == pTextureL) || (level == GunLevel.Low && pTexture == pTextureR))
 				{
-					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, 0.785398f, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
-				}
-				else
-				{
-					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, -0.785398f, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
-				}
-
-				if (playerNum == 1)
-				{
-					for (int i = 0; i < 3; i++)
+					if (loaded)
 					{
-						spriteBatch.Draw(pLivesTextures[i], new Rectangle((height / 50) + ((height / 15) * i), height / 50, height / 10, height / 10), Color.White);
+						if (level == GunLevel.Low && pTexture == pTextureR)
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayLoaded, null, Color.White, 0.785398f, new Vector2(3.6f * (pGunTexture.Width / 5), pGunTexture.Height / 3.1f), SpriteEffects.None, 0);
+						}
+						else
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayLoaded, null, Color.White, 0.785398f, new Vector2(pGunTexture.Width / 2.3f, pGunTexture.Height / 2.8f), SpriteEffects.None, 0);
+						}
+					}
+					else
+					{
+						if (level == GunLevel.Low && pTexture == pTextureR)
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayUnloaded, null, Color.White, 0.785398f, new Vector2(3.8f * (pGunTexture.Width / 5), pGunTexture.Height / 3.4f), SpriteEffects.None, 0);
+						}
+						else
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayUnloaded, null, Color.White, 0.785398f, new Vector2(pGunTexture.Width / 2.14f, pGunTexture.Height / 3.2f), SpriteEffects.None, 0);
+						}
 					}
 				}
 				else
 				{
-					for (int i = 2; i > -1; i--)
+					if (loaded)
 					{
-						spriteBatch.Draw(pLivesTextures[i], new Rectangle(width - ((height / 8) + ((height / 15) * i)), height / 50, height / 10, height / 10), Color.White);
+						if (level == GunLevel.Low && pTexture == pTextureL)
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayLoaded, null, Color.White, -0.785398f, new Vector2(1.38f * (pGunTexture.Width / 5), pGunTexture.Height / 2.9f), SpriteEffects.None, 0);
+						}
+						else
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayLoaded, null, Color.White, -0.785398f, new Vector2(1.13f * (pGunTexture.Width / 2), pGunTexture.Height / 2.8f), SpriteEffects.None, 0);
+						}
 					}
+					else
+					{
+						if (level == GunLevel.Low && pTexture == pTextureL)
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayUnloaded, null, Color.White, -0.785398f, new Vector2(1.2f * (pGunTexture.Width / 5), pGunTexture.Height / 3.3f), SpriteEffects.None, 0);
+						}
+						else
+						{
+							spriteBatch.Draw(pGunTexture, pGunDisplayUnloaded, null, Color.White, -0.785398f, new Vector2(1.06f * (pGunTexture.Width / 2), pGunTexture.Height / 3.2f), SpriteEffects.None, 0);
+						}
+					}
+				}
+			}
+			if (playerNum == 1)
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					spriteBatch.Draw(pLivesTextures[i], new Rectangle((height / 50) + ((height / 15) * i), height / 50, height / 10, height / 10), Color.White);
+				}
+			}
+			else
+			{
+				for (int i = 2; i > -1; i--)
+				{
+					spriteBatch.Draw(pLivesTextures[i], new Rectangle(width - ((height / 8) + ((height / 15) * i)), height / 50, height / 10, height / 10), Color.White);
 				}
 			}
 		}
@@ -415,12 +496,26 @@ namespace OneBullet
 				if (pTexture == pTextureR)
 				{
 					pTexture = pTextureL;
-					pGunTexture = pGunTextureL;
+					if (loaded)
+					{
+						pGunTexture = pGunTextureL;
+					}
+					else
+					{
+						pGunTexture = pGunTextureUnloadedL;
+					}
 				}
 				else
 				{
 					pTexture = pTextureR;
-					pGunTexture = pGunTextureR;
+					if (loaded)
+					{
+						pGunTexture = pGunTextureR;
+					}
+					else
+					{
+						pGunTexture = pGunTextureUnloadedR;
+					}
 				}
 				pGunOffset = gunOffset;
 			}
@@ -432,6 +527,14 @@ namespace OneBullet
 			{
 				pBullet = null;
 				loaded = false;
+				if (pTexture == pTextureR)
+				{
+					pGunTexture = pGunTextureUnloadedR;
+				}
+				else
+				{
+					pGunTexture = pGunTextureUnloadedL;
+				}
 			}
 		}
 
@@ -442,6 +545,14 @@ namespace OneBullet
 				pBullet = bullet;
 				loaded = true;
 				sfReload.Play();
+				if (pTexture == pTextureR)
+				{
+					pGunTexture = pGunTextureR;
+				}
+				else
+				{
+					pGunTexture = pGunTextureL;
+				}
 			}
 		}
 
@@ -458,6 +569,14 @@ namespace OneBullet
 					pBullet = bullet;
 					loaded = true;
 					sfReload.Play();
+					if (pTexture == pTextureR)
+					{
+						pGunTexture = pGunTextureR;
+					}
+					else
+					{
+						pGunTexture = pGunTextureL;
+					}
 				}
 			}
 		}
@@ -496,8 +615,8 @@ namespace OneBullet
 			pGunCollisionPosition = pGunPosition;
 			pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
 			pGunCollisionPosition.Width = (int)(pGunPosition.Width * 1.2);
-			pGunCollisionPosition.X -= pGunPosition.Height / 2;
-			pGunCollisionPosition.Y -= pGunPosition.Width / 2;
+			pGunCollisionPosition.X -= pGunPosition.Width / 2;
+			pGunCollisionPosition.Y -= pGunPosition.Height / 2;
 			pVelocity.X = 0;
 			pVelocity.Y = 0;
 			onGround = true;
