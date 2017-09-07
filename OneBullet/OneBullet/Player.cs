@@ -19,7 +19,7 @@ namespace OneBullet
 		int pLevelOffset;
 		public int pGunOffset;
 		public int pLives = 3;
-		const int pAcceleration = 3;
+		float pAcceleration;
 		public bool onGround, jumping, loaded, dead;
 		Keys jump, lowerGun, raiseGun, shoot, left, right;
 		int playerNum;
@@ -45,7 +45,7 @@ namespace OneBullet
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
 
-		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D jumpTextureR, Texture2D jumpTextureL, Texture2D gunTextureR, Texture2D gunTextureL, Texture2D gunUnloadedR, Texture2D gunUnloadedL, Texture2D aliveGUITexture, Texture2D deadGUITexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, SoundEffect reloadSound, SoundEffect deadSound, int pNum)
+		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D jumpTextureR, Texture2D jumpTextureL, Texture2D gunTextureR, Texture2D gunTextureL, Texture2D gunUnloadedR, Texture2D gunUnloadedL, Texture2D aliveGUITexture, Texture2D deadGUITexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, SoundEffect reloadSound, SoundEffect deadSound, int pNum, GraphicsDevice graphics)
 		{
 			playerNum = pNum;
 			pTextureR = textureR;
@@ -102,6 +102,7 @@ namespace OneBullet
 			collisionPlatform = -1;
 			pTimeElapsed = 0;
 			spriteSheet = new Rectangle(214 * 0, 317 * 0, 214, 317);
+			pAcceleration = 3 * ((float)graphics.Viewport.Height / 720);
 		}
 
 		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, GameTime gameTime)
@@ -167,19 +168,17 @@ namespace OneBullet
 
 				if (kState.IsKeyDown(left)) // Move left
 				{
-					pVelocity.X -= 10;
+					pVelocity.X -= ((float)graphics.Viewport.Width / 128);
 					if (pTexture == pTextureR)
 					{
 						Turn(-(int)pPosition.Width / 2);
 					}
 					WalkAnimate(gameTime);
-
 				}
-
 
 				if (kState.IsKeyDown(right)) // Move right
 				{
-					pVelocity.X += 10;
+					pVelocity.X += ((float)graphics.Viewport.Width / 128);
 					if (pTexture == pTextureL)
 					{
 						Turn((int)pPosition.Width / 2);
@@ -197,13 +196,13 @@ namespace OneBullet
 				{
 					if (onGround && !jumping)
 					{
-						pVelocity.Y -= 30;
+						pVelocity.Y -= 30 * ((float)graphics.Viewport.Height / 720);
 						jumping = true;
 						onGround = false;
 					}
 					else if (!onGround && jumping && pVelocity.Y < 0)
 					{
-						pVelocity.Y -= 1;
+						pVelocity.Y -= ((float)graphics.Viewport.Height / 720);
 					}
 				}
 				if (kState.IsKeyUp(jump) && oldKState.IsKeyDown(jump))
@@ -280,7 +279,14 @@ namespace OneBullet
 				if (pVelocity.Y != 0)
 					onGround = false;
 
-				pVelocity.Y += pAcceleration;
+				if (!jumping)
+				{
+					pVelocity.Y += pAcceleration - ((float)graphics.Viewport.Height / 720);
+				}
+				else
+				{
+					pVelocity.Y += pAcceleration;
+				}
 
 				// ------------------------------------------ Resetting values
 				pVelocity.X = 0;

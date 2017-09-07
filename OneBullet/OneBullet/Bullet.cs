@@ -12,8 +12,8 @@ namespace OneBullet
 		public Rectangle bPosition, bDrawPosition;
 		Rectangle newPosition;
 		Vector2 bVelocity, bShootDirection;
-		const int bSpeed = 16;
-		const int bAcceleration = 2;
+		float bSpeed = 16;
+		float bAcceleration = 2;
 		public bool bMoving, bIsLoaded, bOnGround, bKill, bDead;
 
 		SoundEffect sfShellFall;
@@ -22,7 +22,7 @@ namespace OneBullet
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
 
-		public void Initialize(Texture2D texture, Rectangle position, SoundEffect fallSound, SoundEffect fireSound)
+		public void Initialize(Texture2D texture, Rectangle position, SoundEffect fallSound, SoundEffect fireSound, GraphicsDevice graphics)
 		{
 			bTexture = texture;
 			bPosition = position;
@@ -38,6 +38,8 @@ namespace OneBullet
 			bVelocity = new Vector2(0, 0);
 			bShootDirection = new Vector2(0, 0);
 			collisionPlatform = -1;
+			bAcceleration = 2 * ((float)graphics.Viewport.Height / 720);
+			bSpeed = 8 * bAcceleration;
 		}
 
 		public void Update(GraphicsDevice graphics, GameTime gameTime)
@@ -52,13 +54,13 @@ namespace OneBullet
 					}
 					else if (bShootDirection.Y == 1)
 					{
-						bVelocity.X = 11;
-						bVelocity.Y = -11;
+						bVelocity.X = (5.5f * bAcceleration);
+						bVelocity.Y = -(5.5f * bAcceleration);
 					}
 					else
 					{
-						bVelocity.X = 11;
-						bVelocity.Y = 11;
+						bVelocity.X = (5.5f * bAcceleration);
+						bVelocity.Y = (5.5f * bAcceleration);
 					}
 				}
 				else
@@ -69,13 +71,13 @@ namespace OneBullet
 					}
 					else if (bShootDirection.Y == 1)
 					{
-						bVelocity.X = -11;
-						bVelocity.Y = -11;
+						bVelocity.X = -(5.5f * bAcceleration);
+						bVelocity.Y = -(5.5f * bAcceleration);
 					}
 					else
 					{
-						bVelocity.X = -11;
-						bVelocity.Y = 11;
+						bVelocity.X = -(5.5f * bAcceleration);
+						bVelocity.Y = (5.5f * bAcceleration);
 					}
 				}
 			}
@@ -87,24 +89,24 @@ namespace OneBullet
 					{
 						if (bShootDirection.X == 1)
 						{
-							if (bVelocity.Y < 6)
+							if (bVelocity.Y < (3 * bAcceleration))
 							{
-								bVelocity.X = -10;
+								bVelocity.X = -(5 * bAcceleration);
 							}
 							else
 							{
-								bVelocity.X = -7;
+								bVelocity.X = -(3.5f * bAcceleration);
 							}
 						}
 						else
 						{
-							if (bVelocity.Y < 6)
+							if (bVelocity.Y < (3 * bAcceleration))
 							{
-								bVelocity.X = 10;
+								bVelocity.X = (5 * bAcceleration);
 							}
 							else
 							{
-								bVelocity.X = 7;
+								bVelocity.X = (3.5f * bAcceleration);
 							}
 						}
 					}
@@ -113,12 +115,12 @@ namespace OneBullet
 				{
 					if (bShootDirection.X == 1)
 					{
-						if (bVelocity.Y < 8)
+						if (bVelocity.Y < (4 * bAcceleration))
 							bVelocity.X = bSpeed;
 					}
 					else
 					{
-						if (bVelocity.Y < 8)
+						if (bVelocity.Y < (4 * bAcceleration))
 							bVelocity.X = -bSpeed;
 					}
 				}

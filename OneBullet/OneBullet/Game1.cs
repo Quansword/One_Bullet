@@ -87,10 +87,10 @@ namespace OneBullet
 			SoundEffect sfDead = Content.Load<SoundEffect>("Pain-SoundBible.com-1883168362");
 			SoundEffect sfFire = Content.Load<SoundEffect>("9_mm_gunshot-mike-koenig-123");
 
-			bullet1.Initialize(bullet, b1Position, sfShellFall, sfFire);
-			bullet2.Initialize(bullet, b1Position, sfShellFall, sfFire);
-			player1.Initialize(player1TextureR, player1TextureL, player1JumpR, player1JumpL, gunR, gunL, gunUR, gunUL, p1Life, p1Dead, p1Position, p1GunPos, p1GunOffset, bullet1, sfReload, sfDead, 1);
-			player2.Initialize(player2TextureR, player2TextureL, player2JumpR, player2JumpL, gunR, gunL, gunUR, gunUL, p2Life, p2Dead, p2Position, p2GunPos, p2GunOffset, bullet2, sfReload, sfDead, 2);
+			bullet1.Initialize(bullet, b1Position, sfShellFall, sfFire, GraphicsDevice);
+			bullet2.Initialize(bullet, b1Position, sfShellFall, sfFire, GraphicsDevice);
+			player1.Initialize(player1TextureR, player1TextureL, player1JumpR, player1JumpL, gunR, gunL, gunUR, gunUL, p1Life, p1Dead, p1Position, p1GunPos, p1GunOffset, bullet1, sfReload, sfDead, 1, GraphicsDevice);
+			player2.Initialize(player2TextureR, player2TextureL, player2JumpR, player2JumpL, gunR, gunL, gunUR, gunUL, p2Life, p2Dead, p2Position, p2GunPos, p2GunOffset, bullet2, sfReload, sfDead, 2, GraphicsDevice);
 
 			// ------------------------------------------ Level and platform content
 			Level01Init();
