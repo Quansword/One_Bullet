@@ -2,12 +2,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using System.Media;
 
 namespace OneBullet
 {
 	class Bullet
 	{
-		Texture2D bTexture;
+        Texture2D bTexture;
 		public Rectangle bPosition;
 		Rectangle newPosition;
 		Vector2 bVelocity, bShootDirection;
@@ -15,14 +17,19 @@ namespace OneBullet
 		const int bAcceleration = 2;
 		public bool bMoving, bIsLoaded, bOnGround, bKill, bDead;
 
+		SoundEffect sfShellFall;
+		SoundEffect sfFire;
+
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
 
-		public void Initialize(Texture2D texture, Rectangle position)
+		public void Initialize(Texture2D texture, Rectangle position, SoundEffect fallSound, SoundEffect fireSound)
 		{
 			bTexture = texture;
 			bPosition = position;
 			newPosition = bPosition;
+			sfShellFall = fallSound;
+			sfFire = fireSound;
 			bMoving = false;
 			bIsLoaded = true;
 			bOnGround = false;
@@ -35,7 +42,7 @@ namespace OneBullet
 
 		public void Update(GraphicsDevice graphics, int bulletSize, GameTime gameTime)
 		{
-			if (bMoving)
+            if (bMoving)
 			{
 				if (bShootDirection.X == 1)
 				{
@@ -151,6 +158,7 @@ namespace OneBullet
 							bVelocity.Y = 0;
 							bVelocity.X = 0;
 							bOnGround = true;
+							sfShellFall.Play();
 						}
 						else
 						{
@@ -218,7 +226,8 @@ namespace OneBullet
 			}
 			bIsLoaded = false;
 			bMoving = true;
-		}
+            sfFire.Play();
+        }
 
 		public void Hit()
 		{
@@ -247,6 +256,7 @@ namespace OneBullet
 		{
 			bMoving = false;
 			bIsLoaded = true;
+			bOnGround = false;
 		}
 
 		public void Dead(Vector2 dir, Rectangle position) // almost same as fire()

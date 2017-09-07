@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using System.Media;
 
 namespace OneBullet
 {
@@ -18,8 +20,10 @@ namespace OneBullet
 		public bool onGround, jumping, loaded, dead;
 		Keys jump, lowerGun, raiseGun, shoot, left, right;
 		int playerNum;
+        SoundEffect sfReload;
+        SoundEffect sfDead;
 
-		public Bullet pBullet;
+        public Bullet pBullet;
 
 		public enum GunLevel
 		{
@@ -33,7 +37,7 @@ namespace OneBullet
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
 
-		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D gunTextureR, Texture2D gunTextureL, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum)
+		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D gunTextureR, Texture2D gunTextureL, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, SoundEffect reloadSound, SoundEffect deadSound, int pNum)
 		{
 			playerNum = pNum;
 			pTextureR = textureR;
@@ -60,6 +64,8 @@ namespace OneBullet
 			pGunPosition.X += pGunOffset;
 			pGunCollisionPosition = pGunPosition;
 			pBullet = bullet;
+			sfReload = reloadSound;
+			sfDead = deadSound;
 			pVelocity = new Vector2(0, 0);
 			onGround = true;
 			jumping = false;
@@ -320,11 +326,12 @@ namespace OneBullet
 
 		public void Pickup(Bullet bullet)
 		{
-			if (!loaded && !dead)
+            if (!loaded && !dead)
 			{
 				pBullet = bullet;
 				loaded = true;
-			}
+                sfReload.Play();
+            }
 		}
 
 		public void Catch(Bullet bullet)
@@ -339,6 +346,7 @@ namespace OneBullet
 				{
 					pBullet = bullet;
 					loaded = true;
+					sfReload.Play();
 				}
 			}
 		}
@@ -346,6 +354,7 @@ namespace OneBullet
 		public void Hit()
 		{
 			dead = true;
+            sfDead.Play();
 		}
 	}
 }

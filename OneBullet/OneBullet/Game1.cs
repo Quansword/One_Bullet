@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using System.Media;
 
 namespace OneBullet
 {
@@ -84,16 +86,22 @@ namespace OneBullet
 
 			Texture2D bullet = Content.Load<Texture2D>("shot_poulpi");
 
-			bullet1.Initialize(bullet, b1Position);
-			bullet2.Initialize(bullet, b1Position);
-			player1.Initialize(player1TextureR, player1TextureL, gunR, gunL, p1Position, p1GunPos, p1GunOffset, bullet1, 1);
-			player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, 2);
+			SoundEffect sfShellFall = Content.Load<SoundEffect>("Shells_falls-Marcel-829263474");
+			SoundEffect sfReload = Content.Load<SoundEffect>("50 Cal Machine Gun Load-SoundBible.com-1345076003");
+			SoundEffect sfDead = Content.Load<SoundEffect>("Pain-SoundBible.com-1883168362");
+			SoundEffect sfFire = Content.Load<SoundEffect>("9_mm_gunshot-mike-koenig-123");
+
+			bullet1.Initialize(bullet, b1Position, sfShellFall, sfFire);
+			bullet2.Initialize(bullet, b1Position, sfShellFall, sfFire);
+			player1.Initialize(player1TextureR, player1TextureL, gunR, gunL, p1Position, p1GunPos, p1GunOffset, bullet1, sfReload, sfDead, 1);
+			player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, sfReload, sfDead, 2);
 
 			// ------------------------------------------ Level and platform content
 			Texture2D background = Content.Load<Texture2D>("background1");
+			SoundEffect sfMusic = Content.Load<SoundEffect>("One Bullet OST Main Theme 180bpm");
 			Texture2D platform1 = Content.Load<Texture2D>("test_platform");
 
-			Level01Init(background, platform1);
+			Level01Init(background, platform1, sfMusic);
 		}
 
 		/// <summary>
@@ -343,7 +351,7 @@ namespace OneBullet
 			base.Draw(gameTime);
 		}
 
-		void Level01Init(Texture2D background, Texture2D platform)
+		void Level01Init(Texture2D background, Texture2D platform, SoundEffect music)
 		{
 			Rectangle backgroundPos = new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
@@ -383,7 +391,10 @@ namespace OneBullet
 
             Platforms[] lvlPlats = { plat1, plat2, plat3, plat4, plat5 };
 
-			level01.Initialize(background, backgroundPos, 5, lvlPlats, floorPlat, ceilingPlat, rWallPlat, lWallPlat);
+			SoundEffectInstance sfMusicInstance = music.CreateInstance();
+			sfMusicInstance.IsLooped = true;
+
+			level01.Initialize(background, backgroundPos, sfMusicInstance, 5, lvlPlats, floorPlat, ceilingPlat, rWallPlat, lWallPlat);
 		}
 	}
 }
