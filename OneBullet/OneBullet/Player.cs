@@ -63,6 +63,9 @@ namespace OneBullet
 			pGunPosition = gunPosition;
 			pGunPosition.X += pGunOffset;
 			pGunCollisionPosition = pGunPosition;
+			pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
+			pGunCollisionPosition.X -= pGunPosition.Height / 2;
+			pGunCollisionPosition.Y -= pGunPosition.Width / 2;
 			pBullet = bullet;
 			sfReload = reloadSound;
 			sfDead = deadSound;
@@ -100,9 +103,6 @@ namespace OneBullet
 
 				if (kState.IsKeyDown(shoot) && loaded && oldKState.IsKeyUp(shoot)) // Shoot bullet
 				{
-					pGunCollisionPosition = pGunPosition;
-					pGunCollisionPosition.X -= pGunPosition.Height / 2;
-					pGunCollisionPosition.Y -= pGunPosition.Width / 2;
 					if (Level.curLevel.PlatformCollision(pGunCollisionPosition) == -1)
 					{
 						if (pTexture == pTextureR)
@@ -211,6 +211,27 @@ namespace OneBullet
 
 				pGunPosition.X = pPosition.X + pGunOffset;
 				pGunPosition.Y = ((pPosition.Y - (pPosition.Height / 4)) + pLevelOffset);
+				pGunCollisionPosition = pGunPosition;
+				if (level == GunLevel.Mid)
+				{
+					pGunCollisionPosition.X -= pGunPosition.Width / 2;
+					pGunCollisionPosition.Y -= pGunPosition.Height / 2;
+					pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
+				}
+				else if (level == GunLevel.Low)
+				{
+					pGunCollisionPosition.X -= pGunPosition.Width / 2;
+					pGunCollisionPosition.Y -= pGunPosition.Height / 4;
+					pGunCollisionPosition.Width = 3 * (pGunPosition.Width / 4);
+					pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
+				}
+				else
+				{
+					pGunCollisionPosition.X -= pGunPosition.Width / 2;
+					pGunCollisionPosition.Y -= pGunPosition.Height;
+					pGunCollisionPosition.Width = 3 * (pGunPosition.Width / 4);
+					pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
+				}
 
 				if (pVelocity.Y != 0)
 					onGround = false;
@@ -290,11 +311,11 @@ namespace OneBullet
 				}
 				else if ((level == GunLevel.High && pTexture == pTextureL) || (level == GunLevel.Low && pTexture == pTextureR))
 				{
-					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, 45, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
+					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, 0.785398f, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
 				}
 				else
 				{
-					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, -45, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
+					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, -0.785398f, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
 				}
 			}
 		}
@@ -384,6 +405,9 @@ namespace OneBullet
 			pGunPosition.X = pPosition.X + pGunOffset;
 			pGunPosition.Y = pPosition.Y - (pPosition.Height / 4);
 			pGunCollisionPosition = pGunPosition;
+			pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
+			pGunCollisionPosition.X -= pGunPosition.Height / 2;
+			pGunCollisionPosition.Y -= pGunPosition.Width / 2;
 			pVelocity.X = 0;
 			pVelocity.Y = 0;
 			onGround = true;
@@ -392,6 +416,7 @@ namespace OneBullet
 			dead = false;
 			pLevelOffset = 0;
 			collisionPlatform = -1;
+			level = GunLevel.Mid;
 		}
 	}
 }

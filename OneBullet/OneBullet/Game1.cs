@@ -142,19 +142,22 @@ namespace OneBullet
 		void BulletChecks()
 		{
 			// ------------------------------------------ Setting up the catching mechanic
-			Rectangle p1CatchPosition = new Rectangle(player1.pGunPosition.X, player1.pGunPosition.Y, (int)(player1.pGunPosition.Width / 2), (3 * (player1.pGunPosition.Height / 4)));
-			Rectangle p2CatchPosition = new Rectangle(player2.pGunPosition.X, player2.pGunPosition.Y, (int)(player2.pGunPosition.Width / 2), (3 * (player2.pGunPosition.Height / 4)));
+			Rectangle p1CatchPosition = player1.pGunCollisionPosition;
+			Rectangle p2CatchPosition = player2.pGunCollisionPosition;
 			Rectangle p1ModPosition = player1.pCollisionPosition;
 			Rectangle p2ModPosition = player2.pCollisionPosition;
 
-			if (player1.pTexture == player1.pTextureR)
+			p1CatchPosition.Width = p1CatchPosition.Width / 2;
+			p2CatchPosition.Width = p2CatchPosition.Width / 2;
+
+			if (player1.pTexture == player1.pTextureL)
 			{
-				p1CatchPosition.X -= (int)(player1.pGunPosition.Width / 2);
+				p1CatchPosition.X += p1CatchPosition.Width;
 			}
 
-			if (player2.pTexture == player2.pTextureR)
+			if (player2.pTexture == player2.pTextureL)
 			{
-				p2CatchPosition.X -= (int)(player2.pGunPosition.Width / 2);
+				p2CatchPosition.X += p1CatchPosition.Width;
 			}
 
 			// ------------------------------------------ Bullet 1 checks
