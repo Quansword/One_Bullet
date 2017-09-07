@@ -211,6 +211,7 @@ namespace OneBullet
 					{
 						jumping = false;
 					}
+					// if ((cState.ThumbSticks.Right.Y > 0.2 || cState.ThumbSticks.Left.Y > 0.2 || kState.IsKeyDown(raiseGun)) && oldKState.IsKeyUp(raiseGun) && oldCState.ThumbSticks.Right.Y < 0.2 && oldCState.ThumbSticks.Left.Y < 0.2)
 					if ((cState.ThumbSticks.Right.Y > 0.2 || kState.IsKeyDown(raiseGun)) && oldKState.IsKeyUp(raiseGun) && oldCState.ThumbSticks.Right.Y < 0.2) // Change gun level
 					{
 						if (level == Player.GunLevel.Low)
@@ -224,6 +225,7 @@ namespace OneBullet
 							pLevelOffset = -((int)pPosition.Height / 4);
 						}
 					}
+					// if ((cState.ThumbSticks.Right.Y < -0.2 || cState.ThumbSticks.Left.Y < -0.2 || kState.IsKeyDown(lowerGun)) && oldKState.IsKeyUp(lowerGun) && oldCState.ThumbSticks.Right.Y > -0.2 && oldCState.ThumbSticks.Left.Y > -0.2)
 					if ((cState.ThumbSticks.Right.Y < -0.2 || kState.IsKeyDown(lowerGun)) && oldKState.IsKeyUp(lowerGun) && oldCState.ThumbSticks.Right.Y > -0.2) // Change gun level
 					{
 						if (level == Player.GunLevel.High)
