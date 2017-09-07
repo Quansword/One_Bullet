@@ -20,8 +20,14 @@ namespace OneBullet
 		double charHeight, charWidth;
 		KeyboardState kState;
 		private KeyboardState oldKState;
+        Texture2D p1Life1, p1Life2, p1Life3;
+        Texture2D p2Life1, p2Life2, p2Life3;
+        Texture2D p1Dead1, p1Dead2, p1Dead3;
+        Texture2D p2Dead1, p2Dead2, p2Dead3;
 
-		public Game1()
+
+
+        public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
@@ -83,12 +89,25 @@ namespace OneBullet
 			Texture2D player2TextureL = Content.Load<Texture2D>("p2RunL");
             //Texture2D playerJump = Content.Load<Texture2D>("jump");
 
-            Texture2D gunR = Content.Load<Texture2D>("gun_right");
-			Texture2D gunL = Content.Load<Texture2D>("gun_left");
+            Texture2D gunR = Content.Load<Texture2D>("pGunR");
+			Texture2D gunL = Content.Load<Texture2D>("pGunL");
 
 			Texture2D bullet = Content.Load<Texture2D>("bullet");
+            p1Life1 = Content.Load<Texture2D>("p1Alive");
+            p1Life2 = Content.Load<Texture2D>("p1Alive");
+            p1Life3 = Content.Load<Texture2D>("p1Alive");
+            p1Dead1 = Content.Load<Texture2D>("p1Dead");
+            p1Dead2 = Content.Load<Texture2D>("p1Dead");
+            p1Dead3 = Content.Load<Texture2D>("p1Dead");
 
-			SoundEffect sfShellFall = Content.Load<SoundEffect>("Shells_falls-Marcel-829263474");
+            p2Life1 = Content.Load<Texture2D>("p2Alive");
+            p2Life2 = Content.Load<Texture2D>("p2Alive");
+            p2Life3 = Content.Load<Texture2D>("p2Alive");
+            p2Dead1 = Content.Load<Texture2D>("p2Dead");
+            p2Dead2 = Content.Load<Texture2D>("p2Dead");
+            p2Dead3 = Content.Load<Texture2D>("p2Dead");
+
+            SoundEffect sfShellFall = Content.Load<SoundEffect>("Shells_falls-Marcel-829263474");
 			SoundEffect sfReload = Content.Load<SoundEffect>("50 Cal Machine Gun Load-SoundBible.com-1345076003");
 			SoundEffect sfDead = Content.Load<SoundEffect>("Pain-SoundBible.com-1883168362");
 			SoundEffect sfFire = Content.Load<SoundEffect>("9_mm_gunshot-mike-koenig-123");
@@ -99,7 +118,7 @@ namespace OneBullet
 			player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, sfReload, sfDead, 2);
 
 			// ------------------------------------------ Level and platform content
-			Texture2D background = Content.Load<Texture2D>("background1");
+			Texture2D background = Content.Load<Texture2D>("FINAL");
 			SoundEffect sfMusic = Content.Load<SoundEffect>("One Bullet OST Main Theme 180bpm");
 			Texture2D platform1 = Content.Load<Texture2D>("test_platform");
 
@@ -128,6 +147,7 @@ namespace OneBullet
 			// TODO: Add your update logic here
 			BulletChecks();
 			Respawn();
+            Stock();
 
 			// ------------------------------------------ Keyboard inputs
 			kState = Keyboard.GetState();
@@ -586,7 +606,16 @@ namespace OneBullet
 			player2.Draw(spriteBatch);
 			bullet1.Draw(spriteBatch);
 			bullet2.Draw(spriteBatch);
-			spriteBatch.End();
+            spriteBatch.Draw(p1Life1, new Rectangle(GraphicsDevice.Viewport.Width  -1000, GraphicsDevice.Viewport.Height - 700, 50, 50), Color.White);
+            spriteBatch.Draw(p1Life2, new Rectangle(GraphicsDevice.Viewport.Width - 930, GraphicsDevice.Viewport.Height - 700, 50, 50), Color.White);
+            spriteBatch.Draw(p1Life3, new Rectangle(GraphicsDevice.Viewport.Width - 860, GraphicsDevice.Viewport.Height - 700, 50, 50), Color.White);
+
+            spriteBatch.Draw(p2Life1, new Rectangle(GraphicsDevice.Viewport.Width - 480, GraphicsDevice.Viewport.Height - 700, 50, 50), Color.White);
+            spriteBatch.Draw(p2Life2, new Rectangle(GraphicsDevice.Viewport.Width - 410, GraphicsDevice.Viewport.Height - 700, 50, 50), Color.White);
+            spriteBatch.Draw(p2Life3, new Rectangle(GraphicsDevice.Viewport.Width - 340, GraphicsDevice.Viewport.Height - 700, 50, 50), Color.White);
+
+            spriteBatch.End();
+
 
 			base.Draw(gameTime);
 		}
@@ -636,5 +665,43 @@ namespace OneBullet
 
 			level01.Initialize(background, backgroundPos, sfMusicInstance, 5, lvlPlats, floorPlat, ceilingPlat, rWallPlat, lWallPlat);
 		}
+
+        void Stock()
+        {
+
+            if (player1.pLives == 2)
+            {
+                p1Life1 = p1Dead1;
+            }
+            else if (player1.pLives == 1)
+            {
+                p1Life2 = p1Dead2;
+
+            }
+
+            else if (player1.pLives == 0)
+            {
+                p1Life3 = p1Dead3;
+
+            }
+
+
+            if (player2.pLives == 2)
+            {
+                p2Life1 = p2Dead1;
+            }
+            else if (player2.pLives == 1)
+            {
+                p2Life2 = p2Dead2;
+
+            }
+
+            else if (player2.pLives == 0)
+            {
+                p2Life3 = p2Dead3;
+
+            }
+
+        }
 	}
 }
