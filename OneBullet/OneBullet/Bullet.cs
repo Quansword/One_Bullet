@@ -164,12 +164,6 @@ namespace OneBullet
 					}
 				}
 			}
-
-			// ------------------------------------------ Falling parameters
-			if (collisionDir == Level.CollisionDir.Bottom)
-			{
-				bOnGround = true;
-			}
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
@@ -177,7 +171,7 @@ namespace OneBullet
 			if (!bIsLoaded)
 			{
 				//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
-				spriteBatch.Draw(bTexture, bPosition, null, Color.White, 0, new Vector2(bTexture.Width / 2, bTexture.Height/2), SpriteEffects.None, 0);
+				spriteBatch.Draw(bTexture, bPosition, null, Color.White); //, 0, new Vector2(bTexture.Width / 2, bTexture.Height/2), SpriteEffects.None, 0);
 			}
 		}
 
@@ -208,17 +202,17 @@ namespace OneBullet
 				bVelocity.X = -bSpeed;
 				if (bShootDirection.Y == 0)
 				{
-					bPosition.X = position.X - (position.Width / 4);
+					bPosition.X = (position.X - bPosition.Width) - (position.Width / 4);
 					bPosition.Y = position.Y;
 				}
 				else if (bShootDirection.Y == 1)
 				{
-					bPosition.X = (int)(position.X - Math.Sqrt(position.Width / 4));
+					bPosition.X = (int)((position.X - bPosition.Width) - Math.Sqrt(position.Width / 4));
 					bPosition.Y = (int)(position.Y - Math.Sqrt(position.Width / 4));
 				}
 				else
 				{
-					bPosition.X = (int)(position.X - Math.Sqrt(position.Width / 4));
+					bPosition.X = (int)((position.X - bPosition.Width) - Math.Sqrt(position.Width / 4));
 					bPosition.Y = (int)(position.Y + Math.Sqrt(position.Width / 4));
 				}
 			}
@@ -230,6 +224,8 @@ namespace OneBullet
 		{
 			bMoving = false;
 			bKill = true;
+			bVelocity.X = 0;
+			bVelocity.Y = 0;
 		}
 
 		public void Pickup()
