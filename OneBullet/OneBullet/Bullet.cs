@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace OneBullet
 {
@@ -15,14 +16,19 @@ namespace OneBullet
 		const int bAcceleration = 2;
 		public bool bMoving, bIsLoaded, bOnGround, bKill, bDead;
 
+		SoundEffect sfShellFall;
+		SoundEffect sfFire;
+
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
 
-		public void Initialize(Texture2D texture, Rectangle position)
+		public void Initialize(Texture2D texture, Rectangle position, SoundEffect fallSound, SoundEffect fireSound)
 		{
 			bTexture = texture;
 			bPosition = position;
 			newPosition = bPosition;
+			sfShellFall = fallSound;
+			sfFire = fireSound;
 			bMoving = false;
 			bIsLoaded = true;
 			bOnGround = false;
@@ -33,7 +39,7 @@ namespace OneBullet
 			collisionPlatform = -1;
 		}
 
-		public void Update(GraphicsDevice graphics, int bulletSize, GameTime gameTime)
+		public void Update(GraphicsDevice graphics, GameTime gameTime)
 		{
 			if (bMoving)
 			{
@@ -151,6 +157,7 @@ namespace OneBullet
 							bVelocity.Y = 0;
 							bVelocity.X = 0;
 							bOnGround = true;
+							sfShellFall.Play();
 						}
 						else
 						{
@@ -218,12 +225,15 @@ namespace OneBullet
 			}
 			bIsLoaded = false;
 			bMoving = true;
+			sfFire.Play();
 		}
 
 		public void Hit()
 		{
 			bMoving = false;
 			bKill = true;
+			bOnGround = false;
+			bIsLoaded = false;
 			bVelocity.X = 0;
 			bVelocity.Y = 0;
 		}
@@ -247,6 +257,7 @@ namespace OneBullet
 		{
 			bMoving = false;
 			bIsLoaded = true;
+			bOnGround = false;
 		}
 
 		public void Dead(Vector2 dir, Rectangle position) // almost same as fire()
@@ -255,8 +266,8 @@ namespace OneBullet
 			if (bShootDirection.X == 1)
 			{
 				bPosition.X = position.X;
-            }
-            else
+			}
+			else
 			{
 				bPosition.X = position.X;
 			}
@@ -264,6 +275,23 @@ namespace OneBullet
 			bIsLoaded = false;
 			bMoving = false;
 			bDead = true;
+		}
+
+		public void Respawn()
+		{
+			bPosition.X = -100;
+			bPosition.Y = -100;
+			newPosition = bPosition;
+			bMoving = false;
+			bIsLoaded = true;
+			bOnGround = false;
+			bKill = false;
+			bDead = false;
+			bVelocity.X = 0;
+			bVelocity.Y = 0;
+			bShootDirection.X = 0;
+			bShootDirection.Y = 0;
+			collisionPlatform = -1;
 		}
 	}
 }

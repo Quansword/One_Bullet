@@ -229,3 +229,40 @@
 /processorParam:TextureFormat=Color
 /build:p1Jump.png
 
+#begin arialbd.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:arialbd.spritefont
+
+#begin 9_mm_gunshot-mike-koenig-123.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:9_mm_gunshot-mike-koenig-123.wav
+
+#begin 50 Cal Machine Gun Load-SoundBible.com-1345076003.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:50 Cal Machine Gun Load-SoundBible.com-1345076003.wav
+
+#begin One Bullet OST Main Theme 180bpm.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:One Bullet OST Main Theme 180bpm.wav
+
+#begin Pain-SoundBible.com-1883168362.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Pain-SoundBible.com-1883168362.wav
+
+#begin Shells_falls-Marcel-829263474.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Shells_falls-Marcel-829263474.wav
+

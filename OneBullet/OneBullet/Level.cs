@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace OneBullet
 {
@@ -12,6 +13,7 @@ namespace OneBullet
 		public Platforms floor, ceiling, rightWall, leftWall;
 		public Platforms[] lPlatforms;
 		public int platNum;
+		SoundEffectInstance sfMusic;
 
 		public enum CollisionDir
 		{
@@ -22,10 +24,11 @@ namespace OneBullet
 			None
 		};
 
-		public void Initialize(Texture2D bg, Rectangle bgPos, int pNum, Platforms[] lPlat, Platforms fPlat = null, Platforms cPlat = null, Platforms rWall = null, Platforms lWall = null)
+		public void Initialize(Texture2D bg, Rectangle bgPos, SoundEffectInstance musicSound, int pNum, Platforms[] lPlat, Platforms fPlat = null, Platforms cPlat = null, Platforms rWall = null, Platforms lWall = null)
 		{
 			background = bg;
 			backgroundPosition = bgPos;
+			sfMusic = musicSound;
 			platNum = pNum;
 			lPlatforms = new Platforms[platNum];
 			lPlatforms = lPlat;
@@ -34,6 +37,7 @@ namespace OneBullet
 			rightWall = rWall;
 			leftWall = lWall;
 			Level.curLevel = this;
+			sfMusic.Play();
 		}
 
 		public int PlatformCollision(Rectangle playerCollision)
@@ -48,10 +52,10 @@ namespace OneBullet
 			if (rightWall != null)
 			{
 				if (rightWall.platPosition.Intersects(playerCollision) || rightWall.platPosition.Contains(playerCollision))
-                {
-                    return 1;
-                }
-            }
+				{
+					return 1;
+				}
+			}
 			if (leftWall != null)
 			{
 				if (leftWall.platPosition.Intersects(playerCollision) || leftWall.platPosition.Contains(playerCollision))

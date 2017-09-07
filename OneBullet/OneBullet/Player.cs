@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace OneBullet
 {
@@ -15,10 +16,13 @@ namespace OneBullet
 		Vector2 pVelocity;
 		int pLevelOffset;
 		public int pGunOffset;
+		public int pLives = 3;
 		const int pAcceleration = 3;
 		public bool onGround, jumping, loaded, dead;
 		Keys jump, lowerGun, raiseGun, shoot, left, right;
 		int playerNum;
+		SoundEffect sfReload;
+		SoundEffect sfDead;
         float elapsed;
         float delay = 60f;
         int Hframes = 0;
@@ -39,7 +43,7 @@ namespace OneBullet
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
 
-		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D gunTextureR, Texture2D gunTextureL, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, int pNum)
+		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D gunTextureR, Texture2D gunTextureL, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, SoundEffect reloadSound, SoundEffect deadSound, int pNum)
 		{
 			playerNum = pNum;
 			pTextureR = textureR;
@@ -66,6 +70,8 @@ namespace OneBullet
 			pGunPosition.X += pGunOffset;
 			pGunCollisionPosition = pGunPosition;
 			pBullet = bullet;
+			sfReload = reloadSound;
+			sfDead = deadSound;
 			pVelocity = new Vector2(0, 0);
 			onGround = true;
 			jumping = false;
@@ -369,6 +375,7 @@ namespace OneBullet
 			{
 				pBullet = bullet;
 				loaded = true;
+				sfReload.Play();
 			}
 		}
 
@@ -384,6 +391,7 @@ namespace OneBullet
 				{
 					pBullet = bullet;
 					loaded = true;
+					sfReload.Play();
 				}
 			}
 		}
@@ -391,6 +399,42 @@ namespace OneBullet
 		public void Hit()
 		{
 			dead = true;
+			pLives--;
+			sfDead.Play();
+		}
+
+		public void Respawn(int xPos, int yPos, bool spawnRight, Bullet bullet)
+		{
+			pBullet = bullet;
+			if (spawnRight)
+			{
+				pTexture = pTextureR;
+				pGunTexture = pGunTextureR;
+				pGunOffset = pPosition.Width / 2;
+			}
+			else
+			{
+				pTexture = pTextureL;
+				pGunTexture = pGunTextureL;
+				pGunOffset = -(pPosition.Width / 2);
+			}
+			pPosition.X = xPos;
+			pPosition.Y = yPos;
+			newPosition = pPosition;
+			pCollisionPosition = pPosition;
+			pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
+			pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
+			pGunPosition.X = pPosition.X + pGunOffset;
+			pGunPosition.Y = pPosition.Y - (pPosition.Height / 4);
+			pGunCollisionPosition = pGunPosition;
+			pVelocity.X = 0;
+			pVelocity.Y = 0;
+			onGround = true;
+			jumping = false;
+			loaded = true;
+			dead = false;
+			pLevelOffset = 0;
+			collisionPlatform = -1;
 		}
 	}
 }
