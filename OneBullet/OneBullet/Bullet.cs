@@ -221,18 +221,18 @@ namespace OneBullet
 				bVelocity.X = -bSpeed;
 				if (bShootDirection.Y == 0)
 				{
-					bPosition.X = (position.X - (int)(bPosition.Width * 1.2)) - (position.Width / 3);
+					bPosition.X = (position.X - (int)(bPosition.Width)) - (position.Width / 3);
 					bPosition.Y = position.Y;
 				}
 				else if (bShootDirection.Y == 1)
 				{
-					bPosition.X = (int)((position.X - (int)(bPosition.Width * 1.2)) - Math.Sqrt(position.Width / 3));
-					bPosition.Y = (int)(position.Y - Math.Sqrt(position.Width / 3));
+					bPosition.X = (int)((position.X - (int)(bPosition.Width)) - Math.Sqrt(position.Width * 1.12 / 3));
+					bPosition.Y = (int)(position.Y - Math.Sqrt(position.Width * 1.12 / 3));
 				}
 				else
 				{
-					bPosition.X = (int)((position.X - (int)(bPosition.Width * 1.2)) - Math.Sqrt(position.Width / 3));
-					bPosition.Y = (int)(position.Y + Math.Sqrt(position.Width / 3));
+					bPosition.X = (int)((position.X - (int)(bPosition.Width)) - Math.Sqrt(position.Width * 1.12 / 3));
+					bPosition.Y = (int)(position.Y + Math.Sqrt(position.Width * 1.12 / 3));
 				}
 			}
 			bDrawPosition.X = bPosition.X;

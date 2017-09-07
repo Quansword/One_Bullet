@@ -17,6 +17,7 @@ namespace OneBullet
 		double charHeight, charWidth;
 		KeyboardState kState;
 		private KeyboardState oldKState;
+		GamePadState cState1, cState2, oldCState1, oldCState2;
 
 		public Game1()
 		{
@@ -112,16 +113,20 @@ namespace OneBullet
 
 			// ------------------------------------------ Keyboard inputs
 			kState = Keyboard.GetState();
+			cState1 = GamePad.GetState(PlayerIndex.One);
+			cState2 = GamePad.GetState(PlayerIndex.Two);
 
 			// ------------------------------------------ Updates
 			if (!player1.dead)
-				player1.Update(kState, oldKState, GraphicsDevice, gameTime);
+				player1.Update(kState, oldKState, cState1, oldCState1, GraphicsDevice, gameTime);
 			if (!player2.dead)
-				player2.Update(kState, oldKState, GraphicsDevice, gameTime);
+				player2.Update(kState, oldKState, cState2, oldCState2, GraphicsDevice, gameTime);
 			bullet1.Update(GraphicsDevice, gameTime);
 			bullet2.Update(GraphicsDevice, gameTime);
 
 			oldKState = kState;
+			oldCState1 = cState1;
+			oldCState2 = cState2;
 
 			base.Update(gameTime);
 		}
@@ -139,12 +144,12 @@ namespace OneBullet
 
 			if (player1.pTexture == player1.pTextureL)
 			{
-				p1CatchPosition.X += p1CatchPosition.Width;
+				p1CatchPosition.X += (int)(player1.pGunCollisionPosition.Width / 2);
 			}
 
 			if (player2.pTexture == player2.pTextureL)
 			{
-				p2CatchPosition.X += p1CatchPosition.Width;
+				p2CatchPosition.X += (int)(player2.pGunCollisionPosition.Width / 2);
 			}
 
 			// ------------------------------------------ Bullet 1 checks

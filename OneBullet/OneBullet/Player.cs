@@ -105,7 +105,7 @@ namespace OneBullet
 			pAcceleration = 3 * ((float)graphics.Viewport.Height / 720);
 		}
 
-		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, GameTime gameTime)
+		public void Update(KeyboardState kState, KeyboardState oldKState, GamePadState cState, GamePadState oldCState, GraphicsDevice graphics, GameTime gameTime)
 		{
 			if (!dead)
 			{
@@ -128,111 +128,224 @@ namespace OneBullet
 					raiseGun = Keys.Up;
 				}
 
-				if (kState.IsKeyDown(shoot) && loaded && oldKState.IsKeyUp(shoot)) // Shoot bullet
+				if(cState.IsConnected)
 				{
-					if (Level.curLevel.PlatformCollision(pGunCollisionPosition) == -1)
+					if ((cState.Triggers.Right > 0.2 || kState.IsKeyDown(shoot)) && oldCState.Triggers.Right <= 0.2 && loaded && oldKState.IsKeyUp(shoot)) // Shoot bullet
 					{
+						if (Level.curLevel.PlatformCollision(pGunCollisionPosition) == -1)
+						{
+							if (pTexture == pTextureR)
+							{
+								if (level == GunLevel.Mid)
+								{
+									pBullet.Fire(new Vector2(1, 0), pGunPosition);
+								}
+								else if (level == GunLevel.High)
+								{
+									pBullet.Fire(new Vector2(1, 1), pGunPosition);
+								}
+								else
+								{
+									pBullet.Fire(new Vector2(1, -1), pGunPosition);
+								}
+							}
+							else
+							{
+								if (level == GunLevel.Mid)
+								{
+									pBullet.Fire(new Vector2(-1, 0), pGunPosition);
+								}
+								else if (level == GunLevel.High)
+								{
+									pBullet.Fire(new Vector2(-1, 1), pGunPosition);
+								}
+								else
+								{
+									pBullet.Fire(new Vector2(-1, -1), pGunPosition);
+								}
+							}
+							Fire();
+						}
+					}
+
+					if (cState.ThumbSticks.Left.X < -0.2 || kState.IsKeyDown(left)) // Move left
+					{
+						pVelocity.X -= ((float)graphics.Viewport.Width / 128);
 						if (pTexture == pTextureR)
 						{
-							if (level == GunLevel.Mid)
-							{
-								pBullet.Fire(new Vector2(1, 0), pGunPosition);
-							}
-							else if (level == GunLevel.High)
-							{
-								pBullet.Fire(new Vector2(1, 1), pGunPosition);
-							}
-							else
-							{
-								pBullet.Fire(new Vector2(1, -1), pGunPosition);
-							}
+							Turn(-(int)pPosition.Width / 2);
 						}
-						else
+						WalkAnimate(gameTime);
+					}
+
+					if (cState.ThumbSticks.Left.X > 0.2 || kState.IsKeyDown(right)) // Move right
+					{
+						pVelocity.X += ((float)graphics.Viewport.Width / 128);
+						if (pTexture == pTextureL)
 						{
-							if (level == GunLevel.Mid)
+							Turn((int)pPosition.Width / 2);
+						}
+						WalkAnimate(gameTime);
+					}
+
+					if (!kState.IsKeyDown(right) && !kState.IsKeyDown(left) && cState.ThumbSticks.Left.X < 0.2 && cState.ThumbSticks.Left.X > -0.2) // if not moving, play still shot
+					{
+						spriteSheet.X = 214 * 0;
+						spriteSheet.Y = 317 * 0;
+					}
+
+					if (cState.Buttons.A == ButtonState.Pressed || kState.IsKeyDown(jump)) // Jump
+					{
+						if (onGround && !jumping)
+						{
+							pVelocity.Y -= 30 * ((float)graphics.Viewport.Height / 720);
+							jumping = true;
+							onGround = false;
+						}
+						else if (!onGround && jumping && pVelocity.Y < 0)
+						{
+							pVelocity.Y -= ((float)graphics.Viewport.Height / 720);
+						}
+					}
+					if (kState.IsKeyUp(jump) && cState.Buttons.A == ButtonState.Released && (oldCState.Buttons.A == ButtonState.Pressed || oldKState.IsKeyDown(jump)))
+					{
+						jumping = false;
+					}
+					if ((cState.ThumbSticks.Right.Y > 0.2 || kState.IsKeyDown(raiseGun)) && oldKState.IsKeyUp(raiseGun) && oldCState.ThumbSticks.Right.Y < 0.2) // Change gun level
+					{
+						if (level == Player.GunLevel.Low)
+						{
+							level = Player.GunLevel.Mid;
+							pLevelOffset = 0;
+						}
+						else if (level == Player.GunLevel.Mid)
+						{
+							level = Player.GunLevel.High;
+							pLevelOffset = -((int)pPosition.Height / 4);
+						}
+					}
+					if ((cState.ThumbSticks.Right.Y < -0.2 || kState.IsKeyDown(lowerGun)) && oldKState.IsKeyUp(lowerGun) && oldCState.ThumbSticks.Right.Y > -0.2) // Change gun level
+					{
+						if (level == Player.GunLevel.High)
+						{
+							level = Player.GunLevel.Mid;
+							pLevelOffset = 0;
+						}
+						else if (level == Player.GunLevel.Mid)
+						{
+							level = Player.GunLevel.Low;
+							pLevelOffset = (int)pPosition.Height / 4;
+						}
+					}
+				}
+				else
+				{
+					if (kState.IsKeyDown(shoot) && loaded && oldKState.IsKeyUp(shoot)) // Shoot bullet
+					{
+						if (Level.curLevel.PlatformCollision(pGunCollisionPosition) == -1)
+						{
+							if (pTexture == pTextureR)
 							{
-								pBullet.Fire(new Vector2(-1, 0), pGunPosition);
-							}
-							else if (level == GunLevel.High)
-							{
-								pBullet.Fire(new Vector2(-1, 1), pGunPosition);
+								if (level == GunLevel.Mid)
+								{
+									pBullet.Fire(new Vector2(1, 0), pGunPosition);
+								}
+								else if (level == GunLevel.High)
+								{
+									pBullet.Fire(new Vector2(1, 1), pGunPosition);
+								}
+								else
+								{
+									pBullet.Fire(new Vector2(1, -1), pGunPosition);
+								}
 							}
 							else
 							{
-								pBullet.Fire(new Vector2(-1, -1), pGunPosition);
+								if (level == GunLevel.Mid)
+								{
+									pBullet.Fire(new Vector2(-1, 0), pGunPosition);
+								}
+								else if (level == GunLevel.High)
+								{
+									pBullet.Fire(new Vector2(-1, 1), pGunPosition);
+								}
+								else
+								{
+									pBullet.Fire(new Vector2(-1, -1), pGunPosition);
+								}
 							}
+							Fire();
 						}
-						Fire();
 					}
-				}
 
-				if (kState.IsKeyDown(left)) // Move left
-				{
-					pVelocity.X -= ((float)graphics.Viewport.Width / 128);
-					if (pTexture == pTextureR)
+					if (kState.IsKeyDown(left)) // Move left
 					{
-						Turn(-(int)pPosition.Width / 2);
+						pVelocity.X -= ((float)graphics.Viewport.Width / 128);
+						if (pTexture == pTextureR)
+						{
+							Turn(-(int)pPosition.Width / 2);
+						}
+						WalkAnimate(gameTime);
 					}
-					WalkAnimate(gameTime);
-				}
 
-				if (kState.IsKeyDown(right)) // Move right
-				{
-					pVelocity.X += ((float)graphics.Viewport.Width / 128);
-					if (pTexture == pTextureL)
+					if (kState.IsKeyDown(right)) // Move right
 					{
-						Turn((int)pPosition.Width / 2);
+						pVelocity.X += ((float)graphics.Viewport.Width / 128);
+						if (pTexture == pTextureL)
+						{
+							Turn((int)pPosition.Width / 2);
+						}
+						WalkAnimate(gameTime);
 					}
-					WalkAnimate(gameTime);
-				}
 
-				if(!kState.IsKeyDown(right) && !kState.IsKeyDown(left)) // if not moving, play still shot
-				{
-					spriteSheet.X = 214 * 0;
-					spriteSheet.Y = 317 * 0;
-				}
+					if (!kState.IsKeyDown(right) && !kState.IsKeyDown(left)) // if not moving, play still shot
+					{
+						spriteSheet.X = 214 * 0;
+						spriteSheet.Y = 317 * 0;
+					}
 
-				if (kState.IsKeyDown(jump)) // Jump
-				{
-					if (onGround && !jumping)
+					if (kState.IsKeyDown(jump)) // Jump
 					{
-						pVelocity.Y -= 30 * ((float)graphics.Viewport.Height / 720);
-						jumping = true;
-						onGround = false;
+						if (onGround && !jumping)
+						{
+							pVelocity.Y -= 30 * ((float)graphics.Viewport.Height / 720);
+							jumping = true;
+							onGround = false;
+						}
+						else if (!onGround && jumping && pVelocity.Y < 0)
+						{
+							pVelocity.Y -= ((float)graphics.Viewport.Height / 720);
+						}
 					}
-					else if (!onGround && jumping && pVelocity.Y < 0)
+					if (kState.IsKeyUp(jump) && oldKState.IsKeyDown(jump))
 					{
-						pVelocity.Y -= ((float)graphics.Viewport.Height / 720);
+						jumping = false;
 					}
-				}
-				if (kState.IsKeyUp(jump) && oldKState.IsKeyDown(jump))
-				{
-					jumping = false;
-				}
-				if (kState.IsKeyDown(raiseGun) && oldKState.IsKeyUp(raiseGun)) // Change gun level
-				{
-					if (level == Player.GunLevel.Low)
+					if (kState.IsKeyDown(raiseGun) && oldKState.IsKeyUp(raiseGun)) // Change gun level
 					{
-						level = Player.GunLevel.Mid;
-						pLevelOffset = 0;
+						if (level == Player.GunLevel.Low)
+						{
+							level = Player.GunLevel.Mid;
+							pLevelOffset = 0;
+						}
+						else if (level == Player.GunLevel.Mid)
+						{
+							level = Player.GunLevel.High;
+							pLevelOffset = -((int)pPosition.Height / 4);
+						}
 					}
-					else if (level == Player.GunLevel.Mid)
+					if (kState.IsKeyDown(lowerGun) && oldKState.IsKeyUp(lowerGun)) // Change gun level
 					{
-						level = Player.GunLevel.High;
-						pLevelOffset = -((int)pPosition.Height / 4);
-					}
-				}
-				if (kState.IsKeyDown(lowerGun) && oldKState.IsKeyUp(lowerGun)) // Change gun level
-				{
-					if (level == Player.GunLevel.High)
-					{
-						level = Player.GunLevel.Mid;
-						pLevelOffset = 0;
-					}
-					else if (level == Player.GunLevel.Mid)
-					{
-						level = Player.GunLevel.Low;
-						pLevelOffset = (int)pPosition.Height / 4;
+						if (level == Player.GunLevel.High)
+						{
+							level = Player.GunLevel.Mid;
+							pLevelOffset = 0;
+						}
+						else if (level == Player.GunLevel.Mid)
+						{
+							level = Player.GunLevel.Low;
+							pLevelOffset = (int)pPosition.Height / 4;
+						}
 					}
 				}
 
@@ -263,14 +376,28 @@ namespace OneBullet
 				}
 				else if (level == GunLevel.Low)
 				{
-					pGunCollisionPosition.X -= pGunPosition.Width / 2;
+					if (pTexture == pTextureR)
+					{
+						pGunCollisionPosition.X -= pGunPosition.Width / 2;
+					}
+					else
+					{
+						pGunCollisionPosition.X -= pGunPosition.Width / 4;
+					}
 					pGunCollisionPosition.Y -= pGunPosition.Height / 4;
 					pGunCollisionPosition.Width = 3 * (pGunPosition.Width / 4);
 					pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
 				}
 				else
 				{
-					pGunCollisionPosition.X -= pGunPosition.Width / 2;
+					if (pTexture == pTextureR)
+					{
+						pGunCollisionPosition.X -= pGunPosition.Width / 2;
+					}
+					else
+					{
+						pGunCollisionPosition.X -= pGunPosition.Width / 4;
+					}
 					pGunCollisionPosition.Y -= pGunPosition.Height;
 					pGunCollisionPosition.Width = 3 * (pGunPosition.Width / 4);
 					pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
