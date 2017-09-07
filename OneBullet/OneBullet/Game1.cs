@@ -23,8 +23,8 @@ namespace OneBullet
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
-			graphics.PreferredBackBufferWidth = 1920;
-			graphics.PreferredBackBufferHeight = 1080;
+			graphics.PreferredBackBufferWidth = 3840;
+			graphics.PreferredBackBufferHeight = 2160;
 			graphics.IsFullScreen = true;
 			graphics.ApplyChanges();
 
