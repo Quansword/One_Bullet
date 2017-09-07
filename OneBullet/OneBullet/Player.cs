@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
-using System.Media;
 
 namespace OneBullet
 {
@@ -16,14 +15,15 @@ namespace OneBullet
 		Vector2 pVelocity;
 		int pLevelOffset;
 		public int pGunOffset;
+		public int pLives = 3;
 		const int pAcceleration = 3;
 		public bool onGround, jumping, loaded, dead;
 		Keys jump, lowerGun, raiseGun, shoot, left, right;
 		int playerNum;
-        SoundEffect sfReload;
-        SoundEffect sfDead;
+		SoundEffect sfReload;
+		SoundEffect sfDead;
 
-        public Bullet pBullet;
+		public Bullet pBullet;
 
 		public enum GunLevel
 		{
@@ -326,12 +326,12 @@ namespace OneBullet
 
 		public void Pickup(Bullet bullet)
 		{
-            if (!loaded && !dead)
+			if (!loaded && !dead)
 			{
 				pBullet = bullet;
 				loaded = true;
-                sfReload.Play();
-            }
+				sfReload.Play();
+			}
 		}
 
 		public void Catch(Bullet bullet)
@@ -354,7 +354,42 @@ namespace OneBullet
 		public void Hit()
 		{
 			dead = true;
-            sfDead.Play();
+			pLives--;
+			sfDead.Play();
+		}
+
+		public void Respawn(int xPos, int yPos, bool spawnRight, Bullet bullet)
+		{
+			pBullet = bullet;
+			if (spawnRight)
+			{
+				pTexture = pTextureR;
+				pGunTexture = pGunTextureR;
+				pGunOffset = pPosition.Width / 2;
+			}
+			else
+			{
+				pTexture = pTextureL;
+				pGunTexture = pGunTextureL;
+				pGunOffset = -(pPosition.Width / 2);
+			}
+			pPosition.X = xPos;
+			pPosition.Y = yPos;
+			newPosition = pPosition;
+			pCollisionPosition = pPosition;
+			pCollisionPosition.X -= (int)(pCollisionPosition.Width / 2);
+			pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
+			pGunPosition.X = pPosition.X + pGunOffset;
+			pGunPosition.Y = pPosition.Y - (pPosition.Height / 4);
+			pGunCollisionPosition = pGunPosition;
+			pVelocity.X = 0;
+			pVelocity.Y = 0;
+			onGround = true;
+			jumping = false;
+			loaded = true;
+			dead = false;
+			pLevelOffset = 0;
+			collisionPlatform = -1;
 		}
 	}
 }

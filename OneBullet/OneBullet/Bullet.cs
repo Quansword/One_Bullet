@@ -3,13 +3,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
-using System.Media;
 
 namespace OneBullet
 {
 	class Bullet
 	{
-        Texture2D bTexture;
+		Texture2D bTexture;
 		public Rectangle bPosition;
 		Rectangle newPosition;
 		Vector2 bVelocity, bShootDirection;
@@ -40,9 +39,9 @@ namespace OneBullet
 			collisionPlatform = -1;
 		}
 
-		public void Update(GraphicsDevice graphics, int bulletSize, GameTime gameTime)
+		public void Update(GraphicsDevice graphics, GameTime gameTime)
 		{
-            if (bMoving)
+			if (bMoving)
 			{
 				if (bShootDirection.X == 1)
 				{
@@ -226,13 +225,15 @@ namespace OneBullet
 			}
 			bIsLoaded = false;
 			bMoving = true;
-            sfFire.Play();
-        }
+			sfFire.Play();
+		}
 
 		public void Hit()
 		{
 			bMoving = false;
 			bKill = true;
+			bOnGround = false;
+			bIsLoaded = false;
 			bVelocity.X = 0;
 			bVelocity.Y = 0;
 		}
@@ -265,8 +266,8 @@ namespace OneBullet
 			if (bShootDirection.X == 1)
 			{
 				bPosition.X = position.X;
-            }
-            else
+			}
+			else
 			{
 				bPosition.X = position.X;
 			}
@@ -274,6 +275,23 @@ namespace OneBullet
 			bIsLoaded = false;
 			bMoving = false;
 			bDead = true;
+		}
+
+		public void Respawn()
+		{
+			bPosition.X = -100;
+			bPosition.Y = -100;
+			newPosition = bPosition;
+			bMoving = false;
+			bIsLoaded = true;
+			bOnGround = false;
+			bKill = false;
+			bDead = false;
+			bVelocity.X = 0;
+			bVelocity.Y = 0;
+			bShootDirection.X = 0;
+			bShootDirection.Y = 0;
+			collisionPlatform = -1;
 		}
 	}
 }

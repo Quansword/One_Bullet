@@ -52,10 +52,10 @@ namespace OneBullet
 			if (rightWall != null)
 			{
 				if (rightWall.platPosition.Intersects(playerCollision) || rightWall.platPosition.Contains(playerCollision))
-                {
-                    return 1;
-                }
-            }
+				{
+					return 1;
+				}
+			}
 			if (leftWall != null)
 			{
 				if (leftWall.platPosition.Intersects(playerCollision) || leftWall.platPosition.Contains(playerCollision))
