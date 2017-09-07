@@ -97,11 +97,7 @@ namespace OneBullet
 			player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, sfReload, sfDead, 2);
 
 			// ------------------------------------------ Level and platform content
-			Texture2D background = Content.Load<Texture2D>("background1");
-			SoundEffect sfMusic = Content.Load<SoundEffect>("One Bullet OST Main Theme 180bpm");
-			Texture2D platform1 = Content.Load<Texture2D>("test_platform");
-
-			Level01Init(background, platform1, sfMusic);
+			Level01Init();
 		}
 
 		/// <summary>
@@ -332,10 +328,13 @@ namespace OneBullet
 
 		public void Respawn()
 		{
-			Vector2 respawnPoint1 = new Vector2(Level.curLevel.lPlatforms[0].platPosition.X + (Level.curLevel.lPlatforms[0].platPosition.Width / 2), (Level.curLevel.lPlatforms[0].platPosition.Y - ((int)charHeight / 2)) - 1);
-			Vector2 respawnPoint2 = new Vector2(Level.curLevel.lPlatforms[1].platPosition.X + (Level.curLevel.lPlatforms[0].platPosition.Width / 2), (Level.curLevel.lPlatforms[1].platPosition.Y - ((int)charHeight / 2)) - 1);
-			Vector2 respawnPoint3 = new Vector2(Level.curLevel.lPlatforms[2].platPosition.X + (Level.curLevel.lPlatforms[0].platPosition.Width / 2), (Level.curLevel.lPlatforms[2].platPosition.Y - ((int)charHeight / 2)) - 1);
-			Vector2 respawnPoint4 = new Vector2(Level.curLevel.lPlatforms[3].platPosition.X + (Level.curLevel.lPlatforms[0].platPosition.Width / 2), (Level.curLevel.lPlatforms[3].platPosition.Y - ((int)charHeight / 2)) - 1);
+			Vector2 respawnPoint1 = new Vector2(Level.curLevel.floor.platPosition.X + (Level.curLevel.floor.platPosition.Width / 4), (Level.curLevel.floor.platPosition.Y - ((int)charHeight / 2)) - 1);
+			Vector2 respawnPoint2 = new Vector2(Level.curLevel.floor.platPosition.X + (3 * (Level.curLevel.floor.platPosition.Width / 4)), (Level.curLevel.floor.platPosition.Y - ((int)charHeight / 2)) - 1);
+			Vector2 respawnPoint3 = new Vector2(Level.curLevel.lPlatforms[0].platPosition.X + (Level.curLevel.lPlatforms[0].platPosition.Width / 2), (Level.curLevel.lPlatforms[0].platPosition.Y - ((int)charHeight / 2)) - 1);
+			Vector2 respawnPoint4 = new Vector2(Level.curLevel.lPlatforms[1].platPosition.X + (Level.curLevel.lPlatforms[1].platPosition.Width / 2), (Level.curLevel.lPlatforms[1].platPosition.Y - ((int)charHeight / 2)) - 1);
+			Vector2 respawnPoint5 = new Vector2(Level.curLevel.lPlatforms[7].platPosition.X + (Level.curLevel.lPlatforms[7].platPosition.Width / 2), (Level.curLevel.lPlatforms[7].platPosition.Y - ((int)charHeight / 2)) - 1);
+			Vector2 respawnPoint6 = new Vector2(Level.curLevel.lPlatforms[8].platPosition.X + (Level.curLevel.lPlatforms[8].platPosition.Width / 2), (Level.curLevel.lPlatforms[8].platPosition.Y - ((int)charHeight / 2)) - 1);
+			Vector2 respawnPoint7 = new Vector2(Level.curLevel.lPlatforms[9].platPosition.X + (Level.curLevel.lPlatforms[9].platPosition.Width / 2), (Level.curLevel.lPlatforms[9].platPosition.Y - ((int)charHeight / 2)) - 1);
 			Vector2 respawnPoint = new Vector2(0, 0);
 			bool playerDir = false;
 			Bullet respawnBullet = bullet2;
@@ -355,6 +354,18 @@ namespace OneBullet
 			double x4Distance;
 			double y4Distance;
 			double playerDistance4;
+
+			double x5Distance;
+			double y5Distance;
+			double playerDistance5;
+
+			double x6Distance;
+			double y6Distance;
+			double playerDistance6;
+
+			double x7Distance;
+			double y7Distance;
+			double playerDistance7;
 
 			double maxDistance;
 			double maxYDistance;
@@ -379,7 +390,33 @@ namespace OneBullet
 				y4Distance = Math.Pow(respawnPoint4.Y - player2.pCollisionPosition.Y, 2);
 				playerDistance4 = Math.Sqrt(x4Distance + y4Distance);
 
-				maxYDistance = Math.Max(Math.Max(Math.Max(y1Distance, y2Distance), y3Distance), y4Distance);
+				x5Distance = Math.Pow(respawnPoint5.X - player2.pCollisionPosition.X, 2);
+				y5Distance = Math.Pow(respawnPoint5.Y - player2.pCollisionPosition.Y, 2);
+				playerDistance5 = Math.Sqrt(x5Distance + y5Distance);
+
+				x6Distance = Math.Pow(respawnPoint6.X - player2.pCollisionPosition.X, 2);
+				y6Distance = Math.Pow(respawnPoint6.Y - player2.pCollisionPosition.Y, 2);
+				playerDistance6 = Math.Sqrt(x6Distance + y6Distance);
+
+				x7Distance = Math.Pow(respawnPoint7.X - player2.pCollisionPosition.X, 2);
+				y7Distance = Math.Pow(respawnPoint7.Y - player2.pCollisionPosition.Y, 2);
+				playerDistance7 = Math.Sqrt(x7Distance + y7Distance);
+
+				maxYDistance = Math.Max(Math.Max(Math.Max(Math.Max(Math.Max(Math.Max(y1Distance, y2Distance), y3Distance), y4Distance), y5Distance), y6Distance), y7Distance);
+
+				if (maxYDistance == y7Distance)
+				{
+					xDist = Math.Abs(player1.pPosition.X - respawnPoint7.X);
+					yDist = Math.Abs(player1.pPosition.Y - respawnPoint7.Y);
+					if (xDist > charWidth / 2 && yDist > charHeight / 2)
+					{
+						respawnPoint = respawnPoint7;
+					}
+					else
+					{
+						maxYDistance = Math.Max(Math.Max(Math.Max(Math.Max(Math.Max(y1Distance, y2Distance), y3Distance), y4Distance), y5Distance), y6Distance);
+					}
+				}
 
 				if (maxYDistance == y1Distance || maxYDistance == y2Distance)
 				{
@@ -388,7 +425,7 @@ namespace OneBullet
 					{
 						xDist = Math.Abs(player1.pPosition.X - respawnPoint1.X);
 						yDist = Math.Abs(player1.pPosition.Y - respawnPoint1.Y);
-						if (xDist > charWidth && yDist > charHeight)
+						if (xDist > charWidth / 2 && yDist > charHeight / 2)
 						{
 							respawnPoint = respawnPoint1;
 						}
@@ -401,7 +438,7 @@ namespace OneBullet
 					{
 						xDist = Math.Abs(player1.pPosition.X - respawnPoint2.X);
 						yDist = Math.Abs(player1.pPosition.Y - respawnPoint2.Y);
-						if (xDist > charWidth && yDist > charHeight)
+						if (xDist > charWidth / 2 && yDist > charHeight / 2)
 						{
 							respawnPoint = respawnPoint2;
 						}
@@ -411,14 +448,14 @@ namespace OneBullet
 						}
 					}
 				}
-				else
+				else if (maxYDistance == y3Distance || maxYDistance == y4Distance)
 				{
 					maxDistance = Math.Max(playerDistance3, playerDistance4);
 					if (maxDistance == playerDistance3)
 					{
 						xDist = Math.Abs(player1.pPosition.X - respawnPoint3.X);
 						yDist = Math.Abs(player1.pPosition.Y - respawnPoint3.Y);
-						if (xDist > charWidth && yDist > charHeight)
+						if (xDist > charWidth / 2 && yDist > charHeight / 2)
 						{
 							respawnPoint = respawnPoint3;
 						}
@@ -431,13 +468,43 @@ namespace OneBullet
 					{
 						xDist = Math.Abs(player1.pPosition.X - respawnPoint4.X);
 						yDist = Math.Abs(player1.pPosition.Y - respawnPoint4.Y);
-						if (xDist > charWidth && yDist > charHeight)
+						if (xDist > charWidth / 2 && yDist > charHeight / 2)
 						{
 							respawnPoint = respawnPoint4;
 						}
 						else
 						{
 							respawnPoint = respawnPoint3;
+						}
+					}
+				}
+				else if (maxYDistance == y5Distance || maxYDistance == y6Distance)
+				{
+					maxDistance = Math.Max(playerDistance5, playerDistance6);
+					if (maxDistance == playerDistance5)
+					{
+						xDist = Math.Abs(player1.pPosition.X - respawnPoint5.X);
+						yDist = Math.Abs(player1.pPosition.Y - respawnPoint5.Y);
+						if (xDist > charWidth / 2 && yDist > charHeight / 2)
+						{
+							respawnPoint = respawnPoint5;
+						}
+						else
+						{
+							respawnPoint = respawnPoint6;
+						}
+					}
+					else
+					{
+						xDist = Math.Abs(player1.pPosition.X - respawnPoint6.X);
+						yDist = Math.Abs(player1.pPosition.Y - respawnPoint6.Y);
+						if (xDist > charWidth / 2 && yDist > charHeight / 2)
+						{
+							respawnPoint = respawnPoint6;
+						}
+						else
+						{
+							respawnPoint = respawnPoint5;
 						}
 					}
 				}
@@ -481,7 +548,33 @@ namespace OneBullet
 				y4Distance = Math.Pow(respawnPoint4.Y - player1.pCollisionPosition.Y, 2);
 				playerDistance4 = Math.Sqrt(x4Distance + y4Distance);
 
-				maxYDistance = Math.Max(Math.Max(Math.Max(y1Distance, y2Distance), y3Distance), y4Distance);
+				x5Distance = Math.Pow(respawnPoint5.X - player1.pCollisionPosition.X, 2);
+				y5Distance = Math.Pow(respawnPoint5.Y - player1.pCollisionPosition.Y, 2);
+				playerDistance5 = Math.Sqrt(x5Distance + y5Distance);
+
+				x6Distance = Math.Pow(respawnPoint6.X - player1.pCollisionPosition.X, 2);
+				y6Distance = Math.Pow(respawnPoint6.Y - player1.pCollisionPosition.Y, 2);
+				playerDistance6 = Math.Sqrt(x6Distance + y6Distance);
+
+				x7Distance = Math.Pow(respawnPoint7.X - player1.pCollisionPosition.X, 2);
+				y7Distance = Math.Pow(respawnPoint7.Y - player1.pCollisionPosition.Y, 2);
+				playerDistance7 = Math.Sqrt(x7Distance + y7Distance);
+
+				maxYDistance = Math.Max(Math.Max(Math.Max(Math.Max(Math.Max(Math.Max(y1Distance, y2Distance), y3Distance), y4Distance), y5Distance), y6Distance), y7Distance);
+
+				if (maxYDistance == y7Distance)
+				{
+					xDist = Math.Abs(player2.pPosition.X - respawnPoint7.X);
+					yDist = Math.Abs(player2.pPosition.Y - respawnPoint7.Y);
+					if (xDist > charWidth / 2  && yDist > charHeight / 2)
+					{
+						respawnPoint = respawnPoint7;
+					}
+					else
+					{
+						maxYDistance = Math.Max(Math.Max(Math.Max(Math.Max(Math.Max(y1Distance, y2Distance), y3Distance), y4Distance), y5Distance), y6Distance);
+					}
+				}
 
 				if (maxYDistance == y1Distance || maxYDistance == y2Distance)
 				{
@@ -513,7 +606,7 @@ namespace OneBullet
 						}
 					}
 				}
-				else
+				else if (maxYDistance == y3Distance || maxYDistance == y4Distance)
 				{
 					maxDistance = Math.Max(playerDistance3, playerDistance4);
 					if (maxDistance == playerDistance3)
@@ -540,6 +633,36 @@ namespace OneBullet
 						else
 						{
 							respawnPoint = respawnPoint3;
+						}
+					}
+				}
+				else if (maxYDistance == y5Distance || maxYDistance == y6Distance)
+				{
+					maxDistance = Math.Max(playerDistance5, playerDistance6);
+					if (maxDistance == playerDistance5)
+					{
+						xDist = Math.Abs(player2.pPosition.X - respawnPoint5.X);
+						yDist = Math.Abs(player2.pPosition.Y - respawnPoint5.Y);
+						if (xDist > charWidth && yDist > charHeight)
+						{
+							respawnPoint = respawnPoint5;
+						}
+						else
+						{
+							respawnPoint = respawnPoint6;
+						}
+					}
+					else
+					{
+						xDist = Math.Abs(player2.pPosition.X - respawnPoint6.X);
+						yDist = Math.Abs(player2.pPosition.Y - respawnPoint6.Y);
+						if (xDist > charWidth / 2  && yDist > charHeight / 2)
+						{
+							respawnPoint = respawnPoint6;
+						}
+						else
+						{
+							respawnPoint = respawnPoint5;
 						}
 					}
 				}
@@ -589,50 +712,85 @@ namespace OneBullet
 			base.Draw(gameTime);
 		}
 
-		void Level01Init(Texture2D background, Texture2D platform, SoundEffect music)
+		void Level01Init()
 		{
+			SoundEffect sfMusic = Content.Load<SoundEffect>("One Bullet OST Main Theme 180bpm");
+			Texture2D background = Content.Load<Texture2D>("Level01/FINAL");
+			Texture2D l1B1 = Content.Load<Texture2D>("Level01/Final_B1");
+			Texture2D l1B2 = Content.Load<Texture2D>("Level01/Final_B2");
+			Texture2D l1T1 = Content.Load<Texture2D>("Level01/Final_T1");
+			Texture2D l1T2 = Content.Load<Texture2D>("Level01/Final_T2");
+			Texture2D l1T3 = Content.Load<Texture2D>("Level01/Final_T3");
+			Texture2D l1T4 = Content.Load<Texture2D>("Level01/Final_T4");
+			Texture2D l1P1 = Content.Load<Texture2D>("Level01/Final_P1");
+			Texture2D l1P2 = Content.Load<Texture2D>("Level01/Final_P2");
+			Texture2D l1Floor = Content.Load<Texture2D>("Level01/FINAL_Border_Bottom");
+			Texture2D l1Walls = Content.Load<Texture2D>("Level01/FINAL_Border_Side");
+			Texture2D l1Ceiling = Content.Load<Texture2D>("Level01/FINAL_Border_Top");
+
 			Rectangle backgroundPos = new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
-			Rectangle floorPlatPos = new Rectangle(0, GraphicsDevice.Viewport.Height - (int)(charHeight), GraphicsDevice.Viewport.Width, (int)charHeight);
+			Rectangle floorPlatPos = new Rectangle(0, (int)(GraphicsDevice.Viewport.Height * 0.95037), GraphicsDevice.Viewport.Width, (int)(GraphicsDevice.Viewport.Height * 0.04963));
 			Platforms floorPlat = new Platforms();
-			floorPlat.Initialize(platform, floorPlatPos);
+			floorPlat.Initialize(l1Floor, floorPlatPos);
 
-			Rectangle ceilingPlatPos = new Rectangle(0, 0 - (int)charHeight, GraphicsDevice.Viewport.Width, (int)charHeight);
+			Rectangle ceilingPlatPos = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, (int)(GraphicsDevice.Viewport.Height * 0.0163));
 			Platforms ceilingPlat = new Platforms();
-			ceilingPlat.Initialize(platform, ceilingPlatPos);
+			ceilingPlat.Initialize(l1Ceiling, ceilingPlatPos);
 
-			Rectangle rWallPlatPos = new Rectangle(GraphicsDevice.Viewport.Width, 0, (int)charWidth, GraphicsDevice.Viewport.Height);
+			Rectangle rWallPlatPos = new Rectangle((int)(GraphicsDevice.Viewport.Width * 0.99104), 0, (int)(GraphicsDevice.Viewport.Width * 0.00813), GraphicsDevice.Viewport.Height);
 			Platforms rWallPlat = new Platforms();
-			rWallPlat.Initialize(platform, rWallPlatPos);
+			rWallPlat.Initialize(l1Walls, rWallPlatPos);
 
-			Rectangle lWallPlatPos = new Rectangle(0 - (int)charWidth, 0, (int)charWidth, GraphicsDevice.Viewport.Height);
+			Rectangle lWallPlatPos = new Rectangle(0, 0, (int)(GraphicsDevice.Viewport.Width * 0.00813), GraphicsDevice.Viewport.Height);
 			Platforms lWallPlat = new Platforms();
-			lWallPlat.Initialize(platform, lWallPlatPos);
+			lWallPlat.Initialize(l1Walls, lWallPlatPos);
 
-			Rectangle plat1Pos = new Rectangle( 100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM LEFT
-			Rectangle plat2Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 + 350, GraphicsDevice.Viewport.Height - (int)(charHeight * 2), (int)charWidth * 2, (int)(2 * charHeight / 3)); //BOTTOM RIGHT
-			Rectangle plat3Pos = new Rectangle(350 / 2 + 50, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) -190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID LEFT
-			Rectangle plat4Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 +250, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 190, (int)charWidth * 2, (int)(2 * charHeight / 3)); //MID RIGHTss
-			Rectangle plat5Pos = new Rectangle(GraphicsDevice.Viewport.Width / 2 -100, GraphicsDevice.Viewport.Height - (int)(charHeight * 2) - 300, (int)charWidth * 2, (int)(2 * charHeight / 3)); //CENTER TOP
+			Rectangle l1B1Pos = new Rectangle(0, (int)(GraphicsDevice.Viewport.Height * 0.72556), (int)(GraphicsDevice.Viewport.Width * 0.16396), (int)(GraphicsDevice.Viewport.Height * 0.27444));
+			Rectangle l1B2Pos = new Rectangle((int)(GraphicsDevice.Viewport.Width * 0.84175), (int)(GraphicsDevice.Viewport.Height * 0.72556), (int)(GraphicsDevice.Viewport.Width * 0.15813), (int)(GraphicsDevice.Viewport.Height * 0.27444));
 
-			Platforms plat1 = new Platforms();
-			Platforms plat2 = new Platforms();
-			Platforms plat3 = new Platforms();
-			Platforms plat4 = new Platforms();
-			Platforms plat5 = new Platforms();
+			Platforms platB1 = new Platforms();
+			Platforms platB2 = new Platforms();
 
-			plat1.Initialize(platform, plat1Pos);
-			plat2.Initialize(platform, plat2Pos);
-			plat3.Initialize(platform, plat3Pos);
-			plat4.Initialize(platform, plat4Pos);
-			plat5.Initialize(platform, plat5Pos);
+			platB1.Initialize(l1B1, l1B1Pos);
+			platB2.Initialize(l1B2, l1B2Pos);
 
-			Platforms[] lvlPlats = { plat1, plat2, plat3, plat4, plat5 };
+			Rectangle l1T1Pos = new Rectangle(0, (int)(GraphicsDevice.Viewport.Height * 0.0037), (int)(GraphicsDevice.Viewport.Width * 0.14917), (int)(GraphicsDevice.Viewport.Height * 0.13111));
+			Rectangle l1T2Pos = new Rectangle((int)(GraphicsDevice.Viewport.Width * 0.00542), (int)(GraphicsDevice.Viewport.Height * 0.13222), (int)(GraphicsDevice.Viewport.Width * 0.07375), (int)(GraphicsDevice.Viewport.Height * 0.14667));
+			Rectangle l1T3Pos = new Rectangle((int)(GraphicsDevice.Viewport.Width * 0.84521), (int)(GraphicsDevice.Viewport.Height * 0.01185), (int)(GraphicsDevice.Viewport.Width * 0.15458), (int)(GraphicsDevice.Viewport.Height * 0.13185));
+			Rectangle l1T4Pos = new Rectangle((int)(GraphicsDevice.Viewport.Width * 0.92521), (int)(GraphicsDevice.Viewport.Height * 0.1437), (int)(GraphicsDevice.Viewport.Width * 0.07479), (int)(GraphicsDevice.Viewport.Height * 0.12556));
 
-			SoundEffectInstance sfMusicInstance = music.CreateInstance();
+			Platforms platT1 = new Platforms();
+			Platforms platT2 = new Platforms();
+			Platforms platT3 = new Platforms();
+			Platforms platT4 = new Platforms();
+
+			platT1.Initialize(l1T1, l1T1Pos);
+			platT2.Initialize(l1T2, l1T2Pos);
+			platT3.Initialize(l1T3, l1T3Pos);
+			platT4.Initialize(l1T4, l1T4Pos);
+
+			Rectangle l1P1Pos = new Rectangle((int)(GraphicsDevice.Viewport.Width * 0.47), (int)(GraphicsDevice.Viewport.Height * 0.73704), (int)(GraphicsDevice.Viewport.Width * 0.09188), (int)(GraphicsDevice.Viewport.Height * 0.03444)); // Bottom
+			Rectangle l1P2Pos = new Rectangle((int)(GraphicsDevice.Viewport.Width * 0.24688), (int)(GraphicsDevice.Viewport.Height * 0.52556), (int)(GraphicsDevice.Viewport.Width * 0.14521), (int)(GraphicsDevice.Viewport.Height * 0.03519)); // Mid left
+			Rectangle l1P3Pos = new Rectangle((int)(GraphicsDevice.Viewport.Width * 0.64354), (int)(GraphicsDevice.Viewport.Height * 0.52333), (int)(GraphicsDevice.Viewport.Width * 0.14521), (int)(GraphicsDevice.Viewport.Height * 0.03519)); // Mid Right
+			Rectangle l1P4Pos = new Rectangle((int)(GraphicsDevice.Viewport.Width * 0.44354), (int)(GraphicsDevice.Viewport.Height * 0.31481), (int)(GraphicsDevice.Viewport.Width * 0.14521), (int)(GraphicsDevice.Viewport.Height * 0.03519)); // Top
+
+			Platforms platP1 = new Platforms();
+			Platforms platP2 = new Platforms();
+			Platforms platP3 = new Platforms();
+			Platforms platP4 = new Platforms();
+
+			platP1.Initialize(l1P2, l1P1Pos);
+			platP2.Initialize(l1P1, l1P2Pos);
+			platP3.Initialize(l1P1, l1P3Pos);
+			platP4.Initialize(l1P1, l1P4Pos);
+
+			Platforms[] lvlPlats = { platB1, platB2, platT1, platT2, platT3, platT4, platP1, platP2, platP3, platP4 };
+
+			SoundEffectInstance sfMusicInstance = sfMusic.CreateInstance();
 			sfMusicInstance.IsLooped = true;
 
-			level01.Initialize(background, backgroundPos, sfMusicInstance, 5, lvlPlats, floorPlat, ceilingPlat, rWallPlat, lWallPlat);
+			level01.Initialize(background, backgroundPos, sfMusicInstance, 10, lvlPlats, floorPlat, ceilingPlat, rWallPlat, lWallPlat);
 		}
 	}
 }

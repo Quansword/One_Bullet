@@ -279,8 +279,10 @@ namespace OneBullet
 		{
 			if (!dead)
 			{
+				pPosition.Y++;
 				//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
 				spriteBatch.Draw(pTexture, pPosition, null, Color.White, 0, new Vector2(pTexture.Width / 2, pTexture.Height / 2), SpriteEffects.None, 0);
+				pPosition.Y--;
 
 				if (level == GunLevel.Mid)
 				{
