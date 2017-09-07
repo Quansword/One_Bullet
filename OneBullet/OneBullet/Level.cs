@@ -121,21 +121,21 @@ namespace OneBullet
 				distLeft = playerPos.Left - lPlatforms[platformIndex - 4].platPosition.Right;
 			}
 
-			if (distDown > 0)
+			if (distDown >= 0)
 			{
 				leastDist = distDown;
 				dir = CollisionDir.Bottom;
 
 				if (distRight >= 0)
 				{
-					if (distRight < leastDist)
+					if (distRight <= leastDist)
 					{
 						dir = CollisionDir.Right;
 					}
 				}
 				else if (distLeft >= 0)
 				{
-					if (distLeft < leastDist)
+					if (distLeft <= leastDist)
 					{
 						dir = CollisionDir.Left;
 					}
@@ -148,14 +148,14 @@ namespace OneBullet
 
 				if (distRight >= 0)
 				{
-					if (distRight < leastDist)
+					if (distRight <= leastDist)
 					{
 						dir = CollisionDir.Right;
 					}
 				}
 				else if (distLeft >= 0)
 				{
-					if (distLeft < leastDist)
+					if (distLeft <= leastDist)
 					{
 						dir = CollisionDir.Left;
 					}

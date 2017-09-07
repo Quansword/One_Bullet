@@ -95,8 +95,8 @@ namespace OneBullet
 				if (kState.IsKeyDown(shoot) && loaded && oldKState.IsKeyUp(shoot)) // Shoot bullet
 				{
 					pGunCollisionPosition = pGunPosition;
-					pGunCollisionPosition.X -= pGunPosition.Height;
-					pGunCollisionPosition.Y -= pGunPosition.Width;
+					pGunCollisionPosition.X -= pGunPosition.Height / 2;
+					pGunCollisionPosition.Y -= pGunPosition.Width / 2;
 					if (Level.curLevel.PlatformCollision(pGunCollisionPosition) == -1)
 					{
 						if (pTexture == pTextureR)
@@ -204,7 +204,7 @@ namespace OneBullet
 				pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
 
 				pGunPosition.X = pPosition.X + pGunOffset;
-				pGunPosition.Y = (pPosition.Y + pLevelOffset);
+				pGunPosition.Y = ((pPosition.Y - (pPosition.Height / 4)) + pLevelOffset);
 
 				if (pVelocity.Y != 0)
 					onGround = false;
