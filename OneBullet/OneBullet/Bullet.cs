@@ -9,7 +9,7 @@ namespace OneBullet
 	class Bullet
 	{
 		Texture2D bTexture;
-		public Rectangle bPosition;
+		public Rectangle bPosition, bDrawPosition;
 		Rectangle newPosition;
 		Vector2 bVelocity, bShootDirection;
 		const int bSpeed = 16;
@@ -26,6 +26,7 @@ namespace OneBullet
 		{
 			bTexture = texture;
 			bPosition = position;
+			bDrawPosition = bPosition;
 			newPosition = bPosition;
 			sfShellFall = fallSound;
 			sfFire = fireSound;
@@ -129,6 +130,8 @@ namespace OneBullet
 
 			bPosition.X += (int)(bVelocity.X * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
 			bPosition.Y += (int)(bVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
+			bDrawPosition.X = bPosition.X;
+			bDrawPosition.Y += (int)(bVelocity.Y * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 16);
 		}
 
 		void CalcVelocity(GameTime gameTime)
@@ -178,7 +181,7 @@ namespace OneBullet
 			if (!bIsLoaded)
 			{
 				//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
-				spriteBatch.Draw(bTexture, bPosition, null, Color.White); //, 0, new Vector2(bTexture.Width / 2, bTexture.Height/2), SpriteEffects.None, 0);
+				spriteBatch.Draw(bTexture, bDrawPosition, null, Color.White); //, 0, new Vector2(bTexture.Width / 2, bTexture.Height/2), SpriteEffects.None, 0);
 			}
 		}
 
@@ -190,18 +193,18 @@ namespace OneBullet
 				bVelocity.X = bSpeed;
 				if (bShootDirection.Y == 0)
 				{
-					bPosition.X = position.X + (position.Width / 4);
+					bPosition.X = position.X + (position.Width / 3);
 					bPosition.Y = position.Y;
 				}
 				else if (bShootDirection.Y == 1)
 				{
-					bPosition.X = (int)(position.X + Math.Sqrt(position.Width / 4));
-					bPosition.Y = (int)(position.Y - Math.Sqrt(position.Width / 4));
+					bPosition.X = (int)(position.X + Math.Sqrt(position.Width / 3));
+					bPosition.Y = (int)(position.Y - Math.Sqrt(position.Width / 3));
 				}
 				else
 				{
-					bPosition.X = (int)(position.X + Math.Sqrt(position.Width / 4));
-					bPosition.Y = (int)(position.Y + Math.Sqrt(position.Width / 4));
+					bPosition.X = (int)(position.X + Math.Sqrt(position.Width / 3));
+					bPosition.Y = (int)(position.Y + Math.Sqrt(position.Width / 3));
 				}
 			}
 			else
@@ -209,20 +212,22 @@ namespace OneBullet
 				bVelocity.X = -bSpeed;
 				if (bShootDirection.Y == 0)
 				{
-					bPosition.X = (position.X - bPosition.Width) - (position.Width / 4);
+					bPosition.X = (position.X - (int)(bPosition.Width * 1.2)) - (position.Width / 3);
 					bPosition.Y = position.Y;
 				}
 				else if (bShootDirection.Y == 1)
 				{
-					bPosition.X = (int)((position.X - bPosition.Width) - Math.Sqrt(position.Width / 4));
-					bPosition.Y = (int)(position.Y - Math.Sqrt(position.Width / 4));
+					bPosition.X = (int)((position.X - (int)(bPosition.Width * 1.2)) - Math.Sqrt(position.Width / 3));
+					bPosition.Y = (int)(position.Y - Math.Sqrt(position.Width / 3));
 				}
 				else
 				{
-					bPosition.X = (int)((position.X - bPosition.Width) - Math.Sqrt(position.Width / 4));
-					bPosition.Y = (int)(position.Y + Math.Sqrt(position.Width / 4));
+					bPosition.X = (int)((position.X - (int)(bPosition.Width * 1.2)) - Math.Sqrt(position.Width / 3));
+					bPosition.Y = (int)(position.Y + Math.Sqrt(position.Width / 3));
 				}
 			}
+			bDrawPosition.X = bPosition.X;
+			bDrawPosition.Y = bPosition.Y - (position.Height / 2);
 			bIsLoaded = false;
 			bMoving = true;
 			sfFire.Play();
@@ -272,6 +277,8 @@ namespace OneBullet
 				bPosition.X = position.X;
 			}
 			bPosition.Y = position.Y;
+			bDrawPosition.X = bPosition.X;
+			bDrawPosition.Y = bPosition.Y - (position.Height / 2);
 			bIsLoaded = false;
 			bMoving = false;
 			bDead = true;
@@ -282,6 +289,7 @@ namespace OneBullet
 			bPosition.X = -100;
 			bPosition.Y = -100;
 			newPosition = bPosition;
+			bDrawPosition = bPosition;
 			bMoving = false;
 			bIsLoaded = true;
 			bOnGround = false;

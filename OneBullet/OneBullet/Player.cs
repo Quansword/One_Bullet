@@ -7,10 +7,13 @@ namespace OneBullet
 {
 	class Player
 	{
-		public Texture2D pTexture, pTextureR, pTextureL;
+		public Texture2D pTexture, pTextureR, pTextureL, pJumpTextureR, pJumpTextureL;
 		public Texture2D pGunTexture, pGunTextureR, pGunTextureL;
+		Texture2D pAliveTexture, pDeadTexture;
+		Texture2D[] pLivesTextures;
 		public Rectangle pPosition, pCollisionPosition;
 		Rectangle newPosition;
+		Rectangle spriteSheet;
 		public Rectangle pGunPosition, pGunCollisionPosition;
 		Vector2 pVelocity;
 		int pLevelOffset;
@@ -22,6 +25,11 @@ namespace OneBullet
 		int playerNum;
 		SoundEffect sfReload;
 		SoundEffect sfDead;
+		float pTimeElapsed;
+		const float spriteDelay = 60f;
+		int spriteXFrames = 0;
+		int spriteYFrames = 0;
+
 
 		public Bullet pBullet;
 
@@ -37,13 +45,21 @@ namespace OneBullet
 		int collisionPlatform;
 		Level.CollisionDir collisionDir = Level.CollisionDir.None;
 
-		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D gunTextureR, Texture2D gunTextureL, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, SoundEffect reloadSound, SoundEffect deadSound, int pNum)
+		public void Initialize(Texture2D textureR, Texture2D textureL, Texture2D jumpTextureR, Texture2D jumpTextureL, Texture2D gunTextureR, Texture2D gunTextureL, Texture2D aliveGUITexture, Texture2D deadGUITexture, Rectangle position, Rectangle gunPosition, int gunOffset, Bullet bullet, SoundEffect reloadSound, SoundEffect deadSound, int pNum)
 		{
 			playerNum = pNum;
 			pTextureR = textureR;
 			pTextureL = textureL;
+			pJumpTextureR = jumpTextureR;
+			pJumpTextureL = jumpTextureL;
 			pGunTextureR = gunTextureR;
 			pGunTextureL = gunTextureL;
+			pAliveTexture = aliveGUITexture;
+			pDeadTexture = deadGUITexture;
+			pLivesTextures = new Texture2D[3];
+			pLivesTextures[0] = pAliveTexture;
+			pLivesTextures[1] = pAliveTexture;
+			pLivesTextures[2] = pAliveTexture;
 			if (playerNum % 2 == 1)
 			{
 				pTexture = pTextureR;
@@ -64,6 +80,7 @@ namespace OneBullet
 			pGunPosition.X += pGunOffset;
 			pGunCollisionPosition = pGunPosition;
 			pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
+			pGunCollisionPosition.Width = (int)(pGunPosition.Width * 1.2);
 			pGunCollisionPosition.X -= pGunPosition.Height / 2;
 			pGunCollisionPosition.Y -= pGunPosition.Width / 2;
 			pBullet = bullet;
@@ -76,6 +93,8 @@ namespace OneBullet
 			dead = false;
 			pLevelOffset = 0;
 			collisionPlatform = -1;
+			pTimeElapsed = 0;
+			spriteSheet = new Rectangle(214 * 0, 317 * 0, 214, 317);
 		}
 
 		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, GameTime gameTime)
@@ -138,6 +157,7 @@ namespace OneBullet
 						Fire();
 					}
 				}
+
 				if (kState.IsKeyDown(left)) // Move left
 				{
 					pVelocity.X -= 10;
@@ -145,7 +165,11 @@ namespace OneBullet
 					{
 						Turn(-(int)pPosition.Width / 2);
 					}
+					WalkAnimate(gameTime);
+
 				}
+
+
 				if (kState.IsKeyDown(right)) // Move right
 				{
 					pVelocity.X += 10;
@@ -153,7 +177,15 @@ namespace OneBullet
 					{
 						Turn((int)pPosition.Width / 2);
 					}
+					WalkAnimate(gameTime);
 				}
+
+				if(!kState.IsKeyDown(right) && !kState.IsKeyDown(left)) // if not moving, play still shot
+				{
+					spriteSheet.X = 214 * 0;
+					spriteSheet.Y = 317 * 0;
+				}
+
 				if (kState.IsKeyDown(jump)) // Jump
 				{
 					if (onGround && !jumping)
@@ -210,13 +242,18 @@ namespace OneBullet
 				pCollisionPosition.Y -= (int)(pCollisionPosition.Height / 2);
 
 				pGunPosition.X = pPosition.X + pGunOffset;
-				pGunPosition.Y = ((pPosition.Y - (pPosition.Height / 4)) + pLevelOffset);
+				pGunPosition.Y = pPosition.Y + pLevelOffset;
 				pGunCollisionPosition = pGunPosition;
+				if (pTexture == pTextureL)
+				{
+					pGunCollisionPosition.X -= (int)(pGunPosition.Width * 0.2);
+				}
 				if (level == GunLevel.Mid)
 				{
 					pGunCollisionPosition.X -= pGunPosition.Width / 2;
 					pGunCollisionPosition.Y -= pGunPosition.Height / 2;
 					pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
+					pGunCollisionPosition.Width = (int)(1.2 * pGunPosition.Width);
 				}
 				else if (level == GunLevel.Low)
 				{
@@ -296,14 +333,50 @@ namespace OneBullet
 			}
 		}
 
-		public void Draw(SpriteBatch spriteBatch)
+		void WalkAnimate(GameTime gameTime)
 		{
+			pTimeElapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+			if (pTimeElapsed >= spriteDelay)
+			{
+				if (spriteXFrames >= 2)
+				{
+					spriteXFrames = 0;
+					spriteYFrames++;
+					if (spriteYFrames >= 3)
+					{
+						spriteYFrames = 0;
+					}
+				}
+				else
+				{
+					spriteXFrames++;
+				}
+				pTimeElapsed = 0;
+			}
+			spriteSheet.X = 214 * spriteXFrames;
+			spriteSheet.Y = 317 * spriteYFrames;
+		}
+
+		public void Draw(SpriteBatch spriteBatch, int height, int width)
+		{
+			//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
 			if (!dead)
 			{
-				pPosition.Y++;
-				//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
-				spriteBatch.Draw(pTexture, pPosition, null, Color.White, 0, new Vector2(pTexture.Width / 2, pTexture.Height / 2), SpriteEffects.None, 0);
-				pPosition.Y--;
+				if (!onGround)
+				{
+					if (pTexture == pTextureR)
+					{
+						spriteBatch.Draw(pJumpTextureR, pPosition, null, Color.White, 0, new Vector2(spriteSheet.Width / 3 + 30, spriteSheet.Height / 4 + 65), SpriteEffects.None, 0);
+					}
+					else
+					{
+						spriteBatch.Draw(pJumpTextureL, pPosition, null, Color.White, 0, new Vector2(spriteSheet.Width / 3 + 30, spriteSheet.Height / 4 + 65), SpriteEffects.None, 0);
+					}
+				}
+				else
+				{
+					spriteBatch.Draw(pTexture, pPosition, spriteSheet, Color.White, 0, new Vector2(spriteSheet.Width / 3 + 30, spriteSheet.Height / 4 + 65), SpriteEffects.None, 0);
+				}
 
 				if (level == GunLevel.Mid)
 				{
@@ -316,6 +389,21 @@ namespace OneBullet
 				else
 				{
 					spriteBatch.Draw(pGunTexture, pGunPosition, null, Color.White, -0.785398f, new Vector2(pGunTexture.Width / 2, pGunTexture.Height / 2), SpriteEffects.None, 0);
+				}
+
+				if (playerNum == 1)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						spriteBatch.Draw(pLivesTextures[i], new Rectangle((height / 50) + ((height / 15) * i), height / 50, height / 10, height / 10), Color.White);
+					}
+				}
+				else
+				{
+					for (int i = 2; i > -1; i--)
+					{
+						spriteBatch.Draw(pLivesTextures[i], new Rectangle(width - ((height / 8) + ((height / 15) * i)), height / 50, height / 10, height / 10), Color.White);
+					}
 				}
 			}
 		}
@@ -378,6 +466,7 @@ namespace OneBullet
 		{
 			dead = true;
 			pLives--;
+			pLivesTextures[pLives] = pDeadTexture;
 			sfDead.Play();
 		}
 
@@ -406,6 +495,7 @@ namespace OneBullet
 			pGunPosition.Y = pPosition.Y - (pPosition.Height / 4);
 			pGunCollisionPosition = pGunPosition;
 			pGunCollisionPosition.Height = (3 * (pGunPosition.Height / 2));
+			pGunCollisionPosition.Width = (int)(pGunPosition.Width * 1.2);
 			pGunCollisionPosition.X -= pGunPosition.Height / 2;
 			pGunCollisionPosition.Y -= pGunPosition.Width / 2;
 			pVelocity.X = 0;
@@ -417,6 +507,7 @@ namespace OneBullet
 			pLevelOffset = 0;
 			collisionPlatform = -1;
 			level = GunLevel.Mid;
+			pTimeElapsed = 0;
 		}
 	}
 }

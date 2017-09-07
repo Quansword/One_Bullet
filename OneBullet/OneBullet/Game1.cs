@@ -6,9 +6,6 @@ using System;
 
 namespace OneBullet
 {
-	/// <summary>
-	/// This is the main type for your game.
-	/// </summary>
 	public class Game1 : Game
 	{
 		GraphicsDeviceManager graphics;
@@ -26,25 +23,15 @@ namespace OneBullet
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
-			// Resolution independence
-			//Vector2 virtualScreen = new Vector2(1280, 720);
-			//graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-			//graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 			graphics.PreferredBackBufferWidth = 1280;
 			graphics.PreferredBackBufferHeight = 720;
 			graphics.IsFullScreen = false;
 			graphics.ApplyChanges();
 
 			charHeight = GraphicsDevice.Viewport.Height / 7;
-			charWidth = charHeight / 1.13;
+			charWidth = charHeight / 1.48;
 		}
 
-		/// <summary>
-		/// Allows the game to perform any initialization it needs to before starting to run.
-		/// This is where it can query for any required services and load any non-graphic
-		/// related content.  Calling base.Initialize will enumerate through any components
-		/// and initialize them as well.
-		/// </summary>
 		protected override void Initialize()
 		{
 			// TODO: Add your initialization logic here
@@ -56,10 +43,6 @@ namespace OneBullet
 			base.Initialize();
 		}
 
-		/// <summary>
-		/// LoadContent will be called once per game and is the place to load
-		/// all of your content.
-		/// </summary>
 		protected override void LoadContent()
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
@@ -67,24 +50,35 @@ namespace OneBullet
 
 			// TODO: use this.Content to load your game content here
 			Rectangle p1Position = new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height - (int)(2 * charHeight), (int)charWidth, (int)charHeight);
-			Rectangle p1GunPos = new Rectangle(p1Position.X, p1Position.Y - (p1Position.Height / 4), (int)(charWidth * 0.75), (int)(charHeight / 3));
+			Rectangle p1GunPos = new Rectangle(p1Position.X, p1Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
 			int p1GunOffset = (int)charWidth / 2;
 
 			Rectangle p2Position = new Rectangle((3 * (GraphicsDevice.Viewport.Width / 4)), GraphicsDevice.Viewport.Height - (int)(2 * charHeight), (int)charWidth, (int)charHeight);
-			Rectangle p2GunPos = new Rectangle(p2Position.X, p2Position.Y - (p1Position.Height / 4), (int)(charWidth * 0.75), (int)(charHeight / 3));
+			Rectangle p2GunPos = new Rectangle(p2Position.X, p2Position.Y, (int)(charWidth * 0.75), (int)(charHeight / 3));
 			int p2GunOffset = -(int)charWidth / 2;
 
 			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 			Rectangle b2Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
 
-			Texture2D player1TextureR = Content.Load<Texture2D>("MegaManX_Right");
-			Texture2D player1TextureL = Content.Load<Texture2D>("MegaManX_Left");
-			Texture2D player2TextureR = Content.Load<Texture2D>("Zero_Right");
-			Texture2D player2TextureL = Content.Load<Texture2D>("Zero_Left");
+			Texture2D player1TextureR = Content.Load<Texture2D>("p1RunR");
+			Texture2D player1TextureL = Content.Load<Texture2D>("p1RunL");
+			Texture2D player1JumpR = Content.Load<Texture2D>("p1JumpR");
+			Texture2D player1JumpL = Content.Load<Texture2D>("p1JumpL");
+			Texture2D player2TextureR = Content.Load<Texture2D>("p2RunR");
+			Texture2D player2TextureL = Content.Load<Texture2D>("p2RunL");
+			Texture2D player2JumpR = Content.Load<Texture2D>("p2JumpR");
+			Texture2D player2JumpL = Content.Load<Texture2D>("p2JumpL");
+
 			Texture2D gunR = Content.Load<Texture2D>("gun_right");
 			Texture2D gunL = Content.Load<Texture2D>("gun_left");
 
-			Texture2D bullet = Content.Load<Texture2D>("shot_poulpi");
+			Texture2D bullet = Content.Load<Texture2D>("bullet");
+
+			Texture2D p1Life = Content.Load<Texture2D>("p1Alive");
+			Texture2D p1Dead = Content.Load<Texture2D>("p1Dead");
+
+			Texture2D p2Life = Content.Load<Texture2D>("p2Alive");
+			Texture2D p2Dead = Content.Load<Texture2D>("p2Dead");
 
 			SoundEffect sfShellFall = Content.Load<SoundEffect>("Shells_falls-Marcel-829263474");
 			SoundEffect sfReload = Content.Load<SoundEffect>("50 Cal Machine Gun Load-SoundBible.com-1345076003");
@@ -93,33 +87,24 @@ namespace OneBullet
 
 			bullet1.Initialize(bullet, b1Position, sfShellFall, sfFire);
 			bullet2.Initialize(bullet, b1Position, sfShellFall, sfFire);
-			player1.Initialize(player1TextureR, player1TextureL, gunR, gunL, p1Position, p1GunPos, p1GunOffset, bullet1, sfReload, sfDead, 1);
-			player2.Initialize(player2TextureR, player2TextureL, gunR, gunL, p2Position, p2GunPos, p2GunOffset, bullet2, sfReload, sfDead, 2);
+			player1.Initialize(player1TextureR, player1TextureL, player1JumpR, player1JumpL, gunR, gunL, p1Life, p1Dead, p1Position, p1GunPos, p1GunOffset, bullet1, sfReload, sfDead, 1);
+			player2.Initialize(player2TextureR, player2TextureL, player2JumpR, player2JumpL, gunR, gunL, p2Life, p2Dead, p2Position, p2GunPos, p2GunOffset, bullet2, sfReload, sfDead, 2);
 
 			// ------------------------------------------ Level and platform content
 			Level01Init();
 		}
 
-		/// <summary>
-		/// UnloadContent will be called once per game and is the place to unload
-		/// game-specific content.
-		/// </summary>
 		protected override void UnloadContent()
 		{
 			// TODO: Unload any non ContentManager content here
 		}
 
-		/// <summary>
-		/// Allows the game to run logic such as updating the world,
-		/// checking for collisions, gathering input, and playing audio.
-		/// </summary>
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update(GameTime gameTime)
 		{
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
 
-			// TODO: Add your update logic here
 			BulletChecks();
 			Respawn();
 
@@ -693,21 +678,15 @@ namespace OneBullet
 			}
 		}
 
-		/// <summary>
-		/// This is called when the game should draw itself.
-		/// </summary>
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw(GameTime gameTime)
 		{
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
-			// TODO: Add your drawing code here
 			spriteBatch.Begin();
 			level01.Draw(spriteBatch);
-			//spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-			//spriteBatch.Draw(backgroundElements, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-			player1.Draw(spriteBatch);
-			player2.Draw(spriteBatch);
+			player1.Draw(spriteBatch, GraphicsDevice.Viewport.Height, GraphicsDevice.Viewport.Width);
+			player2.Draw(spriteBatch, GraphicsDevice.Viewport.Height, GraphicsDevice.Viewport.Width);
 			bullet1.Draw(spriteBatch);
 			bullet2.Draw(spriteBatch);
 			spriteBatch.End();
