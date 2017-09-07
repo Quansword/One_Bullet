@@ -72,17 +72,19 @@ namespace OneBullet
 			Rectangle p2GunPos = new Rectangle(p2Position.X, p2Position.Y - (p1Position.Height / 4), (int)(charWidth * 0.75), (int)(charHeight / 3));
 			int p2GunOffset = -(int)charWidth / 2;
 
-			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
-			Rectangle b2Position = new Rectangle(-100, -100, (int)(charHeight / 4), (int)(charHeight / 4));
+			Rectangle b1Position = new Rectangle(-100, -100, (int)(charHeight / 2), (int)(charHeight / 2));
+			Rectangle b2Position = new Rectangle(-100, -100, (int)(charHeight / 2), (int)(charHeight / 2));
 
-			Texture2D player1TextureR = Content.Load<Texture2D>("MegaManX_Right");
-			Texture2D player1TextureL = Content.Load<Texture2D>("MegaManX_Left");
-			Texture2D player2TextureR = Content.Load<Texture2D>("Zero_Right");
-			Texture2D player2TextureL = Content.Load<Texture2D>("Zero_Left");
-			Texture2D gunR = Content.Load<Texture2D>("gun_right");
+			Texture2D player1TextureR = Content.Load<Texture2D>("p1RunR");
+			Texture2D player1TextureL = Content.Load<Texture2D>("p1RunL");
+			Texture2D player2TextureR = Content.Load<Texture2D>("p2RunR");
+			Texture2D player2TextureL = Content.Load<Texture2D>("p2RunL");
+            //Texture2D playerJump = Content.Load<Texture2D>("jump");
+
+            Texture2D gunR = Content.Load<Texture2D>("gun_right");
 			Texture2D gunL = Content.Load<Texture2D>("gun_left");
 
-			Texture2D bullet = Content.Load<Texture2D>("shot_poulpi");
+			Texture2D bullet = Content.Load<Texture2D>("bullet");
 
 			bullet1.Initialize(bullet, b1Position);
 			bullet2.Initialize(bullet, b1Position);
@@ -126,8 +128,8 @@ namespace OneBullet
 				player1.Update(kState, oldKState, GraphicsDevice, gameTime);
 			if (!player2.dead)
 				player2.Update(kState, oldKState, GraphicsDevice, gameTime);
-			bullet1.Update(GraphicsDevice, (int)(charHeight / 3), gameTime);
-			bullet2.Update(GraphicsDevice, (int)(charHeight / 3), gameTime);
+			bullet1.Update(GraphicsDevice, (int)(charHeight), gameTime);
+			bullet2.Update(GraphicsDevice, (int)(charHeight), gameTime);
 
 			oldKState = kState;
 

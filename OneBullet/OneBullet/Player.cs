@@ -10,7 +10,8 @@ namespace OneBullet
 		public Texture2D pGunTexture, pGunTextureR, pGunTextureL;
 		public Rectangle pPosition, pCollisionPosition;
 		Rectangle newPosition;
-		public Rectangle pGunPosition, pGunCollisionPosition;
+        Rectangle sourceRect;
+        public Rectangle pGunPosition, pGunCollisionPosition;
 		Vector2 pVelocity;
 		int pLevelOffset;
 		public int pGunOffset;
@@ -18,8 +19,13 @@ namespace OneBullet
 		public bool onGround, jumping, loaded, dead;
 		Keys jump, lowerGun, raiseGun, shoot, left, right;
 		int playerNum;
+        float elapsed;
+        float delay = 60f;
+        int Hframes = 0;
+        int Vframes = 0;
 
-		public Bullet pBullet;
+
+        public Bullet pBullet;
 
 		public enum GunLevel
 		{
@@ -67,6 +73,7 @@ namespace OneBullet
 			dead = false;
 			pLevelOffset = 0;
 			collisionPlatform = -1;
+            
 		}
 
 		public void Update(KeyboardState kState, KeyboardState oldKState, GraphicsDevice graphics, GameTime gameTime)
@@ -132,6 +139,8 @@ namespace OneBullet
 						Fire();
 					}
 				}
+
+
 				if (kState.IsKeyDown(left)) // Move left
 				{
 					pVelocity.X -= 10;
@@ -139,7 +148,10 @@ namespace OneBullet
 					{
 						Turn(-(int)pPosition.Width / 2);
 					}
-				}
+
+                }
+
+
 				if (kState.IsKeyDown(right)) // Move right
 				{
 					pVelocity.X += 10;
@@ -147,7 +159,40 @@ namespace OneBullet
 					{
 						Turn((int)pPosition.Width / 2);
 					}
+
+                    
 				}
+
+                if(kState.IsKeyDown(right) || kState.IsKeyDown(left)) // If moving play walk animation
+                {
+                    elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (elapsed >= delay)
+                    {
+                        if (Hframes >= 2)
+                        {
+                            Hframes = 0;
+                            Vframes++;
+                            if (Vframes >= 3)
+                            {
+                                Vframes = 0;
+                            }
+                        }
+                        else
+                        {
+                            Hframes++;
+                        }
+                        elapsed = 0;
+                    }
+                    sourceRect = new Rectangle(550 * Hframes, 400 * Vframes, 550, 400);
+
+                }
+
+
+                if(!kState.IsKeyDown(right) && !kState.IsKeyDown(left)) // if not moving, play still shot
+                {
+                    sourceRect = new Rectangle(550 * 2, 400 *1, 550, 400);
+                }
+
 				if (kState.IsKeyDown(jump)) // Jump
 				{
 					if (onGround && !jumping)
@@ -274,7 +319,7 @@ namespace OneBullet
 			if (!dead)
 			{
 				//public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
-				spriteBatch.Draw(pTexture, pPosition, null, Color.White, 0, new Vector2(pTexture.Width / 2, pTexture.Height / 2), SpriteEffects.None, 0);
+				spriteBatch.Draw(pTexture, pPosition, sourceRect, Color.White, 0, new Vector2(pTexture.Width /4 - 120, pTexture.Height/4 - 260), SpriteEffects.None, 0);
 
 				if (level == GunLevel.Mid)
 				{
