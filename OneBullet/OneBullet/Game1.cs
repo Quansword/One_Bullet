@@ -24,8 +24,8 @@ namespace OneBullet
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
-			graphics.PreferredBackBufferWidth = 1920;
-			graphics.PreferredBackBufferHeight = 1080;
+			graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+			graphics.PreferredBackBufferWidth = (16 * graphics.PreferredBackBufferHeight / 9); // Creates a 16:9 ratio
 			graphics.IsFullScreen = true;
 			graphics.ApplyChanges();
 
