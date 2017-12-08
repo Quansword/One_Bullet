@@ -195,7 +195,7 @@ namespace OneBullet
 						spriteSheet.Y = 317 * 0;
 					}
 
-					if (cState.Buttons.A == ButtonState.Pressed || cState.Buttons.LeftShoulder == ButtonState.Pressed || kState.IsKeyDown(jump)) // Jump
+					if (cState.Buttons.A == ButtonState.Pressed || cState.Triggers.Left > 0.2 || kState.IsKeyDown(jump)) // Jump
 					{
 						if (onGround && !jumping)
 						{
@@ -208,7 +208,7 @@ namespace OneBullet
 							pVelocity.Y -= ((float)graphics.Viewport.Height / 720);
 						}
 					}
-					if (kState.IsKeyUp(jump) && cState.Buttons.A == ButtonState.Released && cState.Buttons.LeftShoulder == ButtonState.Released && (oldCState.Buttons.A == ButtonState.Pressed || cState.Buttons.LeftShoulder == ButtonState.Pressed || oldKState.IsKeyDown(jump)))
+					if (kState.IsKeyUp(jump) && cState.Buttons.A == ButtonState.Released && cState.Triggers.Left <= 0.2 && (oldCState.Buttons.A == ButtonState.Pressed || oldCState.Triggers.Left > 0.2 || oldKState.IsKeyDown(jump)))
 					{
 						jumping = false;
 					}
